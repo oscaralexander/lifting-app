@@ -1,0 +1,195 @@
+@use '@css/2-tools/mixins' as *;
+
+.nav {
+    display: flex;
+    position: fixed;
+    top: 0;
+    z-index: var(--z-index-nav);
+
+    &__drawer {
+        background: var(--color-bg-tint);
+        position: absolute;
+        overflow: hidden;
+        padding: 1.5em 1em;
+        position: absolute;
+    }
+
+    &__sub {
+        background: var(--color-bg-tint);
+        height: 100%;
+        padding: 1em;
+        position: absolute;
+        right: 0;
+        top: 0;
+        transform: translate3d(100%, 0, 0);
+        transition: var(--nav-transition);
+        width: calc(100% - 5em);
+
+        .nav.is-event &--event {
+            transform: translate3d(0, 0, 0);
+        }
+
+        .nav.is-settings &--settings {
+            transform: translate3d(0, 0, 0);
+        }
+    }
+
+    &__header {
+        align-items: center;
+        display: flex;
+        height: 3em;
+        margin-bottom: 1em;
+        padding: 0 .75em;
+    }
+
+    @include screen-max(l) {
+        align-items: center;
+        background: var(--color-bg);
+        box-shadow: 0 1px 0 oklch(var(--color-dark-gray-lch) / .1);
+        gap: .25em;
+        height: 4em;
+        padding: 0 .5em 0 1em;
+        width: 100vw;
+
+        &__flex {
+            flex: 1 1 auto;
+        }
+
+        &__logo {
+            img {
+                height: 2.5rem;
+            }
+        }
+
+        &__toggle {
+            border-radius: .5em;
+            display: flex;
+            height: 2.5em;
+            top: calc(50% - 1.25em);
+            width: 2.5em;
+
+            div {
+                background: var(--color-text);
+                height: 2px;
+                margin: auto;
+                position: relative;
+                transition: var(--duration-m);
+                width: 20px;
+
+                nav.is-expanded & {
+                    background: transparent;
+                }
+
+                &::after,
+                &::before {
+                    background: var(--color-text);
+                    content: '';
+                    height: 2px;
+                    left: 0;
+                    position: absolute;
+                    transition: transform 125ms ease, top 125ms 125ms ease;
+                    width: 20px;
+
+                    nav.is-expanded & {
+                        transition: transform 125ms 125ms ease, top 125ms ease;
+                    }
+                }
+
+                &::before {
+                    top: -6px;
+
+                    nav.is-expanded & {
+                        top: 0;
+                        transform: rotate(45deg);
+                    }
+                }
+
+                &::after {
+                    top: 6px;
+
+                    nav.is-expanded & {
+                        top: 0;
+                        transform: rotate(-45deg);
+                    }
+                }
+            }
+        }
+
+        &__overlay {
+            background: var(--color-dark-gray);
+            bottom: 0;
+            left: 0;
+            top: 4em;
+            opacity: 0;
+            position: fixed;
+            transition: opacity 250ms, width 250ms step-end;
+            width: 0;
+
+            .nav.is-expanded & {
+                opacity: .25;
+                transition: opacity 250ms, width 250ms step-start;
+                width: 100%;
+            }
+        }
+
+        &__drawer {
+            background: var(--color-bg);
+            box-shadow: inset 0 1px 0 oklch(var(--color-dark-gray-lch) / .1);
+            height: calc(100vh - 4em);
+            height: calc(100svh - 4em);
+            right: 0;
+            top: 4em;
+            transform: translate3d(100%, 0, 0);
+            transition: var(--duration-m);
+            width: calc(100vw - 4em);
+
+            &::after {
+                border-top: 1px solid var(--color-border-lc);
+                content: '';
+                left: 0;
+                opacity: .1;
+                position: absolute;
+                top: 0;
+                width: 100%;
+            }
+
+            .nav.is-expanded & {
+                transform: translate3d(0, 0, 0);
+            }
+
+            .nav__logo {
+                display: none;
+            }
+        }
+    }
+
+    @include screen-min(l) {
+        height: 100%;
+        left: 0;
+        width: var(--nav-width);
+
+        &__flex {
+            display: none;
+        }
+
+        &__toggle,
+        &__overlay {
+            display: none;
+        }
+
+        &__drawer {
+            height: 100%;
+            width: 100%;
+        }
+
+        &__logo {
+            display: block;
+            margin-bottom: 1.5rem;
+            padding-left: .75rem;
+
+            img {
+                width: 12rem;
+            }
+        }
+    }
+}

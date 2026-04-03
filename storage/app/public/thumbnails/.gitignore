@@ -1,0 +1,6 @@
+*
+!.gitignore
+!certificate/
+!crane_log/
+!inspection_report/
+!manual/

@@ -1,0 +1,32 @@
+.ui {
+    padding: 4rem;
+
+    &__wrapper {
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    &__swatches {
+        display: flex;
+        gap: .25em;
+    }
+
+    &__swatch {
+        align-items: flex-start;
+        justify-content: flex-end;
+        display: flex;
+        border-radius: .5em;
+        flex: 1;
+        flex-direction: column;
+        height: 100px;
+        padding: .5em;
+
+        code {
+            background: #FFF;
+            border-radius: .25em;
+            display: inline-block;
+            font-size: 12px;
+            padding: .25em .5em;
+        }
+    }
+}

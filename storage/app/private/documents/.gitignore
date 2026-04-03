@@ -1,0 +1,5 @@
+*
+!.gitignore
+!certificate/
+!crane_log/
+!inspection_reports/

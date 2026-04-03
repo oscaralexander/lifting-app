@@ -1,0 +1,87 @@
+/**
+ * Text alignment
+ */
+
+.u-text-center {
+    text-align: center;
+}
+
+/**
+ * Text size
+ */
+
+.u-text-xs {
+    font-size: var(--font-size-xs);
+}
+
+.u-text-s {
+    font-size: var(--font-size-s);
+}
+
+.u-text-m {
+    font-size: var(--font-size-m);
+}
+
+.u-text-l {
+    font-size: var(--font-size-l);
+}
+
+.u-text-xl {
+    font-size: var(--font-size-xl);
+}
+
+/**
+ * Text color
+ */
+
+.u-text-color-1 {
+    color: var(--color-1);
+}
+
+.u-text-success {
+    color: var(--color-success);
+}
+
+.u-text-danger {
+    color: var(--color-danger);
+}
+
+.u-text-hc {
+    color: var(--color-text-dark);
+}
+
+.u-text-lc {
+    color: var(--color-text-light);
+}
+
+/**
+ * Misc.
+ */
+
+.u-text-break-word {
+    word-break: break-word;
+}
+
+.u-text-mono {
+    font-family: var(--font-mono);
+}
+
+.u-text-nowrap {
+    white-space: nowrap;
+}
+
+.u-text-tabular {
+    font-variant-numeric: tabular-nums;
+}
+
+.u-text-ellipsis {
+    // display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    // width: 100%;
+}
+
+.u-text-pre-line {
+    white-space: pre-line;
+}

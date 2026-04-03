@@ -1,0 +1,50 @@
+.formField {
+    align-items: center;
+    display: flex;
+    gap: 1em;
+
+    &__iconLabel {
+        align-items: center;
+        display: flex;
+        flex: 1;
+        hyphens: auto;
+        word-break: keep-all;
+        gap: .5em;
+    }
+
+    svg {
+        flex: 0 0 1.5em;
+        height: 1.5em;
+        width: 1.5em;
+    }
+
+    &__flex {
+        flex: 1;
+    }
+
+    &__toggleRequired {
+        align-items: center;
+        background: var(--color-bg-tint);
+        border-radius: 50%;
+        color: var(--color-text-light);
+        cursor: pointer;
+        display: flex;
+        height: 2em;
+        justify-content: center;
+        width: 2em;
+
+        svg {
+            transition: var(--duration-m);
+        }
+
+        &--required,
+        &--required:hover {
+            background: var(--color-danger-tint);
+            color: var(--color-danger);
+
+            svg {
+                opacity: 1;
+            }
+        }
+    }
+}

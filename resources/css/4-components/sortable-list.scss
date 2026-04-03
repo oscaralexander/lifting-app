@@ -1,0 +1,7 @@
+.sortableList {
+    border: 1px solid var(--color-border);
+    border-radius: var(--input-border-radius);
+    box-shadow: 0 .15em .25em oklch(var(--color-dark-gray-lch) / .075);
+    overflow: hidden;
+    user-select: none;
+}

@@ -1,0 +1,72 @@
+@use '@css/2-tools/mixins' as *;
+
+@keyframes fieldError {
+    from {
+        opacity: 0;
+    }
+}
+
+.field {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: .5rem;
+
+    &__labelAction {
+        align-items: baseline;
+        display: flex;
+        gap: .5rem;
+        justify-content: space-between;
+    }
+
+    &__label {
+        align-self: flex-start;
+        color: var(--color-text-dark);
+        display: flex;
+        font-size: var(--font-size-s);
+        font-weight: 500;
+        line-height: var(--line-height-l);
+        gap: .15em;
+
+        &--required {
+            &::after {
+                color: var(--color-danger);
+                content: '*';
+            }
+        }
+    }
+
+    &__description {
+        color: var(--color-text-light);
+        font-size: var(--font-size-s);
+        line-height: var(--line-height-l);
+        margin-top: -.5rem;
+    }
+
+    &__error {
+        animation: fieldError .5s;
+        color: var(--color-danger);
+        font-size: var(--font-size-s);
+    }
+
+    &:has([required]) {
+        .field__label {
+            &::after {
+                color: var(--color-danger);
+                content: '*';
+            }
+        }
+    }
+
+    @include screen-min(l) {
+        &--row {
+            align-items: center;
+            flex-direction: row;
+            gap: 1rem;
+    
+            .field__col {
+                flex: 1;
+            }
+        }
+    }
+}

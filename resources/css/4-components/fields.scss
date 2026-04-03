@@ -1,0 +1,20 @@
+.fields {
+    border: none;
+    display: flex;
+    flex-direction: column;
+    gap: 2em;
+    margin: 0;
+    padding: 0;
+
+    &--tight {
+        gap: 1.5em;
+    }
+
+    &--tighter {
+        gap: 1em;
+    }
+
+    .field--option + .field--option {
+        margin-top: -1em;
+    }
+}

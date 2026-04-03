@@ -1,0 +1,5 @@
+*
+!.gitignore
+!documents/
+!imports/
+!inspections/

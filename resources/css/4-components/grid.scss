@@ -1,0 +1,138 @@
+@use '@css/1-settings/variables' as *;
+@use '@css/2-tools/mixins' as *;
+@use 'sass:map';
+
+@mixin grid-col($selector, $i) {
+    #{$selector} {
+        flex-basis: calc($i * (100% / $grid-columns));
+    }
+}
+
+@mixin grid-gap($selector, $val) {
+    #{$selector} {
+        margin: ($val * -0.5);
+
+        &>.grid__col {
+            border-width: ($val * 0.5);
+        }
+
+        @include screen-max(m) {
+            &.grid--scrolling {
+                gap: $val;
+
+                &>.grid__col {
+                    border-width: 0;
+                }
+            }
+        }
+    }
+}
+
+.grid {
+    display: flex;
+    flex-flow: row wrap;
+
+    &__col {
+        background-clip: padding-box;
+        border: 0px solid transparent;
+        flex: 0 0 100%;
+        min-width: 0;
+        position: relative;
+
+        &--end {
+            align-self: flex-end;
+        }
+
+        &--middle {
+            align-self: flex-middle;
+        }
+
+        &--start {
+            align-self: flex-start;
+        }
+    }
+
+    &--baseline {
+        align-items: baseline;
+    }
+
+    &--between {
+        justify-content: space-between;
+    }
+
+    &--center {
+        justify-content: center;
+    }
+
+    &--end {
+        align-items: flex-end;
+    }
+
+    &--evenly {
+        justify-content: space-evenly;
+    }
+
+    &--middle {
+        align-items: center;
+    }
+
+    &--reverse {
+        @include screen-min(l) {
+            flex-direction: row-reverse;
+        }
+    }
+
+    &--scrolling {
+        @include screen-max(l) {
+            display: flex;
+            flex-wrap: nowrap;
+            gap: var(--gutter);
+            margin-left: calc(var(--gutter) * -1) !important;
+            margin-right: calc(var(--gutter) * -1) !important;
+            overflow: auto;
+            padding-left: var(--gutter);
+            padding-right: var(--gutter);
+            scroll-padding: 0 var(--gutter);
+            scroll-snap-type: x mandatory;
+            scrollbar-width: none;
+
+            &::-webkit-scrollbar {
+                display: none;
+            }
+
+            .grid__col {
+                border: none !important;
+                scroll-snap-align: start;
+                flex: 0 0 75vw;
+            }
+        }
+    }
+
+    &--start {
+        align-items: flex-start;
+    }
+
+    &--right {
+        justify-content: flex-end;
+    }
+}
+
+@for $i from 1 through $grid-columns {
+    @include grid-col('.grid__col--span-#{$i}', $i);
+}
+
+@each $key, $val in $sizes {
+    @include grid-gap('.grid--gap-#{$key}', $val);
+}
+
+@each $screen in map.keys($screens) {
+    @include screen-min($screen) {
+        @for $i from 1 through $grid-columns {
+            @include grid-col('.#{$screen}\\:grid__col--span-#{$i}', $i);
+        }
+
+        @each $key, $val in $sizes {
+            @include grid-gap('.#{$screen}\\:grid--gap-#{$key}', $val);
+        }
+    }
+}

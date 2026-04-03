@@ -1,0 +1,243 @@
+@use '@css/2-tools/mixins' as *;
+
+@keyframes btnSpinner {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.btn {
+    --progress: 0;
+    align-items: center;
+    background: var(--btn-bg-color);
+    border: none;
+    border-radius: var(--btn-border-radius);
+    color: var(--btn-color);
+    display: inline-flex;
+    font-size: var(--font-size-m);
+    font-variant-numeric: tabular-nums;
+    font-weight: 500;
+    gap: .5em;
+    height: var(--btn-height);
+    justify-content: center;
+    padding: 1px 1.25em;
+    outline: var(--input-outline);
+    outline-offset: 2px;
+    position: relative;
+    text-align: center;
+    text-decoration: none;
+    text-wrap: nowrap;
+    transition: background var(--duration-s),
+        color var(--duration-s);
+    user-select: none;
+
+    input[type=file],
+    select {
+        position: absolute;
+        inset: 0;
+        opacity: 0;
+        cursor: pointer;
+        z-index: 5;
+    }
+
+    &__uploadLabel {
+        &.is-hidden {
+            color: transparent !important;
+        }
+    }
+
+    &__uploadProgress {
+        align-items: center;
+        display: flex;
+        inset: 0;
+        justify-content: center;
+        position: absolute;
+        z-index: 3;
+    }
+
+    &:focus-visible {
+        outline: var(--input-outline-focus);
+    }
+
+    &:has(select) {
+        padding-right: 2em;
+
+        &::after {
+            background: currentColor;
+            mask-image: url('data:image/svg+xml,<?xml version="1.0" encoding="UTF-8"?><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10"><polyline points="9 3 5 7 1 3" fill="none" stroke="%23000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/></svg>');
+            mask-size: cover;
+            content: '';
+            display: block;
+            height: 10px;
+            opacity: .5;
+            pointer-events: none;
+            position: absolute;
+            right: 1em;
+            top: calc(50% - 5px);
+            width: 10px;
+        }
+    }
+
+    &:not([disabled]):active {
+        padding-bottom: 0;
+        padding-top: 2px;
+    }
+
+    &:not([disabled]):hover {
+        background: var(--btn-bg-color-hover);
+        color: var(--btn-color-hover);
+    }
+
+    &--block {
+        display: flex;
+        width: 100%;
+    }
+
+    &--danger {
+        background: var(--color-danger-tint);
+        color: var(--color-danger);
+
+        &:not([disabled]):hover {
+            background: var(--color-danger-tint-hover);
+            color: var(--color-danger);
+        }
+    }
+
+    &--icon {
+        border-radius: 50% !important;
+        height: var(--btn-height);
+        min-width: 0;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+        width: var(--btn-height);
+    }
+
+    &--mini {
+        font-size: var(--font-size-xs);
+        height: 2rem;
+        padding-left: 1rem;
+        padding-right: 1rem;
+
+        &:has(select) {
+            padding-right: 2.5em;
+        }
+    }
+
+    &--small {
+        height: var(--btn-height-s);
+    }
+
+    &--mini,
+    &--small {
+        gap: .5em !important;
+
+        .lucide {
+            flex: 0 0 1.25em;
+            height: 1.25em;
+            min-height: auto;
+            min-width: auto;
+            stroke-width: 1.75;
+        }
+    }
+
+    &--primary {
+        background: var(--btn-primary-bg-color);
+        color: var(--btn-primary-color);
+
+        &:not([disabled]):hover {
+            background: var(--btn-primary-bg-color-hover);
+            color: var(--btn-primary-color-hover);
+        }
+    }
+
+    &--progress {
+        overflow: hidden;
+
+        &::before {
+            background: oklch(var(--color-2-lch) / 15%);
+            content: '';
+            inset: 0;
+            position: absolute;
+            transform: scaleX(calc(var(--progress) * 1%));
+            transform-origin: left;
+            z-index: 1;
+        }
+    }
+
+    &--text {
+        background: transparent;
+        border: none;
+        color: var(--color-link);
+        display: inline-flex;
+        font-weight: 500;
+        gap: .5em;
+        height: auto !important;
+        min-width: 0;
+        line-height: var(--line-height-l);
+        outline: none;
+        padding: 0 !important;
+
+        &:not([disabled]):active {
+            padding-bottom: 0;
+            padding-top: 0;
+        }
+
+        &:not([disabled]):hover {
+            background: transparent;
+            color: var(--color-link-hover);
+        }
+    }
+
+    &--transparent {
+        background: rgba(#FFF, .15);
+        border-color: transparent;
+        color: #FFF;
+
+        &:hover {
+            background: rgba(#FFF, .25) !important;
+            color: #FFF !important;
+        }
+    }
+
+    &[disabled] {
+        cursor: not-allowed;
+        opacity: .5;
+    }
+
+    &[type=submit] {
+        &::after {
+            animation: btnSpinner 1s linear infinite;
+            background: var(--btn-primary-color);
+            content: '';
+            height: 1.5em;
+            left: calc(50% - .75em);
+            mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 512 512"><path opacity=".4" d="M256 64C150 64 64 150 64 256s86 192 192 192c70.1 0 131.3-37.5 164.9-93.6l.1 .1c-6.9 14.9-1.5 32.8 13 41.2c15.3 8.9 34.9 3.6 43.7-11.7c.2-.3 .4-.6 .5-.9l0 0C434.1 460.1 351.1 512 256 512C114.6 512 0 397.4 0 256S114.6 0 256 0c-17.7 0-32 14.3-32 32s14.3 32 32 32z"/><path d="M224 32c0-17.7 14.3-32 32-32C397.4 0 512 114.6 512 256c0 46.6-12.5 90.4-34.3 128c-8.8 15.3-28.4 20.5-43.7 11.7s-20.5-28.4-11.7-43.7c16.3-28.2 25.7-61 25.7-96c0-106-86-192-192-192c-17.7 0-32-14.3-32-32z"/></svg>');
+            mask-size: contain;
+            opacity: 0;
+            pointer-events: none;
+            position: absolute;
+            transition: opacity var(--duration-s);
+            top: calc(50% - .75em);
+            width: 1.5em;
+        }
+
+        .is-loading & {
+            color: transparent;
+
+            &::after {
+                opacity: 1;
+            }
+        }
+    }
+
+    @include screen-min(m) {
+        &--mini {
+            font-size: var(--font-size-xs);
+            height: 2rem;
+        }
+
+        &--small {
+            font-size: var(--font-size-s);
+        }
+    }
+}

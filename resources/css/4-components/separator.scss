@@ -1,0 +1,24 @@
+.separator {
+    position: relative;
+    text-align: center;
+    user-select: none;
+
+    &::after {
+        background: var(--color-border);
+        content: '';
+        height: 1px;
+        left: 0;
+        position: absolute;
+        top: 50%;
+        width: 100%;
+        z-index: 1;
+    }
+
+    span {
+        background: var(--color-bg);
+        display: inline-block;
+        padding: 0 .75em;
+        position: relative;
+        z-index: 2;
+    }
+}

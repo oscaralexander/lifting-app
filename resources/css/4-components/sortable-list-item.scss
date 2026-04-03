@@ -1,0 +1,58 @@
+.sortableListItem {
+    align-items: center;
+    background: var(--color-bg);
+    box-shadow: 0 1px 0 var(--color-border-lc), 0 -1px 0 var(--color-border-lc);
+    display: flex;
+    padding-right: .75em;
+
+    &.sortable-drag {
+        background-color: var(--color-bg);
+        box-shadow: none;
+        border-radius: .5em;
+    }
+
+    &.sortable-ghost {
+        background-color: var(--color-gray-tint);
+        opacity: .75;
+    }
+
+    &__handle {
+        align-items: center;
+        align-self: stretch;
+        color: var(--color-text-light);
+        cursor: grab;
+        display: flex;
+        font-size: 1em;
+        padding: 0 .5em;
+
+        &:hover {
+            color: var(--color-text);
+        }
+    }
+
+    &__flex {
+        padding: 1em 0;
+        flex: 1;
+        min-width: 0;
+    }
+
+    &__actions {
+        align-items: center;
+        display: flex;
+        gap: .5em;
+        padding-left: 1em;
+    }
+
+    &__actions {
+        display: flex;
+        gap: .5em;
+    }
+
+    &__action {
+        color: var(--color-text-light);
+
+        &:hover {
+            color: var(--color-text);
+        }
+    }
+}

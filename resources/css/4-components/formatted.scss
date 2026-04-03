@@ -1,0 +1,7 @@
+.formatted {
+    line-height: var(--line-height-l);
+
+    &--large {
+        font-size: var(--font-size-l);
+    }
+}

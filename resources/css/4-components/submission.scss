@@ -1,0 +1,242 @@
+@use '../2-tools/mixins' as *;
+
+.submission {
+    background: var(--color-bg);
+    border-radius: .5rem;
+    box-shadow: 0 .15rem .25rem oklch(var(--color-dark-gray-lch) / .075);
+
+    &__field {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    &__field,
+    &__fieldGroup,
+    &__formComment {
+        &:first-child {
+            border-top-left-radius: .5rem;
+            border-top-right-radius: .5rem;
+        }
+
+        &:last-child {
+            border-bottom-left-radius: .5rem;
+            border-bottom-right-radius: .5rem;
+        }
+
+        .submission__fieldGroup & {
+            &:first-child {
+                border-top-left-radius: .25rem;
+                border-top-right-radius: .25rem;
+            }
+    
+            &:last-child {
+                border-bottom-left-radius: .25rem;
+                border-bottom-right-radius: .25rem;
+            }
+        }
+    }
+
+    &__field,
+    &__fieldGroup,
+    &__formComment {
+        border: 1px solid var(--color-border);
+        line-height: var(--line-height-l);
+        padding: 1em;
+
+        &:not(:last-child) {
+            margin-bottom: -1px;
+        }
+    }
+
+    &__fieldGroup {
+        padding: 0 .5em;
+    }
+
+    &__fieldGroupToggle {
+        align-items: center;
+        color: var(--color-link);
+        display: flex;
+        font-size: var(--font-size-s);
+        padding: .75rem .25rem .75rem .5rem;
+        font-weight: 500;
+        width: 100%;
+
+        &::before,
+        &::after {
+            background: var(--color-text-light);
+            content: '';
+            position: absolute;
+        }
+    }
+
+    &__fieldGroupToggleName {
+        flex: 1;
+        font-variant-numeric: tabular-nums;
+        text-align: left;
+
+        b {
+            display: inline-block;
+            opacity: .5;
+        }
+    }
+
+    &__fieldGroupToggleIcon {
+        height: 20px;
+        flex: 0 0 20px;
+        position: relative;
+
+        &::before,
+        &::after {
+            background: var(--color-text-light);
+            content: '';
+            position: absolute;
+        }
+
+        &::before {
+            height: 2px;
+            left: calc(50% - 8px);
+            top: calc(50% - 1px);
+            width: 16px;
+        }
+
+        &::after {
+            height: 16px;
+            left: calc(50% - 1px);
+            top: calc(50% - 8px);
+            transition: var(--duration-m);
+            width: 2px;
+        }
+
+        button[aria-expanded=true] & {
+            &::after {
+                transform: scaleY(0);
+            }
+        }
+    }
+
+    &__fieldGroupFields {
+        overflow-y: clip;
+        transition: var(--duration-m);
+        height: 0;
+
+        &::after {
+            content: '';
+            display: block;
+            height: 1em;
+        }
+
+        .submission__fieldGroup.is-expanded & {
+            height: max-content;
+        }
+    }
+
+    &__formComment {
+        background: var(--color-bg-tint);
+        color: var(--color-text-light);
+    }
+
+    &__box {
+        border-radius: .5rem;
+        box-shadow: 0 .15rem .25rem oklch(var(--color-dark-gray-lch) / .075);
+    }
+
+    &__check {
+        .lucide {
+            stroke-width: 2 !important;
+        }
+    }
+
+    &__question {
+        color: var(--color-text-dark);
+        font-weight: 500;
+    }
+
+    &__files {
+        display: flex;
+        flex-direction: column;
+        gap: .25em;
+        min-width: 0;
+        padding-top: .5em;
+        width: 100%;
+    }
+
+    &__file {
+        align-items: center;
+        display: flex;
+        gap: .5em;
+        min-width: 0;
+        width: 100%;
+
+        svg {
+            flex: 0 0 1.5em;
+        }
+    }
+
+    &__fileName {
+        flex: 1 1 auto;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        width: 0;
+    }
+
+    &__complete {
+        background: var(--color-success-tint);
+        border: 1px solid oklch(var(--color-success-lch) / 50%);
+        border-radius: .5rem;
+        color: var(--color-success);
+        padding: 1rem;
+
+        .field__description {
+            color: var(--color-success);
+            opacity: .75;
+        }
+    }
+
+    &__signature {
+        display: grid;
+        gap: 2rem;
+        grid-template-columns: 1fr 1fr;
+        align-items: center;
+    }
+
+    &__signatureImage {
+        background: var(--color-bg-tint);
+        border-radius: var(--input-border-radius);
+        object-fit: contain;
+        border-radius: .5rem;
+    }
+
+    &__signatureInfo {
+        display: flex;
+        flex-direction: column;
+        line-height: var(--line-height-l);
+    }
+
+    &__signatureHeading {
+        color: var(--color-text-light);
+        font-size: var(--font-size-s);
+        font-weight: 400;
+    }
+
+    &__signatureName {
+        font-size: var(--font-size-m);
+        font-weight: 500;
+    }
+
+    &__signatureDate {
+        color: var(--color-text-light);
+    }
+
+    @include screen-min(m) {
+        &__fieldGroup {
+            padding: 0 1rem;
+        }
+
+        &__fieldGroupToggle {
+            font-size: var(--font-size-m);
+            padding: .75rem .75rem .75rem 0;
+        }
+    }
+}

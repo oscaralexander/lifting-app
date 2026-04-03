@@ -1,0 +1,45 @@
+<?php
+
+namespace App\Policies;
+
+use App\Models\Form;
+use App\Models\User;
+use Illuminate\Auth\Access\Response;
+
+class FormPolicy
+{
+    public function viewAny(User $user): bool
+    {
+        return $user->isAdmin;
+    }
+
+    public function view(User $user, Form $form): bool
+    {
+        return $user->isAdmin || $form->user_id === $user->id;
+    }
+
+    public function create(User $user): bool
+    {
+        return $user->isAdmin;
+    }
+
+    public function update(User $user, Form $form): bool
+    {
+        return $user->isAdmin || $form->user_id === $user->id;
+    }
+
+    public function delete(User $user, Form $form): bool
+    {
+        return $user->isAdmin || $form->user_id === $user->id;
+    }
+
+    public function restore(User $user, Form $form): bool
+    {
+        return $user->isAdmin;
+    }
+
+    public function forceDelete(User $user, Form $form): bool
+    {
+        return $user->isAdmin;
+    }
+}

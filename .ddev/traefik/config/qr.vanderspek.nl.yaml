@@ -1,0 +1,77 @@
+#ddev-generated
+# If you remove the ddev-generated line above you
+# are responsible for maintaining this file. DDEV will not then
+# update it, for example if you add `additional_hostnames`, etc.
+
+http:
+  routers:
+    qr.vanderspek.nl-web-80-http:
+      entrypoints:
+        - http-80
+      rule: HostRegexp(`^qr\.vanderspek\.nl\.ddev\.site$`)
+      
+      service: "qr.vanderspek.nl-web-80"
+      ruleSyntax: v3
+      tls: false
+      # middlewares:
+      #   - "qr.vanderspek.nl-redirectHttps"
+    qr.vanderspek.nl-web-8025-http:
+      entrypoints:
+        - http-8025
+      rule: HostRegexp(`^qr\.vanderspek\.nl\.ddev\.site$`)
+      
+      service: "qr.vanderspek.nl-web-8025"
+      ruleSyntax: v3
+      tls: false
+      # middlewares:
+      #   - "qr.vanderspek.nl-redirectHttps"
+    
+    
+    
+    qr.vanderspek.nl-web-80-https:
+      entrypoints:
+        - http-443
+      rule: HostRegexp(`^qr\.vanderspek\.nl\.ddev\.site$`)
+      
+      service: "qr.vanderspek.nl-web-80"
+      ruleSyntax: v3
+      
+      tls: true
+      
+    qr.vanderspek.nl-web-8025-https:
+      entrypoints:
+        - http-8026
+      rule: HostRegexp(`^qr\.vanderspek\.nl\.ddev\.site$`)
+      
+      service: "qr.vanderspek.nl-web-8025"
+      ruleSyntax: v3
+      
+      tls: true
+      
+    
+
+  middlewares:
+    qr.vanderspek.nl-redirectHttps:
+      redirectScheme:
+        scheme: https
+        permanent: true
+
+  services:
+    qr.vanderspek.nl-web-80:
+      loadbalancer:
+        servers:
+          - url: http://ddev-qr.vanderspek.nl-web:80
+        
+    qr.vanderspek.nl-web-8025:
+      loadbalancer:
+        servers:
+          - url: http://ddev-qr.vanderspek.nl-web:8025
+        
+    
+    
+    
+
+tls:
+  certificates:
+    - certFile: /mnt/ddev-global-cache/traefik/certs/qr.vanderspek.nl.crt
+      keyFile: /mnt/ddev-global-cache/traefik/certs/qr.vanderspek.nl.key

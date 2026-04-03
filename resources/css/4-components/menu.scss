@@ -1,0 +1,46 @@
+.menu {
+    overflow: auto;
+    transition: var(--nav-transition);
+
+    &__link {
+        align-items: center;
+        border-radius: .5em;
+        color: var(--color-1);
+        display: flex;
+        font-weight: 500;
+        gap: .75em;
+        opacity: .75;
+        overflow-x: clip;
+        padding: .75em;
+        transition: var(--duration-s);
+
+        .lucide {
+            flex: 0 0 1.5em;
+            height: 1.5em;
+            transition: var(--duration-s);
+        }
+
+        &:active,
+        &:hover {
+            color: var(--color-1);
+            opacity: 1;
+        }
+
+        &.is-active {
+            background: var(--color-link);
+            color: var(--color-bg);
+            opacity: 1;
+        }
+    }
+
+    &__label {
+        display: flex;
+        flex: 1;
+        justify-content: space-between;
+        transition: var(--nav-transition);
+    }
+
+    &__count {
+        opacity: .5;
+    }
+}

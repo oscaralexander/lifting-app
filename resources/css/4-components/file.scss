@@ -1,0 +1,27 @@
+.file {
+    &__filename {
+        align-items: baseline;
+        display: flex;
+        min-width: 0;
+    }
+
+    &__baseName {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+
+        &::after {
+            content: '.';
+        }
+    }
+
+    &__extension {
+        flex-shrink: 0;
+    }
+
+    .meta {
+        color: var(--color-text-light);
+        font-size: var(--font-size-s);
+        margin-top: .25em;
+    }
+}

@@ -1,0 +1,34 @@
+@use '@css/2-tools/mixins' as *;
+
+.stockItem {
+    &__header {
+        display: flex;
+        flex-direction: column;
+        gap: .5em;
+        margin-bottom: 1.5em;
+    }
+
+    &__stockId {
+        font-family: var(--font-mono);
+    }
+
+    &__actions {
+        display: flex;
+        flex-direction: column;
+        gap: .5em;
+    }
+
+    &__model {
+        font-size: var(--font-size-l);
+    }
+
+    @include screen-min(m) {
+        &__actions {
+            flex-direction: row;
+
+            .btn {
+                flex: 1;
+            }
+        }
+    }
+}

@@ -1,0 +1,26 @@
+@use '@css/1-settings/variables' as *;
+@use '@css/2-tools/mixins' as *;
+@use 'sass:map';
+
+@mixin stack-gap($selector, $val) {
+    #{$selector} {
+        gap: $val;
+    }
+}
+
+.u-stack {
+    display: flex;
+    flex-direction: column;
+}
+
+@each $key, $val in $sizes {
+    @include stack-gap('.u-stack-gap-#{$key}', $val);
+}
+
+@each $screen in map.keys($screens) {
+    @include screen-min($screen) {
+        @each $key, $val in $sizes {
+            @include stack-gap('.#{$screen}\\:u-stack-gap-#{$key}', $val);
+        }
+    }
+}

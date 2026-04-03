@@ -1,0 +1,41 @@
+.chip {
+    background-color: var(--btn-bg-color);
+    border-radius: 1.25em;
+    color: var(--btn-color);
+    display: inline-flex;
+    line-height: 2.5em;
+    padding: 0 1.25em;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    button {
+        background-color: transparent;
+        border: none;
+        border-radius: 50%;
+        color: currentColor;
+        cursor: pointer;
+        display: flex;
+        width: 2.5em;
+        opacity: .5;
+        outline: var(--input-outline);
+        outline-offset: 2px;
+        text-align: center;
+        transition: 250ms;
+        margin-right: -1.25em;
+
+        svg {
+            height: 20px;
+            margin: auto;
+            width: 20px;
+        }
+
+        &:hover {
+            opacity: 1;
+        }
+
+        &:focus {
+            opacity: 1;
+            outline: var(--input-outline-focus);
+        }
+    }
+}

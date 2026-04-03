@@ -1,0 +1,161 @@
+@use '@css/2-tools/mixins' as *;
+
+.guest {
+    min-height: 100svh;
+
+    &__visual,
+    &__main {
+        position: relative;
+    }
+
+    &__visual {
+        align-items: center;
+        background-color: var(--color-1-tint);
+        background-image: url('/assets/img/bg.jpg');
+        background-size: cover;
+        background-position: center;
+        color: #FFF;
+        display: flex;
+        justify-content: center;
+    }
+
+    &__wrapper {
+        margin: auto;
+        max-width: 30rem;
+        width: 100%;
+    }
+
+    &__header {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5em;
+        text-align: center;
+    }
+
+    &__logo {
+        margin: auto;
+        width: 160px;
+    }
+
+    &__intro {
+        line-height: var(--line-height-l);
+    }
+
+    &__credentials {
+        border: none;
+        padding: 0;
+        position: relative;
+        margin: 0;
+
+        .input:first-child {
+            border-bottom-left-radius: 0;
+            border-bottom-right-radius: 0;
+            position: relative;
+
+            &::after {
+                border-bottom-left-radius: 0;
+                border-bottom-right-radius: 0;
+            }
+        }
+
+        .password {
+            border-top-left-radius: 0;
+            border-top-right-radius: 0;
+            margin-top: -1px;
+
+            &::after {
+                border-top-left-radius: 0;
+                border-top-right-radius: 0;
+            }
+        }
+
+        .input:focus-within,
+        .password:focus-within {
+            z-index: 3;
+        }
+    }
+
+    &__authError {
+        animation: fieldError .5s;
+        background-color: var(--color-danger-tint);
+        border-radius: var(--input-border-radius);
+        color: var(--color-danger);
+        font-size: var(--font-size-s);
+        padding: 1em;
+    }
+
+    &__social {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        gap: .5em;
+    }
+
+    &__passwordReset {
+        border-top: 1px solid var(--color-border-lc);
+        display: flex;
+        justify-content: center;
+        margin-top: 1.5em;
+        padding-top: 1.5em;
+    }
+
+    &__passwordResetSuccess,
+    &__status {
+        align-items: center;
+        background-color: var(--color-success-tint);
+        border-radius: .5rem;
+        color: var(--color-success);
+        display: flex;
+        line-height: var(--line-height-l);
+        gap: 1rem;
+        padding: 2rem;
+
+        .lucide {
+            height: 3rem;
+            width: 3rem;
+            flex: 0 0 3rem;
+        }
+    }
+
+    &__passwordResetSupport {
+        font-size: var(--font-size-s);
+        text-align: center;
+    }
+
+    @include screen-max(l) {
+        &__visual {
+            height: 10vh;
+            margin-bottom: -1em;
+            position: sticky;
+            top: 0;
+            z-index: 1;
+        }
+
+        &__main {
+            background-color: var(--color-bg);
+            border-radius: 1em;
+            padding: calc(var(--gutter) * 3) calc(var(--gutter) * 2);
+            z-index: 2;
+        }
+    }
+
+    @include screen-min(l) {
+        display: flex;
+
+        &__visual,
+        &__main {
+            display: flex;
+            flex: 0 0 50%;
+            overflow: auto;
+            padding: 4rem 2rem;
+        }
+
+        &__logo {
+            width: 224px;
+        }
+
+        &__intro {
+            font-size: var(--font-size-l);
+        }
+    }
+}

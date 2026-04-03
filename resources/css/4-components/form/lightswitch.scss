@@ -1,0 +1,71 @@
+.lightswitch {
+    line-height: var(--line-height-l);
+    position: relative;
+    transform: translate3d(0, 0, 0);
+    user-select: none;
+
+    input {
+        height: 0;
+        position: absolute;
+        width: 0;
+
+        &:checked + label {
+            &::before {
+                background-color: var(--lightswitch-track-color-on);
+                box-shadow: inset 0 0 0 1px var(--lightswitch-border-color-on);
+            }
+
+            &::after {
+                background-color:  var(--lightswitch-thumb-color-on);
+                transform: translate3d(.75em, 0, 0);
+            }
+        }
+
+        &:focus-visible + label {
+            &::before {
+                outline: var(--input-outline-focus);
+            }
+        }
+
+        &[disabled] + label {
+            &::before {
+                opacity: .5;
+            }
+        }
+    }
+
+    label {
+        align-items: center;
+        display: flex;
+        gap: .75em;
+
+        &::before {
+            background-color: var(--lightswitch-track-color-off);
+            box-shadow: inset 0 0 0 1px var(--lightswitch-border-color-off);
+            border-radius: .75em;
+            content: '';
+            cursor: pointer;
+            flex: 0 0 2.25em;
+            height: 1.5em;
+            outline: var(--input-outline);
+            outline-offset: 2px;
+            transition: 200ms;
+            width: 2.25em;
+            z-index: 1;
+        }
+
+        &::after {
+            background-color: var(--lightswitch-thumb-color-off);
+            background-clip: padding-box;
+            border: .25em solid transparent;
+            border-radius: 50%;
+            content: '';
+            height: 1.5em;
+            pointer-events: none;
+            position: absolute;
+            transition: 200ms;
+            width: 1.5em;
+            z-index: 2;
+        }
+    }
+}

@@ -1,0 +1,81 @@
+@keyframes ratingStar {
+    from {
+        transform: scale(0.5);
+    }
+
+    to {
+        transform: scale(1);
+    }
+}
+
+.rating {
+    display: flex;
+    gap: .25rem;
+
+    input {
+        height: 0;
+        position: fixed;
+        opacity: 0;
+        width: 0;
+
+        &:first-child:checked {
+            & ~ .rating__star {
+                color: var(--lightswitch-track-color-off);
+            }
+
+            & ~ .rating__reset {
+                display: none;
+            }
+        }
+
+        &:checked + .rating__star ~ .rating__star {
+            color: var(--lightswitch-track-color-off);
+        }
+
+        &:focus + .rating__star {
+            &::after {
+                animation: ratingStar var(--duration-m) cubic-bezier(.5, -.5, .5, 1.5);
+            }
+        }
+
+        &:focus-visible + .rating__star {
+            outline: var(--input-outline-focus);
+        }
+    }
+
+    &__star,
+    &__reset {
+        border-radius: 50%;
+        display: block;
+        height: 1.5rem;
+        outline: var(--input-outline);
+        outline-offset: 2px;
+        position: relative;
+        transition: color var(--duration-s);
+        width: 1.5rem;
+    }
+
+    &__star {
+        color: var(--color-1);
+
+        &::after {
+            background: currentColor;
+            clip-path: path('M11.4785.82448c.14282-.28854.4925-.40667.78104-.26386.11449.05667.20719.14937.26386.26386l2.82747,5.72715c.16006.32421.46923.54904.82699.6014l6.32271.92527c.31862.04616.5395.34188.49333.66051-.01839.12693-.07813.24426-.16996.3338l-4.57416,4.45417c-.25952.25271-.37798.61701-.31671.97403l1.07973,6.2923c.05599.31705-.15563.61945-.47268.67544-.12825.02265-.26039.0017-.37534-.0595l-5.65258-2.97195c-.32047-.16849-.70334-.16848-1.0238.00005l-5.65127,2.9719c-.28454.15063-.63732.04208-.78795-.24246-.06061-.11448-.08136-.24589-.05897-.37348l1.07875-6.2925c.06121-.35702-.0573-.72129-.31685-.97397L1.17796,9.07371c-.23157-.22367-.23799-.59271-.01432-.82428.09023-.09342.20908-.15404.33769-.17222l6.32388-.9244c.35789-.05232.66719-.27724.82725-.60159L11.4785.82448Z');
+            content: '';
+            display: block;
+            inset: 0;
+            position: absolute;
+        }
+    }
+
+    &__reset {
+        cursor: pointer;
+        color: var(--color-text-light);
+        opacity: .5;
+        transition: var(--duration-m);
+
+        &:hover {
+            opacity: 1;
+        }
+    }
+}

@@ -1,0 +1,54 @@
+:root {
+    interpolate-size: allow-keywords; 
+}
+
+*,
+*::after,
+*::before {
+    box-sizing: border-box;
+    interpolate-size: allow-keywords;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+}
+
+button,
+input,
+select,
+textarea {
+    appearance: none;
+    font: inherit;
+}
+
+canvas,
+img,
+picture,
+svg,
+video {
+    display: block;
+    max-width: 100%;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+    overflow-wrap: break-word;
+}
+
+ol,
+ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}

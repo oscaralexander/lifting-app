@@ -1,0 +1,583 @@
+[
+    {
+        "id": 1,
+        "label_en": "",
+        "label_fr": "",
+        "label_nl": "WO nummer",
+        "type": "text"
+    },
+    {
+        "id": 2,
+        "label_en": "",
+        "label_fr": "",
+        "label_nl": "Klant",
+        "type": "text"
+    },
+    {
+        "id": 3,
+        "label_en": "",
+        "label_fr": "",
+        "label_nl": "Serienummer",
+        "type": "text"
+    },
+    {
+        "id": 4,
+        "label_en": "",
+        "label_fr": "",
+        "label_nl": "Urenstand",
+        "type": "number"
+    },
+    {
+        "id": 5,
+        "label_en": "",
+        "label_fr": "",
+        "label_nl": "Bouwjaar",
+        "type": "number"
+    },
+    {
+        "id": 6,
+        "label_en": "",
+        "label_fr": "",
+        "label_nl": "Instructie- en onderdelenboek aanwezig",
+        "type": "toggle"
+    },
+    {
+        "id": 7,
+        "label_en": "",
+        "label_fr": "",
+        "label_nl": "Minimaal 2 sleutels cabine/contact/brandstoftank aanwezig",
+        "type": "toggle"
+    },
+    {
+        "id": 8,
+        "label_en": "",
+        "label_fr": "",
+        "label_nl": "Gereedschap/vetspuit aanwezig",
+        "type": "toggle"
+    },
+    {
+        "id": 9,
+        "label_en": "",
+        "label_fr": "",
+        "label_nl": "Type joystick",
+        "type": "image"
+    },
+    {
+        "id": 10,
+        "label_en": "",
+        "label_fr": "",
+        "label_nl": "Type stoel",
+        "type": "image"
+    },
+    {
+        "id": 11,
+        "label_en": "",
+        "label_fr": "",
+        "label_nl": "Motortype",
+        "type": "text"
+    },
+    {
+        "id": 12,
+        "label_en": "",
+        "label_fr": "",
+        "label_nl": "Motornummer",
+        "type": "text"
+    },
+    {
+        "id": 13,
+        "label_en": "",
+        "label_fr": "",
+        "label_nl": "Hijshaak serienummer",
+        "type": "text"
+    },
+    {
+        "id": 14,
+        "label_en": "",
+        "label_fr": "",
+        "label_nl": "Hijshaak max. last (kg)",
+        "type": "number"
+    },
+    {
+        "id": 15,
+        "label_en": "",
+        "label_fr": "",
+        "label_nl": "Rupsbreedte (m)",
+        "type": "number"
+    },
+    {
+        "id": 16,
+        "label_en": "",
+        "label_fr": "",
+        "label_nl": "Contragewicht (kg)",
+        "type": "number"
+    },
+    {
+        "id": 17,
+        "label_en": "",
+        "label_fr": "",
+        "label_nl": "Snelwissel fabrikant en type",
+        "type": "text"
+    },
+    {
+        "id": 18,
+        "label_en": "",
+        "label_fr": "",
+        "label_nl": "Snelwissel serienummer",
+        "type": "text"
+    },
+    {
+        "id": 19,
+        "label_en": "",
+        "label_fr": "",
+        "label_nl": "Extra hijshaak/oog",
+        "type": "toggle"
+    },
+    {
+        "id": 20,
+        "label_en": "",
+        "label_fr": "",
+        "label_nl": "Extra hijshaak max. last (kg)",
+        "type": "number"
+    },
+    {
+        "id": 21,
+        "label_en": "",
+        "label_fr": "",
+        "label_nl": "Bio-olie",
+        "type": "text"
+    },
+    {
+        "id": 22,
+        "label_en": "",
+        "label_fr": "",
+        "label_nl": "Bak 1 fabrikant en type",
+        "type": "text"
+    },
+    {
+        "id": 23,
+        "label_en": "",
+        "label_fr": "",
+        "label_nl": "Bak 1 serienummer",
+        "type": "text"
+    },
+    {
+        "id": 24,
+        "label_en": "",
+        "label_fr": "",
+        "label_nl": "Bak 2 fabrikant en type",
+        "type": "text"
+    },
+    {
+        "id": 25,
+        "label_en": "",
+        "label_fr": "",
+        "label_nl": "Bak 2 serienummer",
+        "type": "text"
+    },
+    {
+        "id": 26,
+        "label_en": "",
+        "label_fr": "",
+        "label_nl": "Bak 3 fabrikant en type",
+        "type": "text"
+    },
+    {
+        "id": 27,
+        "label_en": "",
+        "label_fr": "",
+        "label_nl": "Bak 3 serienummer",
+        "type": "text"
+    },
+    {
+        "id": 28,
+        "label_en": "",
+        "label_fr": "",
+        "label_nl": "Grijper fabrikant en type",
+        "type": "text"
+    },
+    {
+        "id": 29,
+        "label_en": "",
+        "label_fr": "",
+        "label_nl": "Grijper serienummer",
+        "type": "text"
+    },
+    {
+        "id": 30,
+        "label_en": "",
+        "label_fr": "",
+        "label_nl": "Gieklengte (mm)",
+        "type": "number"
+    },
+    {
+        "id": 31,
+        "label_en": "",
+        "label_fr": "",
+        "label_nl": "Armlengte (mm)",
+        "type": "number"
+    },
+    {
+        "id": 32,
+        "label_en": "",
+        "label_fr": "",
+        "label_nl": "Vonkenvanger fabrikant en type",
+        "type": "text"
+    },
+    {
+        "id": 33,
+        "label_en": "",
+        "label_fr": "",
+        "label_nl": "Vonkenvanger serienummer",
+        "type": "text"
+    },
+    {
+        "id": 34,
+        "label_en": "",
+        "label_fr": "",
+        "label_nl": "Roetfilter fabrikant en type",
+        "type": "text"
+    },
+    {
+        "id": 35,
+        "label_en": "",
+        "label_fr": "",
+        "label_nl": "Roetfilter serienummer",
+        "type": "text"
+    },
+    {
+        "id": 34,
+        "label_en": "",
+        "label_fr": "",
+        "label_nl": "Vooras fabrikant en type",
+        "type": "text"
+    },
+    {
+        "id": 35,
+        "label_en": "",
+        "label_fr": "",
+        "label_nl": "Vooras serienummer",
+        "type": "text"
+    },
+    {
+        "id": 36,
+        "label_en": "",
+        "label_fr": "",
+        "label_nl": "Achteras fabrikant en type",
+        "type": "text"
+    },
+    {
+        "id": 37,
+        "label_en": "",
+        "label_fr": "",
+        "label_nl": "Achteras serienummer",
+        "type": "text"
+    },
+    {
+        "id": 38,
+        "label_en": "",
+        "label_fr": "",
+        "label_nl": "Tussenbak fabrikant en type",
+        "type": "text"
+    },
+    {
+        "id": 39,
+        "label_en": "",
+        "label_fr": "",
+        "label_nl": "Tussenbak serienummer",
+        "type": "text"
+    },
+    {
+        "id": 40,
+        "label_en": "",
+        "label_fr": "",
+        "label_nl": "Kleur machine",
+        "type": "text"
+    },
+    {
+        "id": 41,
+        "label_en": "",
+        "label_fr": "",
+        "label_nl": "Speciale uitrusting machine",
+        "type": "text"
+    },
+    {
+        "id": 42,
+        "label_en": "",
+        "label_fr": "",
+        "label_nl": "Automatisch vetsmeersysteem",
+        "type": "text"
+    },
+    {
+        "id": 43,
+        "label_en": "",
+        "label_fr": "",
+        "label_nl": "Machine uitgerust met overdrukcabine",
+        "type": "toggle"
+    },
+    {
+        "id": 44,
+        "label_en": "",
+        "label_fr": "",
+        "label_nl": "Type hydraulische olie",
+        "type": "text"
+    },
+    {
+        "id": 45,
+        "label_en": "",
+        "label_fr": "",
+        "label_nl": "Type filters",
+        "type": "text"
+    },
+    {
+        "id": 46,
+        "label_en": "",
+        "label_fr": "",
+        "label_nl": "Type banden",
+        "type": "text"
+    },
+    {
+        "id": 47,
+        "label_en": "",
+        "label_fr": "",
+        "label_nl": "Type camerasysteem",
+        "type": "text"
+    },
+    {
+        "id": 48,
+        "label_en": "",
+        "label_fr": "",
+        "label_nl": "Type weegsysteem",
+        "type": "text"
+    },
+    {
+        "id": 49,
+        "label_en": "",
+        "label_fr": "",
+        "label_nl": "Type achteruitrijalarm",
+        "type": "text"
+    },
+    {
+        "id": 50,
+        "label_en": "",
+        "label_fr": "",
+        "label_nl": "Schuifblad",
+        "type": "text"
+    },
+    {
+        "id": 51,
+        "label_en": "",
+        "label_fr": "",
+        "label_nl": "Stempelpoten",
+        "type": "text"
+    },
+    {
+        "id": 52,
+        "label_en": "",
+        "label_fr": "",
+        "label_nl": "Controle bandenmaat, niveau bandenspanning, wielbouten",
+        "type": "toggle"
+    },
+    {
+        "id": 53,
+        "label_en": "",
+        "label_fr": "",
+        "label_nl": "Controle motorolie, V-snaren, luchtfilter, koelvloeistof",
+        "type": "toggle"
+    },
+    {
+        "id": 54,
+        "label_en": "",
+        "label_fr": "",
+        "label_nl": "Controle brandstoftank ½ vol, hydr. niveau, ruitensproeier niveau, AdBlue vol",
+        "type": "toggle"
+    },
+    {
+        "id": 55,
+        "label_en": "",
+        "label_fr": "",
+        "label_nl": "Controle spanning van rupsketting en bouten van rupsplaten",
+        "type": "toggle"
+    },
+    {
+        "id": 56,
+        "label_en": "",
+        "label_fr": "",
+        "label_nl": "Controle bedrijfsrem, parkeerrem, asblokkeering",
+        "type": "toggle"
+    },
+    {
+        "id": 57,
+        "label_en": "",
+        "label_fr": "",
+        "label_nl": "Controle raamvergrendelingen, deur, stoel(verstelling), stuur",
+        "type": "toggle"
+    },
+    {
+        "id": 58,
+        "label_en": "",
+        "label_fr": "",
+        "label_nl": "Controle elektr. installatie, verlichting, veiligheidsfuncties, etc.",
+        "type": "toggle"
+    },
+    {
+        "id": 59,
+        "label_en": "",
+        "label_fr": "",
+        "label_nl": "Controle vetbad, zwenkoliepeil, smering van bonkelaar lager",
+        "type": "toggle"
+    },
+    {
+        "id": 60,
+        "label_en": "",
+        "label_fr": "",
+        "label_nl": "Smeren van alle punten",
+        "type": "toggle"
+    },
+    {
+        "id": 61,
+        "label_en": "",
+        "label_fr": "",
+        "label_nl": "Controle olieniveau, assen, naven, rijaandrijvingen",
+        "type": "toggle"
+    },
+    {
+        "id": 62,
+        "label_en": "",
+        "label_fr": "",
+        "label_nl": "Sticker verboden draaibereik, VDS plaat, langzaam verkeersdriehoek",
+        "type": "toggle"
+    },
+    {
+        "id": 63,
+        "label_en": "",
+        "label_fr": "",
+        "label_nl": "Zwaailamp van alle mobiele graafmachines en shovels",
+        "type": "toggle"
+    },
+    {
+        "id": 64,
+        "label_en": "",
+        "label_fr": "",
+        "label_nl": "Keuringsrapport overdruksystemen ingevuld",
+        "type": "toggle"
+    },
+    {
+        "id": 65,
+        "label_en": "",
+        "label_fr": "",
+        "label_nl": "Speling snelwissel en lenkers vullen",
+        "type": "toggle"
+    },
+    {
+        "id": 66,
+        "label_en": "",
+        "label_fr": "",
+        "label_nl": "Kogelkraantjes monteren en terugslag klep in P-leiding",
+        "type": "toggle"
+    },
+    {
+        "id": 67,
+        "label_en": "",
+        "label_fr": "",
+        "label_nl": "Regenkap tussen rubber en dak afdichten met nieuw rubber",
+        "type": "toggle"
+    },
+    {
+        "id": 68,
+        "label_en": "",
+        "label_fr": "",
+        "label_nl": "Blindplug i.p.v. vetnippel bij 140w/170w/200w voor vrij loop tussenbak",
+        "type": "toggle"
+    },
+    {
+        "id": 69,
+        "label_en": "",
+        "label_fr": "",
+        "label_nl": "Extra functies aangeven van schakelaars",
+        "type": "toggle"
+    },
+    {
+        "id": 70,
+        "label_en": "",
+        "label_fr": "",
+        "label_nl": "MC-antenne afstellen, verbandtrommel, waterpas",
+        "type": "toggle"
+    },
+    {
+        "id": 71,
+        "label_en": "",
+        "label_fr": "",
+        "label_nl": "Lakschade bijwerken",
+        "type": "toggle"
+    },
+    {
+        "id": 72,
+        "label_en": "",
+        "label_fr": "",
+        "label_nl": "Foto’s van alles dat opgebouwd/veranderd is",
+        "type": "toggle"
+    },
+    {
+        "id": 73,
+        "label_en": "",
+        "label_fr": "",
+        "label_nl": "Eindtest van alle functies/lekkages ±30 min. warmdraaien",
+        "type": "toggle"
+    },
+    {
+        "id": 74,
+        "label_en": "",
+        "label_fr": "",
+        "label_nl": "Vloermat",
+        "type": "toggle"
+    },
+    {
+        "id": 75,
+        "label_en": "",
+        "label_fr": "",
+        "label_nl": "Controle bekleding stoel",
+        "type": "toggle"
+    },
+    {
+        "id": 76,
+        "label_en": "",
+        "label_fr": "",
+        "label_nl": "AdBlue slangen controleren of ze warm/handwarm houden",
+        "type": "toggle"
+    },
+    {
+        "id": 77,
+        "label_en": "",
+        "label_fr": "",
+        "label_nl": "Storingscodes wissen",
+        "type": "toggle"
+    },
+    {
+        "id": 78,
+        "label_en": "",
+        "label_fr": "",
+        "label_nl": "Hi-Mate aanzetten",
+        "type": "toggle"
+    },
+    {
+        "id": 79,
+        "label_en": "",
+        "label_fr": "",
+        "label_nl": "Bij opmerkingen vermelden waar de zekeringen zich bevinden van de opgebouwde extra’s zoals b.v. roetfilter, overdruksysteem e.d.",
+        "type": "toggle"
+    },
+    {
+        "id": 80,
+        "label_en": "",
+        "label_fr": "",
+        "label_nl": "Bij minigravers snelwissel schakelaar vervangen, zodat deze vast blijft staan (zoemer moet wel hoorbaar zijn). GEEN Claim.",
+        "type": "toggle"
+    },
+    {
+        "id": 81,
+        "label_en": "",
+        "label_fr": "",
+        "label_nl": "Knopje in hendel snelwissel vervangen door een relais zodat deze gelijk met de schakelaar van de snelwissel bediend wordt.",
+        "type": "toggle"
+    }
+]

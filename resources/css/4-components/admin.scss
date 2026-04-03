@@ -1,0 +1,57 @@
+@use '@css/2-tools/mixins' as *;
+
+.admin {
+    display: flex;
+    align-items: flex-start;
+    min-height: 100vh;
+    min-height: 100svh;
+    padding-top: var(--nav-height);
+
+    &__main {
+        flex: 1;
+        min-width: 0;
+        padding: calc(var(--gutter) * 2) var(--gutter);
+        position: relative;
+        z-index: var(--z-index-base);
+    }
+
+    &__header {
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 4rem;
+
+        &-content {
+            display: flex;
+            flex-direction: column;
+            gap: .25rem;
+    
+            p {
+                color: var(--color-text-light);
+                font-size: var(--font-size-m);
+            }
+        }
+    }
+
+    @include screen-min(l) {
+        padding-left: var(--nav-width);
+        padding-top: 0;
+
+        &__main {
+            padding: var(--gutter);
+        }
+
+        &__header {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+
+            &-content {
+                font-size: var(--font-size-l);
+            }
+
+            &-actions {
+                padding-top: 1.25rem;
+            }
+        }
+    }
+}

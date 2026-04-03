@@ -1,0 +1,45 @@
+@use '@css/2-tools/mixins' as *;
+
+.stockItemHeader {
+    display: flex;
+    flex-direction: column;
+    gap: .75em;
+
+    &__top {
+        align-items: center;
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 1em;
+        min-height: var(--btn-height);
+    }
+
+    &__logo {
+        max-height: 64px;
+        max-width: 144px;
+        width: auto;
+    }
+
+    &__meta {
+        display: inline-flex;
+        flex-wrap: wrap;
+        gap: .5em;
+    }
+
+    &__metaItem {
+        align-items: center;
+        display: inline-flex;
+        gap: .5em;
+
+        &:not(:last-child) {
+            &::after {
+                content: '·';
+            }
+        }
+    }
+
+    @include screen-min(m) {
+        &__meta {
+            font-size: var(--font-size-l);
+        }
+    }
+}

@@ -1,0 +1,182 @@
+:root {
+    --base-size: 16px;
+
+    --font-1: Inter, system-ui, sans-serif;
+    --font-2: 'Google Sans', system-ui, sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+
+    // Font size
+    --font-size-xs: .75rem; // 12px
+    --font-size-s: .875rem; // 14px
+    --font-size-m: 1rem; // 16px
+    --font-size-l: 1.125rem; // 18px
+    --font-size-xl: 1.25rem; // 20px
+    --font-size-xxl: 1.75rem;
+
+    // Sizing
+    --gutter: 1rem;
+
+    // Border radius
+    --border-radius-s: .25rem;
+    --border-radius-m: .5rem;
+    --border-radius-l: 1rem;
+
+    // Box shadow
+    --box-shadow-s: 0 .15em .25em oklch(var(--color-dark-gray-lch) / .075);
+    --box-shadow-m: 0 .25em 1em oklch(var(--color-dark-gray-lch) / .075);
+    --box-shadow-l: 0 .5em 2em oklch(var(--color-dark-gray-lch) / .075);
+
+    // Color palette
+    --color-1: rgb(44, 89, 198);
+    --color-1-hover: rgb(32, 105, 211);
+    --color-1-rgb: 44, 89, 198;
+    --color-1-tint: rgb(44, 89, 198, .15);
+    --color-1-tint-hover: rgb(44, 89, 198, .25);
+
+    --color-2: rgb(92, 153, 255);
+    --color-2-hover: rgb(84, 165, 255);
+    --color-2-rgb: 92, 153, 255;
+    --color-2-tint: rgb(92, 153, 255, .15);
+    --color-2-tint-hover: rgb(92, 153, 255, .25);
+
+    --color-gray: rgb(46, 70, 147);
+    --color-gray-tint: rgba(46, 70, 147, .075);
+    --color-gray-tint-hover: rgba(46, 70, 147, .2);
+
+    --color-dark-gray: oklch(25% 0.02 260);
+    --color-dark-gray-lch: 25% 0.02 260;
+
+    --color-text: oklch(45% 0.02 260);
+    --color-text-dark: oklch(0 0 0);
+    --color-text-light: oklch(67.5% 0.02 260);
+
+    --color-link: var(--color-1);
+    --color-link-hover: var(--color-text-dark);
+
+    --color-border: oklch(90% .02 260);
+    --color-border-dark: oklch(85% .02 260);
+    --color-border-lc: oklch(95% .015 260);
+
+    --color-bg: rgb(255, 255, 255);
+    --color-bg-tint: rgba(72, 97, 174, .05);
+
+    --color-success: rgb(0, 166, 62);
+    --color-success-rgb: 0, 166, 62;
+    --color-success-tint: rgba(var(--color-success-rgb), .1);
+    --color-success-tint-hover: rgba(var(--color-success-rgb), .2);
+
+    --color-danger: rgb(231, 0, 11);
+    --color-danger-rgb: 231, 0, 11;
+    --color-danger-tint: rgba(var(--color-danger-rgb), .1);
+    --color-danger-tint-hover: rgba(var(--color-danger-rgb), .2);
+
+    // Input
+    --input-border-color: var(--color-border);
+    --input-border-color-focus: var(--color-1);
+    --input-border-radius: .5rem;
+    --input-height: 2.75rem;
+    --input-outline: 3px solid transparent;
+    --input-outline-focus: 3px solid rgba(var(--color-2-rgb), .25);
+    --input-placeholder-color: oklch(65% 0.02 260 / 75%);
+
+    // Line height
+    --line-height-s: 1;
+    --line-height-m: 1.3;
+    --line-height-l: 1.5;
+
+    // Button
+    --btn-bg-color: var(--color-2-tint);
+    --btn-bg-color-hover: var(--color-2-tint-hover);
+    --btn-border-color: transparent;
+    --btn-border-color-hover: transparent;
+    --btn-border-radius: .5rem;
+    --btn-color: var(--color-1);
+    --btn-color-hover: var(--color-1);
+    --btn-height: 2.75rem;
+    --btn-height-s: 2.25rem;
+    --btn-height-l: 3rem;
+    --btn-primary-bg-color: var(--color-1);
+    --btn-primary-bg-color-hover: var(--color-1-hover);
+    --btn-primary-color: #FFF;
+    --btn-primary-color-hover: #FFF;
+    --btn-primary-border-color: transparent;
+    --btn-primary-border-color-hover: transparent;
+
+    // Lightswitch
+    --lightswitch-border-color-off: transparent;
+    --lightswitch-border-color-on: transparent;
+    --lightswitch-thumb-color-off: #FFF;
+    --lightswitch-thumb-color-on: #FFF;
+    --lightswitch-track-color-off: var(--color-border);
+    --lightswitch-track-color-on: var(--color-success);
+
+    // Option
+    --option-bg-color-off: var(--color-gray-tint);
+    --option-bg-color-on: var(--color-1);
+    --option-border-color-off: var(--color-border);
+    --option-border-color-on: transparent;
+    --option-check-color-off: #FFF;
+    --option-check-color-on: #FFF;
+
+    // Popout
+    --popout-bg-color: var(--color-2-tint);
+    --popout-bg-color-hover: var(--color-2-tint-hover);
+
+    // Durations
+    --duration-s: 125ms;
+    --duration-m: 250ms;
+    --duration-l: 500ms;
+
+    // Nav
+    --nav-height: 4em;
+    --nav-popout-width: 14em;
+    --nav-transition: 1s cubic-bezier(0.75, 0, 0.25, 1);
+
+    // Slide-over
+    --slideover-padding-x: 1.5em;
+    --slideover-padding-y: 1.5em;
+
+    // Z-indices
+    --z-index-base: 1;
+    --z-index-nav: 2;
+    --z-index-slideover: 10;
+    --z-index-modal: 20;
+    --z-index-toast: 30;
+    --z-index-ck: 40;
+
+    // m
+    @media (min-width: 1024px) {
+        // m
+        --gutter: 2rem;
+    }
+
+    // l
+    @media (min-width: 1280px) {
+        --gutter: 4rem;
+        --font-size-xl: 1.25rem;
+        --font-size-xxl: 2.25rem;
+        --nav-height: 0px;
+        --nav-popout-width: calc(320px - (1.5em * 2));
+        --nav-width: 320px;
+        --z-index-nav: 1;
+    }
+}
+
+$grid-columns: 12;
+
+$screens: (
+    'xs': 375px,
+    's': 768px,
+    'm': 1024px,
+    'l': 1280px,
+    'xl': 1440px,
+);
+
+$sizes: (
+    'xs': .25em,
+    's': .5em,
+    'm': 1em,
+    'l': 1.5em,
+    'xl': 2em,
+    'xxl': 3em,
+);

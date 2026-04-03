@@ -1,0 +1,131 @@
+#ddev-generated
+# If you remove the ddev-generated line above you
+# are responsible for maintaining this file. DDEV will not then
+# update it, for example if you add `additional_hostnames`, etc.
+
+http:
+  routers:
+    qrvds-web-80-http:
+      entrypoints:
+        - http-80
+      rule: HostRegexp(`^qrvds\.ddev\.site$`)
+      
+      service: "qrvds-web-80"
+      ruleSyntax: v3
+      tls: false
+      # middlewares:
+      #   - "qrvds-redirectHttps"
+    qrvds-web-8025-http:
+      entrypoints:
+        - http-8025
+      rule: HostRegexp(`^qrvds\.ddev\.site$`)
+      
+      service: "qrvds-web-8025"
+      ruleSyntax: v3
+      tls: false
+      # middlewares:
+      #   - "qrvds-redirectHttps"
+    qrvds-web-5173-http:
+      entrypoints:
+        - http-5172
+      rule: HostRegexp(`^qrvds\.ddev\.site$`)
+      
+      service: "qrvds-web-5173"
+      ruleSyntax: v3
+      tls: false
+      # middlewares:
+      #   - "qrvds-redirectHttps"
+    qrvds-xhgui-80-http:
+      entrypoints:
+        - http-8143
+      rule: HostRegexp(`^qrvds\.ddev\.site$`)
+      
+      service: "qrvds-xhgui-80"
+      ruleSyntax: v3
+      tls: false
+      # middlewares:
+      #   - "qrvds-redirectHttps"
+    
+    
+    
+    
+    qrvds-web-80-https:
+      entrypoints:
+        - http-443
+      rule: HostRegexp(`^qrvds\.ddev\.site$`)
+      
+      service: "qrvds-web-80"
+      ruleSyntax: v3
+      
+      tls: true
+      
+    qrvds-web-8025-https:
+      entrypoints:
+        - http-8026
+      rule: HostRegexp(`^qrvds\.ddev\.site$`)
+      
+      service: "qrvds-web-8025"
+      ruleSyntax: v3
+      
+      tls: true
+      
+    qrvds-web-5173-https:
+      entrypoints:
+        - http-5173
+      rule: HostRegexp(`^qrvds\.ddev\.site$`)
+      
+      service: "qrvds-web-5173"
+      ruleSyntax: v3
+      
+      tls: true
+      
+    
+    qrvds-xhgui-80-https:
+      entrypoints:
+        - http-8142
+      rule: HostRegexp(`^qrvds\.ddev\.site$`)
+      
+      service: "qrvds-xhgui-80"
+      ruleSyntax: v3
+      
+      tls: true
+      
+    
+
+  middlewares:
+    qrvds-redirectHttps:
+      redirectScheme:
+        scheme: https
+        permanent: true
+
+  services:
+    qrvds-web-80:
+      loadbalancer:
+        servers:
+          - url: http://ddev-qrvds-web:80
+        
+    qrvds-web-8025:
+      loadbalancer:
+        servers:
+          - url: http://ddev-qrvds-web:8025
+        
+    qrvds-web-5173:
+      loadbalancer:
+        servers:
+          - url: http://ddev-qrvds-web:5173
+        
+    
+    
+    
+    qrvds-xhgui-80:
+      loadbalancer:
+        servers:
+          - url: http://ddev-qrvds-xhgui:80
+        
+    
+    
+
+tls:
+  certificates:
+    - certFile: /mnt/ddev-global-cache/traefik/certs/qrvds.crt
+      keyFile: /mnt/ddev-global-cache/traefik/certs/qrvds.key

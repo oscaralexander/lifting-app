@@ -1,0 +1,124 @@
+.input {
+    background: var(--bg-color);
+    border: 1px solid var(--input-border-color);
+    border-radius: var(--input-border-radius);
+    color: var(--color-text);
+    display: flex;
+    font-variant-numeric: tabular-nums;
+    height: var(--input-height);
+    outline: var(--input-outline);
+    overflow: hidden;
+    padding: 0;
+    position: relative;
+    transition: var(--duration-s);
+    width: 100%;
+
+    input {
+        background: transparent;
+        border: none;
+        color: var(--color-text);
+        flex: 1;
+        font-variant-numeric: tabular-nums;
+        height: 100%;
+        min-width: 0;
+        outline: none;
+        padding: 0 .75rem;
+        transition: var(--duration-s),
+            background-color 300s step-end;
+        z-index: 1;
+
+        &[disabled],
+        &[readonly] {
+            background: var(--color-bg-tint);
+            cursor: not-allowed;
+        }
+    }
+
+    div {
+        align-items: center;
+        background-color: var(--color-gray-tint);
+        color: var(--color-text-light);
+        display: flex;
+        padding: 0 .75em;
+        z-index: 2;
+        transition: 250ms;
+
+        svg {
+            height: 1.25em;
+            width: 1.25em;
+        }
+    }
+
+    &::after {
+        box-shadow: inset 0 0 0 2px var(--input-border-color-focus);
+        border-radius: var(--input-border-radius);
+        content: '';
+        inset: -1px;
+        opacity: 0;
+        pointer-events: none;
+        position: absolute;
+        transition: 250ms;
+        z-index: 3;
+    }
+
+    &.input--spinner {   
+        &::before {
+            animation: btnSpinner 1s linear infinite;
+            background: var(--input-placeholder-color);
+            content: '';
+            height: 1.5em;
+            right: .75em;
+            mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 512 512"><path opacity=".4" d="M256 64C150 64 64 150 64 256s86 192 192 192c70.1 0 131.3-37.5 164.9-93.6l.1 .1c-6.9 14.9-1.5 32.8 13 41.2c15.3 8.9 34.9 3.6 43.7-11.7c.2-.3 .4-.6 .5-.9l0 0C434.1 460.1 351.1 512 256 512C114.6 512 0 397.4 0 256S114.6 0 256 0c-17.7 0-32 14.3-32 32s14.3 32 32 32z"/><path d="M224 32c0-17.7 14.3-32 32-32C397.4 0 512 114.6 512 256c0 46.6-12.5 90.4-34.3 128c-8.8 15.3-28.4 20.5-43.7 11.7s-20.5-28.4-11.7-43.7c16.3-28.2 25.7-61 25.7-96c0-106-86-192-192-192c-17.7 0-32-14.3-32-32z"/></svg>');
+            mask-size: cover;
+            opacity: 0;
+            pointer-events: none;
+            position: absolute;
+            transition: opacity var(--duration-s);
+            top: calc(50% - .75em);
+            width: 1.5em;
+            z-index: 4;
+        }
+
+        &.is-loading::before {
+            opacity: 1;
+        }
+    }
+
+    &:-webkit-autofill,
+    &:-internal-autofill-selected,
+    input:-webkit-autofill,
+    input:-internal-autofill-selected {
+        background: var(--bg-color);
+    }
+
+    &:focus,
+    &:focus-within {
+        border-color: var(--input-border-color-focus);
+        box-shadow: inset 0 0 0 1px var(--input-border-color-focus);
+        outline: var(--input-outline-focus);
+
+        &:is(div) {
+            &::after {
+                opacity: 1;
+            }
+        }
+    }
+
+    &--large {
+        font-size: var(--font-size-l);
+        height: 3.5em;
+
+        input {
+            padding: 0 1em;
+        }
+    }
+
+    &--num {
+        font-feature-settings: 'tnum' 1;
+        font-variant-numeric: tabular-nums;
+    }
+
+    &__flag {
+        width: 20px;
+    }
+}

@@ -1,0 +1,61 @@
+.upload {
+    &__file {
+        background: var(--color-gray-tint);
+        border-radius: var(--input-border-radius);
+        display: flex;
+        align-items: center;
+        gap: .5em;
+        padding: .75em;
+        flex: 1;
+        width: 100%;
+    }
+
+    &__fileName {
+        flex: 1 1 auto;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        width: 0;
+    }
+
+    &__fileAction {
+        color: var(--color-text);
+        cursor: pointer;
+        opacity: .5;
+        transition: var(--duration-m);
+
+        .lucide {
+            pointer-events: none;
+        }
+
+        &:hover {
+            opacity: 1;
+        }
+    }
+
+    &__preview {
+        background-image: url('/assets/img/logo-preview.png');
+        background-size: 24px;
+        background-position: 0 0;
+        background-repeat: repeat;
+        border-radius: .25em;
+        max-width: 240px;
+        overflow: hidden;
+        position: relative;
+
+        &--padded {
+            padding: 1em;
+        }
+
+        &::after {
+            border: 1px solid rgba(#000, .1);
+            border-radius: .25em;
+            content: '';
+            inset: 0;
+            pointer-events: none;
+            position: absolute;
+            user-select: none;
+            z-index: 3;
+        }
+    }
+}

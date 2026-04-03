@@ -1,0 +1,32 @@
+@use '@css/2-tools/mixins' as *;
+
+.actions {
+    align-items: center;
+    color: var(--color-text-light);
+    display: flex;
+    gap: .75em;
+
+    & > div {
+        align-items: center;
+        display: flex;
+        gap: .75em;
+    }
+
+    &--center {
+        justify-content: center;
+    }
+
+    &--flex {
+        & > * {
+            flex: 1;
+        }
+    }
+
+    &--right {
+        justify-content: flex-end;
+    }
+
+    &--spaceBetween {
+        justify-content: space-between;
+    }
+}

@@ -1,0 +1,87 @@
+.pagination {
+    display: flex;
+    gap: .5em;
+
+    &__flex {
+        align-items: center;
+        display: flex;
+        flex: 1;
+    }
+
+    &__current {
+        background: var(--btn-bg-color);
+        border-radius: var(--input-border-radius);
+        font-variant-numeric: tabular-nums;
+        line-height: 2.5em;
+        margin: 0 .5em;
+        padding: 0 2em 0 1em;
+        position: relative;
+        transition: var(--duration-m);
+        user-select: none;
+
+        &::after {
+            background: currentColor;
+            mask-image: url('data:image/svg+xml,<?xml version="1.0" encoding="UTF-8"?><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10"><polyline points="9 3 5 7 1 3" fill="none" stroke="%23000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/></svg>');
+            mask-size: cover;
+            content: '';
+            display: block;
+            height: 10px;
+            opacity: .5;
+            pointer-events: none;
+            position: absolute;
+            right: .75em;
+            top: calc(50% - 5px);
+            width: 10px;
+        }
+
+        &:hover {
+            background: var(--btn-bg-color-hover);
+        }
+
+        select {
+            inset: 0;
+            opacity: 0;
+            position: absolute;
+        }
+    }
+
+    &__nav {
+        background: var(--btn-bg-color);
+        border-radius: 50%;
+        color: var(--btn-color);
+        display: flex;
+        height: 2.5em;
+        width: 2.5em;
+        transition: var(--duration-m);
+
+        svg {
+            margin: auto;
+            transition: var(--duration-m);
+        }
+
+        &--disabled {
+            background: transparent;
+            border: 1px solid var(--color-border);
+            color: var(--color-text-light);
+            cursor: default;
+            opacity: .5;
+        }
+
+        &:disabled:not(.pagination__nav--disabled) {
+            cursor: wait;
+        }
+
+        &:not(:disabled):hover {
+            background: var(--btn-bg-color-hover);
+            color: var(--btn-color-hover);
+        }
+
+        &--prev:not(:disabled):hover svg {
+            transform: translateX(-2px);
+        }
+
+        &--next:not(:disabled):hover svg {
+            transform: translateX(2px);
+        }
+    }
+}

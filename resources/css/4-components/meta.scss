@@ -1,0 +1,23 @@
+.meta {
+    align-items: baseline;
+    display: flex;
+    flex-wrap: wrap;
+    line-height: var(--line-height-l);
+
+    & > * {
+        align-items: baseline;
+        display: flex;
+        gap: .35em;
+        white-space: nowrap;
+
+        &:not(:last-child) {
+            margin-right: .35em;
+
+            &::after {
+                content: '·';
+                display: inline-block;
+                opacity: .5;
+            }
+        }
+    }
+}

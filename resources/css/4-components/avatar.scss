@@ -1,0 +1,60 @@
+@use '@css/2-tools/mixins' as tools;
+
+.avatar {
+    align-items: center;
+    aspect-ratio: 1/1;
+    background: var(--color-1);
+    border-radius: 50%;
+    color: #FFF;
+    display: flex;
+    font-size: var(--font-size-m);
+    font-weight: 500;
+    height: 3rem;
+    justify-content: center;
+    overflow: hidden;
+    position: relative;
+    user-select: none;
+    width: 3rem;
+
+    &__image {
+        height: 100%;
+        left: 0;
+        position: absolute;
+        top: 0;
+        width: 100%;
+        z-index: 2;
+    }
+
+    &--large {
+        height: 4rem;
+        font-size: 3em;
+        width: 4rem;
+    }
+
+    &--small {
+        height: 2.25rem;
+        font-size: .75em;
+        font-weight: 500;
+        width: 2.25rem;
+    }
+
+    &::after {
+        border: 1px solid rgba(#000, .05);
+        border-radius: 50%;
+        content: '';
+        inset: 0;
+        position: absolute;
+        user-select: none;
+        z-index: 3;
+    }
+
+    @include tools.screen-min(m) {
+        height: 3em;
+        width: 3em;
+
+        &--large {
+            height: 7rem;
+            width: 7rem;
+        }
+    }
+}

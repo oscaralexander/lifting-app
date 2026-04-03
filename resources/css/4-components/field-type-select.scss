@@ -1,0 +1,32 @@
+.fieldTypeSelect {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: .25rem;
+
+    &__button {
+        text-align: left;
+        justify-content: flex-start;
+        // align-items: center;
+        // background: var(--btn-bg-color);
+        // border-radius: var(--btn-border-radius);
+        // color: var(--btn-color);
+        // display: flex;
+        // height: var(--btn-height);
+        // gap: .5rem;
+        // padding: 1px 1rem;
+        // transition: var(--duration-m);
+        // user-select: none;
+        // width: 100%;
+
+        // &:focus-visible,
+        // &:hover {
+        //     background: var(--btn-bg-color-hover);
+        //     color: var(--btn-color-hover);
+        // }
+
+        // &:active {
+        //     padding-top: calc(1.5rem + 2px);
+        //     padding-bottom: 1.5rem;
+        // }
+    }
+}

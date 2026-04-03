@@ -1,0 +1,41 @@
+.submissions {
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: .5rem;
+    box-shadow: 0 .15rem .25rem oklch(var(--color-dark-gray-lch) / .075);
+
+    &__item {
+        align-items: center;
+        display: flex;
+        line-height: var(--line-height-l);
+        padding: 1em;
+
+        &:not(:first-child) {
+            border-top: 1px solid var(--color-border-lc);
+        }
+    }
+
+    &__itemFlex {
+        flex: 1;
+    }
+
+    &__itemLink {
+        font-weight: 500;
+    }
+
+    &__itemMeta {
+        font-size: var(--font-size-s);
+        color: var(--color-text-light);
+    }
+
+    &__itemActions {
+        display: flex;
+        gap: 1rem;
+    }
+
+    &__empty {
+        color: var(--color-text-light);
+        text-align: center;
+        padding: 1em;
+    }
+}

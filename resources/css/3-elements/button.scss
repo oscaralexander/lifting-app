@@ -1,0 +1,12 @@
+button {
+    background: transparent;
+    border: none;
+    color: var(--color-link);
+    display: flex;
+    cursor: pointer;
+    font-family: var(--font-1);
+    font-size: 1em;
+    line-height: var(--line-height-m);
+    margin: 0;
+    padding: 0;
+}

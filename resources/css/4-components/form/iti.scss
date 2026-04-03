@@ -1,0 +1,123 @@
+.iti {
+    --iti-hover-color: var(--color-gray-tint);
+    background: var(--bg-color);
+    border: 1px solid var(--input-border-color);
+    border-radius: var(--input-border-radius);
+    color: var(--color-text);
+    display: flex;
+    font-variant-numeric: tabular-nums;
+    outline: var(--input-outline);
+    padding: 0;
+    position: relative;
+    transition: var(--duration-m);
+    height: var(--input-height);
+    width: 100%;
+
+    &::after {
+        border-radius: var(--input-border-radius);
+        box-shadow: inset 0 0 0 2px var(--input-border-color-focus);
+        content: '';
+        inset: -1px;
+        opacity: 0;
+        pointer-events: none;
+        position: absolute;
+        transition: 250ms;
+        z-index: 3;
+    }
+
+    &:focus-within {
+        border-color: var(--input-border-color-focus);
+        box-shadow: inset 0 0 0 1px var(--input-border-color-focus);
+        outline: var(--input-outline-focus);
+
+        &::after {
+            opacity: 1;
+        }
+    }
+
+    .iti__country-container {
+        padding: 0;
+        width: 58px;
+        z-index: 2;
+    }
+
+    .iti__selected-country-primary {
+        background: var(--color-gray-tint);
+        border-radius: calc(var(--input-border-radius) - 1px) 0 0 calc(var(--input-border-radius) - 1px);
+        padding: 0 .75em;
+    }
+
+    .iti__flag {
+        box-shadow: none;
+    }
+
+    .iti__arrow {
+        background: var(--color-text-light);
+        border: none;
+        height: 10px;
+        margin: 0 0 0 .5em;
+        mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10"><polyline points="9 3 5 7 1 3" fill="none" stroke="%23000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/></svg>');
+        width: 10px;
+
+        &.iti__arrow--up {
+            transform: rotate(180deg);
+        }
+    }
+
+    input.iti__tel-input,
+    input.iti__tel-input[type=text],
+    input.iti__tel-input[type=tel] {
+        background: transparent;
+        border: none;
+        color: var(--color-text);
+        flex: 1;
+        font-variant-numeric: tabular-nums;
+        height: 100%;
+        min-width: 0;
+        outline: none;
+        padding: 0 .75rem 0 calc(.75rem + 58px) !important;
+        transition: var(--duration-m),
+            background-color 300s step-end;
+        z-index: 1;
+
+        &:-webkit-autofill,
+        &:-internal-autofill-selected {
+            background: var(--bg-color);
+        }
+    }
+
+    .iti__dropdown-content {
+        border-radius: var(--input-border-radius);
+        border: none;
+        box-shadow: 0 .5em 1em oklch(var(--color-dark-gray-lch) / .15);
+        left: 0;
+        overflow: hidden;
+        width: 100%;
+    }
+
+    .iti__search-input {
+        border-bottom: 1px solid var(--color-border-lc);
+        border-radius: 0;
+        height: calc(var(--input-height) + 1px);
+        padding: 0 .75rem;
+
+        &:focus {
+            outline: none;
+        }
+    }
+
+    .iti__country {
+        color: var(--color-text);
+        font-size: var(--font-size-s);
+        padding: .75rem;
+    }
+
+    .iti__dial-code {
+        color: var(--color-text-light);
+    }
+
+    .iti__country-list .iti__flag,
+    .iti__country-name {
+        margin-right: .5rem;
+    }
+}

@@ -1,0 +1,28 @@
+.path {
+    align-items: center;
+    color: var(--color-text-light);
+    display: flex;
+    font-size: var(--font-size-s);
+    gap: .33em;
+
+    & > li {
+        align-items: center;
+        display: flex;
+        gap: .33em;
+
+        &:not(:last-child) {
+            &::after {
+                background: var(--color-text-light);
+                content: '/';
+                height: 12px;
+                mask-image: url('data:image/svg+xml;utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12"><polyline points="4 2 8 6 4 10" fill="none" stroke="%23000" stroke-miterlimit="10"/></svg>');
+                mask-size: 12px;
+                width: 12px;
+            }
+        }
+    }
+
+    &__link {
+        color: var(--color-text-light);
+    }
+}
