@@ -13,6 +13,7 @@ class LogOutController extends Controller
         auth('web')->logout();
         session()->invalidate();
         session()->regenerateToken();
-        return redirect()->route('auth.sign-in');
+
+        return redirect()->route('login');
     }
 }

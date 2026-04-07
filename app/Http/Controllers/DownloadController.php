@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Document;
 use App\Models\Settings;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 
 class DownloadController extends Controller
 {
@@ -21,9 +20,9 @@ class DownloadController extends Controller
         $passcode = Settings::where('key', 'passcode')->firstOrFail()->value;
         $sessionPasscode = session()->get('passcode');
 
-        if (!auth('web')->user() && $sessionPasscode !== $passcode) {
+        if (! auth('web')->user() && $sessionPasscode !== $passcode) {
             // Redirect to admin login page
-            return redirect()->route('auth.sign-in');
+            return redirect()->route('login');
         }
 
         // View document

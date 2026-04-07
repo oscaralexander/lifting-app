@@ -12,12 +12,12 @@ class SubmissionDownloadController extends Controller
         $path = $request->input('path');
         $ext = strtolower(pathinfo($path, PATHINFO_EXTENSION));
 
-        if (!auth('web')->check()) {
+        if (! auth('web')->check()) {
             // Redirect to admin login page
-            return redirect()->route('auth.sign-in');
+            return redirect()->route('login');
         }
 
-        if (!Storage::disk('local')->exists($path)) {
+        if (! Storage::disk('local')->exists($path)) {
             abort(404);
         }
 

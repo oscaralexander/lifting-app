@@ -12,15 +12,16 @@ class SubmissionPdfController extends Controller
 {
     public function __invoke(Request $request, string $stickerHash, string $hash, SubmissionPdfType $type)
     {
-        if (!auth('web')->check()) {
+        if (! auth('web')->check()) {
             // Redirect to admin login page
-            return redirect()->route('auth.sign-in');
+            return redirect()->route('login');
         }
 
         $sticker = Sticker::where('hash', $stickerHash)->firstOrFail();
         $submission = Submission::where('hash', $hash)->firstOrFail();
 
         $pdf = new SubmissionPdf($submission, $sticker, $type);
+
         // return $pdf->view();
         return $pdf->download();
     }

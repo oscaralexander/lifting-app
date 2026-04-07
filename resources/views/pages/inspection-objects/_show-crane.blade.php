@@ -42,6 +42,12 @@
             <div class="dataItem__value">{{ $crane->hook_height }} @lang('models/crane.hook_height.unit')</div>
         </div>
     @endif
+    @if ($crane->exchangeable_parts)
+        <div class="dataItem">
+            <div class="dataItem__label">@lang('models/crane.exchangeable_parts.label')</div>
+            <div class="dataItem__value">{{ $crane->exchangeable_parts }}</div>
+        </div>
+    @endif
     @if ($crane->undercarriage)
         <div class="dataItem">
             <div class="dataItem__label">@lang('models/crane.undercarriage.label')</div>
@@ -60,26 +66,8 @@
             <div class="dataItem__value">{{ $crane->outrigger_type?->label() ?? '—' }}</div>
         </div>
     @endif
-    @if ($crane->boom_type)
-        <div class="dataItem">
-            <div class="dataItem__label">@lang('models/crane.boom_type.label')</div>
-            <div class="dataItem__value">{{ $crane->boom_type?->label() ?? '—' }}</div>
-        </div>
-    @endif
-    @if ($crane->boom_length)
-        <div class="dataItem">
-            <div class="dataItem__label">@lang('models/crane.boom_length.label')</div>
-            <div class="dataItem__value">{{ $crane->boom_length }}@lang('models/crane.boom_length.unit')</div>
-        </div>
-    @endif
-    @if ($crane->exchangeable_parts)
-        <div class="dataItem">
-            <div class="dataItem__label">@lang('models/crane.exchangeable_parts.label')</div>
-            <div class="dataItem__value">{{ $crane->exchangeable_parts }}</div>
-        </div>
-    @endif
 </div>
-@if ($crane->base_manufacturer || $crane->base_model || $crane->base_serial_number || $crane->base_asset_number)
+@if ($crane->base_manufacturer || $crane->base_model || $crane->base_serial_number || $crane->base_asset_number || $crane->base_rail_track_gauge || $crane->base_rail_wheelbase || $crane->base_crane_track_length)
     <div class="u-stack u-stack-gap-xs">
         <h3>@lang('inspection_objects.show.heading_undercarriage')</h3>
         <div>
@@ -107,22 +95,28 @@
                     <div class="dataItem__value">{{ $crane->base_asset_number }}</div>
                 </div>
             @endif
-            @if ($crane->base_year_manufacture)
+            @if ($crane->base_rail_track_gauge)
                 <div class="dataItem">
-                    <div class="dataItem__label">@lang('models/crane.base_year_manufacture.label')</div>
-                    <div class="dataItem__value">{{ $crane->base_year_manufacture }}</div>
+                    <div class="dataItem__label">@lang('models/crane.base_rail_track_gauge.label')</div>
+                    <div class="dataItem__value">{{ $crane->base_rail_track_gauge }}</div>
                 </div>
             @endif
-            @if ($crane->base_hook_height)
+            @if ($crane->base_rail_wheelbase)
                 <div class="dataItem">
-                    <div class="dataItem__label">@lang('models/crane.base_hook_height.label')</div>
-                    <div class="dataItem__value">{{ $crane->base_hook_height }} @lang('models/crane.base_hook_height.unit')</div>
+                    <div class="dataItem__label">@lang('models/crane.base_rail_wheelbase.label')</div>
+                    <div class="dataItem__value">{{ $crane->base_rail_wheelbase }}</div>
+                </div>
+            @endif
+            @if ($crane->base_crane_track_length)
+                <div class="dataItem">
+                    <div class="dataItem__label">@lang('models/crane.base_crane_track_length.label')</div>
+                    <div class="dataItem__value">{{ $crane->base_crane_track_length }}</div>
                 </div>
             @endif
         </div>
     </div>
 @endif
-@if ($crane->boom_type || $crane->boom_length || $crane->boom_parts)
+@if ($crane->boom_type || $crane->boom_length || $crane->boom_parts || $crane->boom_is_adjustable || $crane->boom_is_luffing || $crane->boom_is_trolley)
     <div class="u-stack u-stack-gap-xs">
         <h3>@lang('inspection_objects.show.heading_boom')</h3>
         <div>
@@ -135,6 +129,12 @@
             @if ($crane->boom_is_adjustable)
                 <div class="dataItem">
                     <div class="dataItem__label">@lang('models/crane.boom_is_adjustable.label')</div>
+                    <div class="dataItem__value"><x-icon icon="check" /></div>
+                </div>
+            @endif
+            @if ($crane->boom_is_luffing)
+                <div class="dataItem">
+                    <div class="dataItem__label">@lang('models/crane.boom_is_luffing.label')</div>
                     <div class="dataItem__value"><x-icon icon="check" /></div>
                 </div>
             @endif

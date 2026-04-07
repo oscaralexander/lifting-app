@@ -24,10 +24,12 @@
     $currentValue = isset($__livewire) && $model
         ? data_get($__livewire, $model)
         : null;
+
+    $highlightIndex = $currentValue === null ? 'null' : ($currentValue == 0 ? 0 : ($currentValue == 1 ? 1 : 2));
 @endphp
 
 <div class="field">
-    <div class="yesNo"> 
+    <div class="yesNo">
         @if ($text)
             <label
                 @class([
@@ -36,7 +38,13 @@
                 ])
             >{!! nl2br(Purify::config('label')->clean($text)) !!}</label>
         @endif
-        <div class="yesNo__switch">
+        <div class="yesNo__switch"
+             x-data="{ index: {{ $highlightIndex }} }"
+             x-on:change="const v = parseInt($event.target.value); index = v === 0 ? 0 : (v === 1 ? 1 : 2)">
+            <div class="yesNo__highlight"
+                 x-show="index !== null"
+                 x-bind:style="'transform: translateX(calc(' + index + ' * 2rem))'">
+            </div>
             <label class="yesNo__option yesNo__option--na">
                 <input id="{{ $id }}-na" type="radio" name="{{ $id }}" value="0" wire:model="{{ $model }}" @checked($currentValue !== null && $currentValue == 0) />
                 <x-icon icon="circle-slash" />

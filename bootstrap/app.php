@@ -49,7 +49,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'see' => UpdateLastSeenAt::class,
         ]);
 
-        $middleware->redirectGuestsTo(fn (Request $request) => route('auth.sign-in'));
+        $middleware->redirectGuestsTo(fn (Request $request) => route('login'));
         $middleware->redirectUsersTo(fn (Request $request) => route('admin'));
     })
     ->withExceptions(function (Exceptions $exceptions) {

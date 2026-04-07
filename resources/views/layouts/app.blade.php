@@ -5,7 +5,7 @@
         <meta name="csrf-token" content="{{ csrf_token() }}">
         <meta name="robots" content="noindex, nofollow" />
         <meta name="viewport" content="initial-scale=1,width=device-width">
-        <title>@stack('pageTitle') - {{ config('app.name') }}</title>
+        <title>{{ $title ?? '' }} - {{ config('app.name') }}</title>
         @stack('meta')
         <link href="https://fonts.googleapis.com" rel="preconnect">
         <link href="https://fonts.gstatic.com" rel="preconnect">
