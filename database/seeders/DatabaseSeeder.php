@@ -11,9 +11,9 @@ class DatabaseSeeder extends Seeder
         $this->call([
             UserSeeder::class,
             SettingsSeeder::class,
-            // FormSeeder::class,
-            // FieldSeeder::class,
-            // FieldFormSeeder::class,
+            FormSeeder::class,
+            FieldSeeder::class,
+            FieldFormSeeder::class,
         ]);
     }
 }

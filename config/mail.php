@@ -36,8 +36,8 @@ return [
     */
 
     'mailers' => [
-        'mailgun' => [
-            'transport' => 'mailgun',
+        'mailersend' => [
+            'transport' => 'mailersend',
         ],
 
         'smtp' => [

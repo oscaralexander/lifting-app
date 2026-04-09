@@ -1,9 +1,10 @@
 <?php
 
 use App\Livewire\Forms\UserForm;
+use App\Mail\UserCreated;
 use App\Models\User;
 use Illuminate\Support\Facades\Gate;
-use Livewire\Attributes\On;
+use Illuminate\Support\Facades\Mail;
 use Livewire\Component;
 
 new class extends Component
@@ -12,32 +13,33 @@ new class extends Component
 
     public User $user;
 
-    public function mount(User $user): void
+    public function mount(): void
     {
-        Gate::authorize('update', $user);
+        Gate::authorize('create', User::class);
 
-        $this->user = $user;
-        $this->form->setUser($user);
+        $this->user = new User();
+        $this->form->setUser($this->user);
     }
 
-    #[On('toast')]
     public function render()
     {
         return $this->view()
-            ->title($this->user->name);
+            ->title(__('users.create.title'));
     }
 
     public function submit(): void
     {
         $this->user = $this->form->save();
-        $this->dispatch('toast', message: __('users.toast.updated'), type: 'success');
+        Mail::to($this->user->email)->send(new UserCreated($this->user, auth('web')->user()));
+        session()->flash('toast', __('users.toast.created'));
+        $this->redirect(route('users'), true);
     }
 }
 ?>
 
 <div>
     <x-header
-        :title="$this->user->name"
+        :title="__('users.create.title')"
         :path="[
             __('users.index.title') => route('users'),
         ]"

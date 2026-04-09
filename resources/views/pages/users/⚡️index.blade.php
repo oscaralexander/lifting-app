@@ -25,7 +25,7 @@ new class extends Component
 ?>
 
 <div>
-    <x-header intro="Oké dan!" :title="__('users.index.title')">
+    <x-header :title="__('users.index.title')">
         <x-slot:actions>
             <x-btn :href="route('users.create')" icon="plus" primary>@lang('users.index.btn_create')</x-btn>
         </x-slot:actions>

@@ -236,7 +236,6 @@ new class extends Component
         @php
             $items = FormItems::get($this->schema);
         @endphp
-        @dump($form)
         <div class="u-stack u-stack-gap-m">
             <h2>{{ $this->schema->name }}</h2>
             <div class="inspection">

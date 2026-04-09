@@ -3,9 +3,9 @@
 ])
 
 <form
+    {{ $attributes->class(['form']) }}
     wire:loading.class="is-loading"
     wire:submit="{{ $submit }}"
-    {{ $attributes }}
 >
     {{ $slot }}
 </form>
