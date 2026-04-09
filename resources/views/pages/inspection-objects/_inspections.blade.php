@@ -11,7 +11,11 @@
         </x-popout>
     </div>
     @if ($this->inspectionObject->inspections->isEmpty())
-        <p>@lang('inspection_objects.show.no_inspections')</p>
+        <table class="table table--border">
+            <tbody>
+                <td style="padding: 1rem; text-align: center;">@lang('inspection_objects.show.no_inspections')</td>
+            </tbody>
+        </table>
     @else
         <table class="table table--border">
             <thead>

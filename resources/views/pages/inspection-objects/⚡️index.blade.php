@@ -37,8 +37,8 @@ new class extends Component
         <table class="table">
             <thead>
                 <tr>
-                    <th scope="col">@lang('inspection_objects.index.col_type')</th>
                     <th scope="col">@lang('inspection_objects.index.col_name')</th>
+                    <th scope="col">@lang('inspection_objects.index.col_type')</th>
                     <th scope="col">@lang('inspection_objects.index.col_client')</th>
                     <th scope="col">@lang('inspection_objects.index.col_next_inspection_before')</th>
                     <th class="table__num" scope="col">@lang('inspection_objects.index.col_inspections')</th>
@@ -48,10 +48,10 @@ new class extends Component
             <tbody>
                 @foreach ($this->inspectionObjects as $inspectionObject)
                     <tr>
-                        <td>{{ $inspectionObject->type->label() }}</td>
                         <td>
                             <a href="{{ route('inspection-objects.show', $inspectionObject) }}" wire:navigate>{{ $inspectionObject->inspectable?->name ?? 'Geen naam' }}</a>
                         </td>
+                        <td>{{ $inspectionObject->type->label() }}</td>
                         <td>
                             <a
                                 href="#"
