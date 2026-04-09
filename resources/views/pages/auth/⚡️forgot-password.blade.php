@@ -41,7 +41,7 @@ new class extends Component
 <div>
     <div class="u-stack u-stack-gap-xxl">
         <header class="guest__header">
-            <a href="{{ route('admin') }}" wire:navigate><img alt="Van der Spek" class="guest__logo" src="/assets/img/van-der-spek.svg"></a>
+            <a href="{{ route('admin') }}" wire:navigate><img alt="Lifting Inspections" class="guest__logo" src="{{ asset('/assets/img/lifting-inspections-fc.svg') }}"></a>
         </header>
         <p class="guest__intro u-text-center">
             {!! __('auth.forgot_password.intro') !!}

@@ -17,6 +17,7 @@ export default defineConfig({
             '@css': path.resolve(__dirname, 'resources/css'),
             '@js': path.resolve(__dirname, 'resources/js'),
             '@npm': path.resolve(__dirname, 'node_modules'),
+            '@public': path.resolve(__dirname, 'public'),
             '@vendor': path.resolve(__dirname, 'vendor'),
         },
     },
