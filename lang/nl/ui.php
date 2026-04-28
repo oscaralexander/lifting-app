@@ -1,6 +1,7 @@
 <?php
 
 return [
+    'add' => 'Toevoegen',
     'and' => 'en',
     'back' => 'Terug',
     'browse' => 'Bladeren…',
@@ -12,10 +13,16 @@ return [
     'edit' => 'Bewerken',
     'home' => 'Home',
     'next' => 'Volgende',
+    'none' => 'Geen',
     'now' => 'Nu',
     'or' => 'of',
     'required' => 'Verplicht',
     'save' => 'Opslaan',
     'send' => 'Versturen',
     'toggle_password_visibility' => 'Wachtwoord weergeven or verbergen',
+    'units' => [
+        'degrees' => 'º',
+        'kilograms' => 'kg',
+        'meters' => 'm',
+    ],
 ];

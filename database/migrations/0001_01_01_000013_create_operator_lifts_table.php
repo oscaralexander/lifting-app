@@ -7,21 +7,17 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    public function up()
+    public function up(): void
     {
         Schema::create('operator_lifts', function (Blueprint $table) {
             $table->id();
-            $table->string('manufacturer')->nullable();
-            $table->string('model')->nullable();
-            $table->string('serial_number')->nullable();
-            $table->string('asset_number')->nullable();
             $table->enum('base_mount', array_column(BaseMount::cases(), 'value'))->nullable();
             $table->timestamps();
             $table->softDeletes();
         });
     }
 
-    public function down()
+    public function down(): void
     {
         Schema::dropIfExists('operator_lifts');
     }

@@ -3,9 +3,11 @@
 namespace App\Models;
 
 use App\Enums\FieldType;
+use App\Enums\InspectionType;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 
@@ -16,6 +18,10 @@ class Inspection extends Model
     protected $casts = [
         'comment_data' => 'json:unicode',
         'form_data' => 'json:unicode',
+        'image_data' => 'json:unicode',
+        'matrix' => 'json',
+        'meta_data' => 'json:unicode',
+        'type' => InspectionType::class,
     ];
 
     protected $with = [
@@ -51,6 +57,11 @@ class Inspection extends Model
         return $default;
     }
 
+    public function getRouteKeyName(): string
+    {
+        return 'hash';
+    }
+
     public static function getUniqueHash(int $length = 5): string
     {
         $hash = Str::random($length);
@@ -65,16 +76,15 @@ class Inspection extends Model
     /**
      * Attributes
      */
-
     public function answers(): Attribute
     {
         $answers = collect();
 
-        if (!empty($this->form_data)) {
+        if (! empty($this->form_data)) {
             foreach ($this->form_data as $key => $answer) {
                 $pivotId = Str::of($key)->afterLast('_')->toInteger();
                 $field = $this->form->fields->firstWhere('pivot.id', $pivotId);
-    
+
                 if ($field) {
                     if ($field->type === FieldType::SELECT_MULTIPLE) {
                         $keys = array_keys(explode("\n", $field->values));
@@ -106,6 +116,15 @@ class Inspection extends Model
     /**
      * Relationships
      */
+    public function client(): BelongsTo
+    {
+        return $this->belongsTo(Client::class);
+    }
+
+    public function inspectable(): MorphTo
+    {
+        return $this->morphTo();
+    }
 
     public function inspectionObject(): BelongsTo
     {

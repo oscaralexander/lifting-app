@@ -6,23 +6,17 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::table('inspections', function (Blueprint $table) {
-            $table->json('comment_data')->nullable()->after('form_data');
+            $table->json('matrix')->nullable()->after('form_data');
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::table('inspections', function (Blueprint $table) {
-            $table->dropColumn('comment_data');
+            $table->dropColumn('matrix');
         });
     }
 };

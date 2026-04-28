@@ -2,54 +2,74 @@
 
 namespace App\Livewire\Forms;
 
-use App\Enums\CountryCode;
-use App\Enums\FieldType;
-use App\Models\Form;
+use App\Enums\InspectionType;
 use App\Models\Inspection;
-use Livewire\Form as LivewireForm;
+use Illuminate\Validation\Rule;
+use Livewire\Form;
 
-class InspectionForm extends LivewireForm
+class InspectionForm extends Form
 {
-    public array $comments = [];
+    public ?string $type = null;
 
-    public array $fields = [];
+    public ?int $clientId = null;
 
-    public $project_address;
+    public int $form_id;
 
-    public $project_city;
+    public Inspection $inspection;
 
-    public CountryCode $project_country = CountryCode::NL;
+    public int $inspection_object_id;
 
-    public $project_name;
+    public $projectName;
 
-    public $project_postal_code;
+    public $projectAddress;
 
-    public function init(Inspection $inspection, Form $form): void
+    public $projectPostalCode;
+
+    public $projectCity;
+
+    public function init(Inspection $inspection, int $formId, int $inspectionObjectId): void
     {
+        $this->inspection = $inspection;
+        $this->form_id = $formId;
+        $this->inspection_object_id = $inspectionObjectId;
+
         if ($inspection->exists) {
-            $this->project_name = $inspection->project_name;
-            $this->project_address = $inspection->project_address;
-            $this->project_postal_code = $inspection->project_postal_code;
-            $this->project_city = $inspection->project_city;
-            $this->project_country = CountryCode::tryFrom($inspection->project_country) ?? CountryCode::NL;
+            $this->type = $inspection->type?->value;
+            $this->clientId = $inspection->client_id;
+            $this->projectName = $inspection->project_name;
+            $this->projectAddress = $inspection->project_address;
+            $this->projectPostalCode = $inspection->project_postal_code;
+            $this->projectCity = $inspection->project_city;
         }
+    }
 
-        foreach ($form->fields as $field) {
-            $key = 'field_' . $field->pivot->id;
+    public function rules(): array
+    {
+        return [
+            'type' => ['required', Rule::enum(InspectionType::class)],
+            'clientId' => ['required', Rule::exists('clients', 'id')],
+            'projectName' => ['required', 'string', 'max:255'],
+            'projectAddress' => ['nullable', 'string', 'max:255'],
+            'projectPostalCode' => ['nullable', 'string', 'max:20'],
+            'projectCity' => ['nullable', 'string', 'max:255'],
+        ];
+    }
 
-            $this->comments[$key] = $inspection->exists
-                ? ($inspection->comment_data[$key] ?? null)
-                : null;
+    public function save(): string
+    {
+        $this->validate();
 
-            if ($field->type === FieldType::SELECT_MULTIPLE) {
-                $this->fields[$key] = $inspection->exists
-                    ? $inspection->getAnswerForField($field->pivot->id, [])
-                    : [];
-            } else {
-                $this->fields[$key] = $inspection->exists
-                    ? ($inspection->form_data[$key] ?? null)
-                    : null;
-            }
-        }
+        $this->inspection->form_id = $this->form_id;
+        $this->inspection->inspection_object_id = $this->inspection_object_id;
+
+        $this->inspection->type = InspectionType::from($this->type);
+        $this->inspection->client_id = $this->clientId;
+        $this->inspection->project_name = $this->projectName;
+        $this->inspection->project_address = $this->projectAddress;
+        $this->inspection->project_postal_code = $this->projectPostalCode;
+        $this->inspection->project_city = $this->projectCity;
+        $this->inspection->save();
+
+        return $this->inspection->hash;
     }
 }

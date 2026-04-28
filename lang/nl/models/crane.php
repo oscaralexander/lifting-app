@@ -4,57 +4,42 @@ return [
     /**
      * Crane
      */
-
-    'type' => [
-        'label' => 'Type',
+    'central_ballast' => [
+        'label' => 'Centraalballast',
     ],
     'configuration' => [
         'label' => 'Opstelling',
     ],
-    'manufacturer' => [
-        'label' => 'Fabrikant',
-    ],
-    'model' => [
-        'label' => 'Model',
-    ],
-    'serial_number' => [
-        'label' => 'Serienummer',
-    ],
-    'asset_number' => [
-        'label' => 'Bedrijfsnummer',
-    ],
-    'year_manufacture' => [
-        'label' => 'Bouwjaar',
-    ],
-    'hook_height' => [
-        'label' => 'Haakhoogte',
-        'unit' => 'm',
+    'counter_ballast' => [
+        'label' => 'Contraballast',
     ],
     'exchangeable_parts' => [
         'label' => 'Vervangbare onderdelen',
     ],
-    'undercarriage' => [
-        'label' => 'Onderwagen',
-    ],
-    'base_configuration' => [
-        'label' => 'Opstelling',
+    'type' => [
+        'label' => 'Type',
     ],
 
     /**
      * Base / Undercarriage
      */
-
+    'base_asset_number' => [
+        'label' => 'Bedrijfsnummer',
+    ],
+    'base_configuration' => [
+        'label' => 'Opstelling',
+    ],
+    'base_crane_track_length' => [
+        'label' => 'Lengte kraanbaan',
+    ],
+    'base_length' => [
+        'label' => 'Lengte onderstel',
+    ],
     'base_manufacturer' => [
         'label' => 'Fabrikant',
     ],
     'base_model' => [
         'label' => 'Model',
-    ],
-    'base_serial_number' => [
-        'label' => 'Serienummer',
-    ],
-    'base_asset_number' => [
-        'label' => 'Bedrijfsnummer',
     ],
     'base_rail_track_gauge' => [
         'label' => 'Spoorbreedte railstellen',
@@ -62,14 +47,25 @@ return [
     'base_rail_wheelbase' => [
         'label' => 'Wielbasis railstellen',
     ],
-    'base_crane_track_length' => [
-        'label' => 'Lengte kraanbaan',
+    'base_serial_number' => [
+        'label' => 'Serienummer',
+    ],
+    'base_width' => [
+        'label' => 'Breedte onderstel',
+    ],
+    'outrigger_type' => [
+        'label' => 'Stempels',
+    ],
+    'undercarriage' => [
+        'label' => 'Onderwagen',
     ],
 
     /**
      * Boom / Jib
      */
-
+    'hook_height' => [
+        'label' => 'Haakhoogte',
+    ],
     'boom_configuration' => [
         'label' => 'Giekuitvoering',
     ],
@@ -84,11 +80,9 @@ return [
     ],
     'boom_length' => [
         'label' => 'Gieklengte',
-        'unit' => 'm',
     ],
     'boom_luffing_angle' => [
         'label' => 'Topbaar',
-        'unit' => '°',
     ],
     'boom_parts' => [
         'label' => 'Giekdelen',
@@ -96,17 +90,4 @@ return [
     'boom_type' => [
         'label' => 'Giek type',
     ],
-    'outrigger_type' => [
-        'label' => 'Stempels',
-    ],
-    'counterweight_ballast' => [
-        'label' => 'Contraballast',
-    ],
-    'central_ballast' => [
-        'label' => 'Centraalballast',
-    ],
-
-    // 'ballast_configuration' => [
-    //     'label' => 'Uitvoering',
-    // ],
 ];

@@ -1,9 +1,18 @@
+@use('App\Enums\FieldType')
+
 @props([
     'fieldGroup' => null,
+    'form' => null,
     'submission' => null,
 ])
 
 @php
+    $toggleFieldKeys = $fieldGroup->fields
+        ->filter(fn($f) => $f->type === FieldType::TOGGLE)
+        ->map(fn($f) => 'field_' . $f->pivot->id)
+        ->values()
+        ->toArray();
+
     // Collect all fields and comments, order by position
     $items = collect();
 
@@ -30,7 +39,17 @@
 <div
     class="submission__fieldGroup"
     x-bind:class="{ 'is-expanded': isExpanded }"
-    x-data="{ isExpanded: false }"
+    x-data="{
+        isExpanded: false,
+        get allTogglesFilled() {
+            const keys = @js($toggleFieldKeys);
+            if (keys.length === 0) return false;
+            return keys.every(key => {
+                const val = $wire.submissionForm.fields[key];
+                return val === 0 || val === 1 || val === '0' || val === '1';
+            });
+        }
+    }"
 >
     <button
         aria-controls="fieldGroup-{{ $fieldGroup->id }}"
@@ -41,6 +60,7 @@
         x-on:click="isExpanded = !isExpanded"
     >
         <span class="submission__fieldGroupToggleName">{!! $fieldGroup->numberedName !!}</span>
+        <span class="submission__fieldGroupToggleCheck" x-cloak x-show="allTogglesFilled"><x-icon icon="check" /></span>
         <span class="submission__fieldGroupToggleError"><x-icon icon="triangle-alert" /></span>
         <span class="submission__fieldGroupToggleIcon"></span>
     </button>
@@ -57,7 +77,7 @@
                             :field="$item['field']"
                         />
                     @else
-                        <x-submission.field :field="$item['field']" />
+                        <x-submission.field :field="$item['field']" :form="$form" />
                     @endif
                 @elseif ($item['type'] === 'formComment')
                     <x-submission.form-comment :form-comment="$item['formComment']" />

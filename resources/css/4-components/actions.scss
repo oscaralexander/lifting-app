@@ -2,7 +2,7 @@
 
 .actions {
     align-items: center;
-    color: var(--color-text-light);
+    color: var(--color-text-lc);
     display: flex;
     gap: .75em;
 
@@ -24,6 +24,10 @@
 
     &--right {
         justify-content: flex-end;
+    }
+
+    &--tight {
+        gap: .5em;
     }
 
     &--spaceBetween {

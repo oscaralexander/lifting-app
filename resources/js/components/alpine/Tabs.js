@@ -9,7 +9,7 @@ export default (id, activeTab = null) => {
             const hash = window.location.hash.substring(1).trim();
 
             if ($activeTab) {
-                this.activeTab = $activeTab.id.split('-')[1];
+                this.activeTab = $activeTab.id.substring('tab-'.length);
             }
 
             if (hash !== '') {

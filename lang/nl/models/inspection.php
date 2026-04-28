@@ -1,6 +1,12 @@
 <?php
 
 return [
+    'type' => [
+        'label' => 'Type',
+    ],
+    'client_id' => [
+        'label' => 'Klant',
+    ],
     'project_name' => [
         'label' => 'Naam',
     ],

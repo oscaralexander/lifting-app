@@ -3,35 +3,35 @@
 namespace App\Models;
 
 use App\Enums\InspectionObject\Type;
-use App\Enums\CountryCode;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class InspectionObject extends Model
 {
+    use SoftDeletes;
+
     protected $casts = [
-        'country' => CountryCode::class,
         'type' => Type::class,
+        'year_manufacture' => 'integer',
     ];
 
     protected $guarded = ['id'];
 
     /**
+     * Attributes
+     */
+    public function name(): Attribute
+    {
+        return new Attribute(
+            get: fn () => collect([$this->manufacturer, $this->model])->filter()->implode(' '),
+        );
+    }
+
+    /**
      * Relationships
      */
-
-    public function client(): BelongsTo
-    {
-        return $this->belongsTo(Client::class);
-    }
-
-    public function inspectable(): MorphTo
-    {
-        return $this->morphTo();
-    }
-
     public function inspections(): HasMany
     {
         return $this->hasMany(Inspection::class);

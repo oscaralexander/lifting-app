@@ -1,0 +1,82 @@
+<?php
+
+namespace App\Livewire\Inspections;
+
+use App\Constants\Event;
+use App\Enums\InspectionObject\Type;
+use App\Livewire\Forms\CraneForm;
+use App\Livewire\Forms\OperatorLiftForm;
+use App\Models\InspectionObjects\Crane;
+use App\Models\InspectionObjects\OperatorLift;
+use Illuminate\View\View;
+use Livewire\Attributes\Computed;
+use Livewire\Attributes\Locked;
+use LivewireUI\Modal\ModalComponent;
+
+class InspectableModal extends ModalComponent
+{
+    #[Locked]
+    public ?int $inspectableId = null;
+
+    public CraneForm|OperatorLiftForm $inspectableForm;
+
+    #[Locked]
+    public Type $type;
+
+    #[Computed]
+    public function inspectable(): Crane|OperatorLift|null
+    {
+        switch ($this->type) {
+            case Type::CRANE:
+                return Crane::findOrNew($this->inspectableId);
+
+            case Type::OPERATOR_LIFT:
+                return OperatorLift::findOrNew($this->inspectableId);
+
+            default:
+                return null;
+        }
+    }
+
+    public function mount(Type $type, ?int $inspectableId = null): void
+    {
+        $this->type = $type;
+        $this->inspectableId = $inspectableId;
+
+        switch ($type) {
+            case Type::CRANE:
+                $this->inspectableForm = new CraneForm($this, 'inspectableForm');
+                break;
+
+            case Type::OPERATOR_LIFT:
+                $this->inspectableForm = new OperatorLiftForm($this, 'inspectableForm');
+                break;
+        }
+
+        if ($this->inspectableForm) {
+            $this->inspectableForm->init($this->inspectable);
+        }
+    }
+
+    public function render(): View
+    {
+        return view('livewire.inspections.inspectable-modal');
+    }
+
+    public function submit(): void
+    {
+        $data = $this->inspectableForm->validate();
+
+        $inspectable = $this->inspectable;
+        $inspectable->fill($data);
+        $inspectable->save();
+
+        $this->dispatch(Event::INSPECTABLE_SAVED,
+            inspectableId: $inspectable->id,
+            inspectableType: get_class($inspectable),
+        );
+        $this->dispatch(Event::TOAST, message: __('inspections.inspectable.toast.saved'), type: 'success');
+
+        $this->closeModal();
+    }
+}

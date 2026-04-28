@@ -25,7 +25,7 @@
 
     &__itemMeta {
         font-size: var(--font-size-s);
-        color: var(--color-text-light);
+        color: var(--color-text-lc);
     }
 
     &__itemActions {
@@ -34,7 +34,7 @@
     }
 
     &__empty {
-        color: var(--color-text-light);
+        color: var(--color-text-lc);
         text-align: center;
         padding: 1em;
     }

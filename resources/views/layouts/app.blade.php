@@ -7,11 +7,11 @@
         <meta name="viewport" content="initial-scale=1,width=device-width">
         <title>{{ $title ?? '' }} - {{ config('app.name') }}</title>
         @stack('meta')
-        <link href="https://fonts.googleapis.com" rel="preconnect">
-        <link href="https://fonts.gstatic.com" rel="preconnect">
         <link href="https://rsms.me/" rel="preconnect">
         <link href="https://rsms.me/inter/inter.css" rel="stylesheet">
-        <link href="https://fonts.googleapis.com/css2?family=Google+Sans:opsz,wght@17..18,700&display=swap" rel="stylesheet">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Google+Sans:ital,opsz,wght@0,17..18,700;1,17..18,700&family=Roboto+Condensed:wght@100..900&display=swap" rel="stylesheet">
         <link href="{{ env('APP_URL') }}/favicon.ico" rel="icon" type="image/x-icon">
         <link href="{{ env('APP_URL') }}/favicon.ico" rel="shortcut icon" type="image/x-icon">
         @vite(['resources/js/index.js', 'resources/css/style.scss'])

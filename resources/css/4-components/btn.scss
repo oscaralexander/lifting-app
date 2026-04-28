@@ -110,6 +110,11 @@
         padding-left: 0 !important;
         padding-right: 0 !important;
         width: var(--btn-height);
+
+        &.btn--small {
+            height: var(--btn-height-s);
+            width: var(--btn-height-s);
+        }
     }
 
     &--mini {
@@ -189,13 +194,13 @@
     }
 
     &--transparent {
-        background: rgba(#FFF, .15);
-        border-color: transparent;
-        color: #FFF;
+        background: transparent;
+        border: none;
+        color: var(--color-link);
 
-        &:hover {
-            background: rgba(#FFF, .25) !important;
-            color: #FFF !important;
+        &:not([disabled]):hover {
+            background: var(--btn-bg-color);
+            color: var(--color-link-hover);
         }
     }
 

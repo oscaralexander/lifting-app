@@ -20,17 +20,29 @@
         <table class="table table--border">
             <thead>
                 <tr>
-                    <th scope="col">@lang('inspection_objects.show.col_project')</th>
-                    <th scope="col">@lang('inspection_objects.show.col_date')</th>
-                    <th scope="col">@lang('inspection_objects.show.col_signed')</th>
+                    <th scope="col">@lang('inspections.index.col_project_name')</th>
+                    <th scope="col">@lang('inspections.index.col_date')</th>
+                    <th scope="col">@lang('inspections.index.col_signed')</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach ($this->inspectionObject->inspections as $inspection)
                     <tr>
-                        <td>{{ $inspection->project_name ?? '—' }}</td>
-                        <td>{{ $inspection->created_at->format('d-m-Y') }}</td>
-                        <td>{{ $inspection->signed_at?->format('d-m-Y') ?? '—' }}</td>
+                        <td>
+                            <a
+                                class="table__main"
+                                href="{{ route('inspections.form', [
+                                    'inspectionObjectId' => $inspection->inspection_object_id,
+                                    'formSlug' => $inspection->form->slug,
+                                    'inspectionHash' => $inspection->hash,
+                                ]) }}"
+                                wire:navigate
+                            >
+                                {{ $inspection->project_name ?? '—' }}
+                            </a>
+                        </td>
+                        <td>{{ $inspection->created_at->translatedFormat('d M, Y') }}</td>
+                        <td>{{ $inspection->signed_at?->translatedFormat('d M, Y') ?? '—' }}</td>
                     </tr>
                 @endforeach
             </tbody>

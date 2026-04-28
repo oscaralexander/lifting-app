@@ -15,7 +15,7 @@
         font-variant-numeric: tabular-nums;
         line-height: var(--line-height-m);
         text-align: left;
-        padding: .75rem;
+        padding: 1rem .75rem;
     }
 
     tr {
@@ -41,7 +41,7 @@
     thead {
         th {
             border-bottom: 1px solid var(--color-border-lc);
-            color: var(--color-text-light);
+            color: var(--color-text-lc);
             font-size: var(--font-size-s);
             font-weight: 500;
         }
@@ -92,10 +92,10 @@
         transition: color var(--duration-m);
 
         &--sorted {
-            color: var(--color-text-dark);
+            color: var(--color-text-hc);
 
             .table__sortableIcon {
-                color: var(--color-text-dark);
+                color: var(--color-text-hc);
             }
         }
 
@@ -112,12 +112,12 @@
         }
 
         &:hover {
-            color: var(--color-text-dark);
+            color: var(--color-text-hc);
         }
     }
 
     &__detailsMobile {
-        color: var(--color-text-light);
+        color: var(--color-text-lc);
         font-size: var(--font-size-s);
         line-height: var(--line-height-l);
         margin-top: .25em;
@@ -130,8 +130,13 @@
         box-shadow: 0 .15em .25em oklch(var(--color-dark-gray-lch) / .075);
 
         th, td {
-            padding-left: .75em !important;
-            padding-right: .75em !important;
+            &:first-child {
+                padding-left: 1em !important;
+            }
+
+            &:last-child {
+                padding-right: 1em !important;
+            }
         }
 
         tbody tr:last-child td,

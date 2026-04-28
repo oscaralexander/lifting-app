@@ -33,7 +33,7 @@
 
     &__tab {
         align-items: center;
-        color: var(--color-text-light);
+        color: var(--color-text-lc);
         display: flex;
         font-weight: 500;
         gap: .5rem;
@@ -59,7 +59,7 @@
         }
 
         &[aria-selected='true'] {
-            color: var(--color-text-dark);
+            color: var(--color-text-hc);
 
             &::after {
                 transform: scaleX(1);
@@ -78,7 +78,7 @@
             &[aria-selected='true'] {
                 background: var(--color-bg);
                 box-shadow: var(--box-shadow-s);
-                color: var(--color-text-dark);
+                color: var(--color-text-hc);
             }
         }
     }
@@ -86,7 +86,7 @@
     &__badge {
         background: var(--color-bg-tint);
         border-radius: .75rem;
-        color: var(--color-text-light);
+        color: var(--color-text-lc);
         display: inline-block;
         font-size: var(--font-size-xs);
         font-variant-numeric: tabular-nums;

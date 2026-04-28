@@ -1,0 +1,27 @@
+.emptyState {
+    align-items: center;
+    background: var(--color-bg-tint);
+    border: 1px solid var(--color-border);
+    border-radius: var(--input-border-radius);
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 2em;
+    text-align: center;
+
+    .icon {
+        color: var(--color-text-lc);
+        height: 2.5rem;
+        width: 2.5rem;
+    }
+
+    &__title {
+        color: var(--color-text-hc);
+    }
+
+    &__description {
+        line-height: var(--line-height-l);
+        max-width: 40ch;
+    }
+}

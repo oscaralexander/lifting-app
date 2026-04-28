@@ -34,7 +34,7 @@
     }
 
     &__icon {
-        color: var(--color-text-light);
+        color: var(--color-text-lc);
     }
 
     &__fieldGroupHeader {
@@ -60,13 +60,13 @@
     }
 
     &__fieldGroupFlex {
-        color: var(--color-text-dark);
+        color: var(--color-text-hc);
         font-weight: 500;
     }
 
     &__fieldGroupActions,
     &__fieldActions {
-        color: var(--color-text-light);
+        color: var(--color-text-lc);
         display: flex;
         gap: .25em;
     }
@@ -85,7 +85,7 @@
             align-items: center;
             border: 1px dashed var(--color-border);
             border-radius: calc(var(--input-border-radius) * .5);
-            color: var(--color-text-light);
+            color: var(--color-text-lc);
             content: attr(data-empty-text);
             display: flex;
             justify-content: center;
@@ -110,7 +110,7 @@
     
     &__fieldAction {
         border-radius: 50%;
-        color: var(--color-text-light);
+        color: var(--color-text-lc);
         cursor: pointer;
         display: flex;
         height: 2.25rem;
@@ -181,7 +181,7 @@
 
     &__comment {
         line-height: var(--line-height-l);
-        color: var(--color-text-light);
+        color: var(--color-text-lc);
     }
 
     &__groupedFields {
@@ -195,7 +195,7 @@
             align-items: center;
             border: 1px dashed var(--color-border);
             border-radius: calc(var(--input-border-radius) * .5);
-            color: var(--color-text-light);
+            color: var(--color-text-lc);
             content: attr(data-empty-text);
             display: flex;
             justify-content: center;

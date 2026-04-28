@@ -17,7 +17,7 @@
         text-align: left;
 
         .lucide {
-            color: var(--color-text-light) !important;
+            color: var(--color-text-lc) !important;
             height: 1.25rem;
             width: 1.25rem;
         }
@@ -29,7 +29,7 @@
         &:hover,
         &:focus-visible {
             background: var(--color-gray-tint-hover);
-            color: var(--color-text-dark);
+            color: var(--color-text-hc);
             outline: none;
         }
     }

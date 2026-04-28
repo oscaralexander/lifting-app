@@ -3,10 +3,9 @@
 namespace App\Models\InspectionObjects;
 
 use App\Enums\InspectionObject\OperatorLift\BaseMount;
-use App\Models\InspectionObject;
-use Illuminate\Database\Eloquent\Casts\Attribute;
+use App\Models\Inspection;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\MorphOne;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 class OperatorLift extends Model
 {
@@ -17,22 +16,10 @@ class OperatorLift extends Model
     protected $guarded = ['id'];
 
     /**
-     * Attributes
-     */
-
-    public function name(): Attribute
-    {
-        return new Attribute(
-            get: fn () => collect([$this->manufacturer, $this->model])->filter()->implode(' '),
-        );
-    }
-
-    /**
      * Relationships
      */
-
-    public function inspectionObject(): MorphOne
+    public function inspections(): MorphMany
     {
-        return $this->morphOne(InspectionObject::class, 'inspectable');
+        return $this->morphMany(Inspection::class, 'inspectable');
     }
 }

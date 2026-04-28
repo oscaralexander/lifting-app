@@ -1,21 +1,32 @@
 <?php
 
+use App\Constants\Event;
 use App\Constants\SessionKey;
-use App\Enums\CountryCode;
 use App\Enums\FieldType;
+use App\Enums\InspectionObject\Type as InspectionObjectType;
 use App\Lib\FormItems;
-use App\Livewire\Forms\InspectionForm;
+use App\Livewire\Forms\InspectionSubmissionForm;
+use App\Models\Client;
 use App\Models\Inspection;
 use App\Models\InspectionObject;
+use App\Models\InspectionObjects\Crane;
+use App\Models\InspectionObjects\OperatorLift;
 use App\Models\Form;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Livewire\Component;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Locked;
+use Livewire\Attributes\On;
+use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
+use Livewire\WithFileUploads;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 new class extends Component
 {
-    public InspectionForm $form;
+    use WithFileUploads;
+
+    public InspectionSubmissionForm $submissionForm;
 
     #[Locked]
     public ?string $inspectionHash = null;
@@ -27,7 +38,36 @@ new class extends Component
     public string $formSlug;
 
     #[Computed]
-    public function schema(): Form
+    public function client(): ?Client
+    {
+        if ($this->form->client_id) {
+            return Client::find($this->form->client_id);
+        }
+
+        return null;
+    }
+
+    public function deleteImage(string $fieldId, string $image): void
+    {
+        if (!Storage::disk('local')->exists($image)) {
+            abort(404);
+        }
+
+        $this->submissionForm->deleteImage($fieldId, $image);
+        Storage::disk('local')->delete($image);
+    }
+
+    public function downloadImage(string $fieldId, string $image): BinaryFileResponse
+    {
+        if (!Storage::disk('local')->exists($image)) {
+            abort(404);
+        }
+
+        return response()->download(Storage::disk('local')->path($image));
+    }
+
+    #[Computed]
+    public function form(): Form
     {
         return Form::where('slug', $this->formSlug)->firstOrFail();
     }
@@ -35,11 +75,13 @@ new class extends Component
     #[Computed]
     public function inspection(): Inspection
     {
-        if ($this->inspectionHash) {
-            return Inspection::where('hash', $this->inspectionHash)->firstOrFail();
-        }
-
-        return new Inspection();
+        return Inspection::query()
+            ->with('client', 'form', 'inspectable', 'inspectionObject')
+            ->where('hash', $this->inspectionHash)
+            ->firstOrNew([
+                'form_id' => $this->form->id,
+                'inspection_object_id' => $this->inspectionObjectId,
+            ]);
     }
 
     #[Computed]
@@ -51,34 +93,48 @@ new class extends Component
     #[Computed]
     public function intro(): string
     {
-        return $this->schema->name . ' · ' . $this->inspectionObject->inspectable?->name;
+        return $this->form->name . ' · ' . $this->inspectionObject->name;
     }
 
-    public function mount(int $inspectionObjectId, string $formSlug, ?string $inspectionHash = null): void
+    public function mount(string $formSlug, int $inspectionObjectId, ?string $inspectionHash = null): void
     {
         $this->formSlug = $formSlug;
         $this->inspectionObjectId = $inspectionObjectId;
         $this->inspectionHash = $inspectionHash;
 
-        $this->form->init($this->inspection, $this->schema);
+        $this->submissionForm->init($this->inspection, $this->form);
     }
 
-    public function postalCodePattern(): string
+    #[On(Event::INSPECTABLE_SAVED)]
+    public function onInspectableSaved(int $inspectableId, string $inspectableType): void
     {
-        return match ($this->form->project_country) {
-            CountryCode::NL => '/^\d{4}\s?[A-Za-z]{2}$/',
-            CountryCode::BE => '/^\d{4}$/',
-            CountryCode::FR => '/^\d{5}$/',
-        };
+        $this->inspection->inspectable_id = $inspectableId;
+        $this->inspection->inspectable_type = $inspectableType;
+        $this->inspection->save();
+
+        unset($this->inspection);
     }
 
-    public function postalCodePlaceholder(): string
+    #[On(Event::INSPECTION_SAVED)]
+    public function onInspectionSaved(string $inspectionHash): void {
+        if (!$this->inspectionHash) {
+            $this->redirect(route('inspections.form', [
+                'formSlug' => $this->formSlug,
+                'inspectionObjectId' => $this->inspectionObjectId,
+                'inspectionHash' => $inspectionHash,
+            ]), navigate: true);
+
+            return;
+        }
+
+        unset($this->client);
+        unset($this->inspection);
+    }
+
+    #[On(Event::INSPECTION_OBJECT_SAVED)]
+    public function onInspectionObjectSaved(): void
     {
-        return match ($this->form->project_country) {
-            CountryCode::NL => '1234 AB',
-            CountryCode::BE => '1000',
-            CountryCode::FR => '75001',
-        };
+        unset($this->inspectionObject);
     }
 
     public function render()
@@ -87,101 +143,10 @@ new class extends Component
             ->title(__('inspections.create.title'));
     }
 
-    public function rules(): array
-    {
-        $rules = [
-            'form.project_name' => ['required', 'string', 'max:255'],
-            'form.project_address' => ['nullable', 'string', 'max:255'],
-            'form.project_postal_code' => ['nullable', 'string', 'max:20'],
-            'form.project_city' => ['nullable', 'string', 'max:255'],
-            'form.project_country' => ['required'],
-        ];
-
-        foreach ($this->schema->fields as $field) {
-            $fieldRules = [];
-            $key = 'form.fields.field_' . $field->pivot->id;
-
-            if ($field->pivot->required == 1) {
-                $fieldRules[] = 'required';
-            } else {
-                $fieldRules[] = 'nullable';
-            }
-
-            if ($field->type === FieldType::NUMBER) {
-                $fieldRules[] = 'numeric';
-            }
-
-            if ($field->type === FieldType::TOGGLE) {
-                $fieldRules[] = 'in:-1,0,1';
-            }
-
-            $rules[$key] = $fieldRules;
-        }
-
-        return $rules;
-    }
-
     public function submit(): void
     {
-        $this->validate(rules: $this->rules());
-
-        $formData = $this->form->fields;
-
-        foreach ($formData as $key => $value) {
-            if (is_array($value)) {
-                $pivotId = Str::of($key)->afterLast('_')->toInteger();
-                $field = $this->schema->fields->firstWhere('pivot.id', $pivotId);
-
-                if ($field && $field->type === FieldType::SELECT_MULTIPLE) {
-                    $formData[$key] = implode(',', array_keys(array_filter($value)));
-                }
-            }
-        }
-
-        $formData = array_filter($formData, fn ($value) => $value !== null);
-
-        $inspection = $this->inspection;
-        $inspection->inspection_object_id = $this->inspectionObject->id;
-        $inspection->form_id = $this->schema->id;
-        $inspection->user_id = auth('web')->id();
-        $inspection->project_name = $this->form->project_name;
-        $inspection->project_address = $this->form->project_address;
-        $inspection->project_postal_code = $this->form->project_postal_code;
-        $inspection->project_city = $this->form->project_city;
-        $inspection->project_country = $this->form->project_country->value;
-        $inspection->form_data = $formData;
-        $comments = $this->form->comments;
-
-        foreach ($this->schema->fields as $field) {
-            if ($field->type === FieldType::TOGGLE) {
-                $key = 'field_' . $field->pivot->id;
-
-                if (($formData[$key] ?? null) != -1) {
-                    unset($comments[$key]);
-                }
-            }
-        }
-
-        $inspection->comment_data = array_filter($comments, fn ($value) => $value !== null);
-        $inspection->save();
-
-        if ($inspection->wasRecentlyCreated) {
-            $this->redirect(route('inspections.form', [
-                'formSlug' => $this->schema->slug,
-                'inspectionObjectId' => $this->inspectionObject->id,
-                'inspectionHash' => $inspection->hash,
-            ]));
-
-            return;
-        }
-
-        session()->flash(SessionKey::TOAST_SUCCESS, __('ui.saved'));
-
-        $this->redirect(route('inspections.form', [
-            'formSlug' => $this->schema->slug,
-            'inspectionObjectId' => $this->inspectionObject->id,
-            'inspectionHash' => $this->inspectionHash,
-        ]));
+        $this->submissionForm->save();
+        $this->dispatch(Event::SAVE_MATRIX);
     }
 }
 ?>
@@ -189,87 +154,201 @@ new class extends Component
 <div>
     <x-header
         :intro="$this->intro"
-        :title="__('inspections.create.title')">
+        :title="$this->inspection->project_name ?: __('inspections.create.title')">
     </x-header>
-    <x-form class="form u-stack u-stack-gap-xl">
-        <div class="grid grid--gap-m">
-            <div class="grid__col l:grid__col--span-6">
-                <div class="u-stack u-stack-gap-m">
-                    <h2>Projectgegevens</h2>
-                    <div class="grid grid--gap-m">
-                        <div class="grid__col">
-                            <x-form.input
-                                :label="__('models/inspection.project_name.label')"
-                                model="form.project_name"
+    <x-form class="form form--full u-stack u-stack-gap-xl">
+        <div class="grid grid--gap-xxl">
+            <div class="grid__col l:grid__col--span-4">
+                <div class="u-stack u-stack-gap-xl">
+                    {{-- Project --}}
+                    <div class="u-stack u-stack-gap-m">
+                        <header class="u-flex u-flex-align-center u-flex-justify-between">
+                            <h2>@lang('inspections.form.heading_project')</h2>
+                            <x-btn
+                                :icon="$this->inspection->exists ? 'pencil' : 'plus'"
+                                small
+                                wire:click.prevent="$dispatch('openModal', {
+                                    component: 'inspections.inspection-modal',
+                                    arguments: {
+                                        formId: {{ $this->form->id }},
+                                        inspectionObjectId: {{ $this->inspectionObjectId }},
+                                        inspectionHash: {{ $this->inspection->exists ? '\'' . $this->inspection->hash . '\'' : 'null' }},
+                                    }
+                                })"
                             />
-                        </div>
-                        <div class="grid__col">
-                            <x-form.input
-                                :label="__('models/inspection.project_address.label')"
-                                model="form.project_address"
+                        </header>
+                        @if ($this->inspection->exists)
+                            <div>
+                                @if ($this->inspection->type)
+                                    <x-data-item :label="__('models/inspection.type.label')" :value="$this->inspection->type->label()" />
+                                @endif
+                                @if ($this->inspection->project_name)
+                                    <x-data-item :label="__('models/inspection.project_name.label')" :value="$this->inspection->project_name" />
+                                @endif
+                                @if ($this->inspection->client)
+                                    <x-data-item :label="__('models/inspection.client_id.label')" :value="$this->inspection->client->name" />
+                                @endif
+                                @if ($this->inspection->project_address || $this->inspection->project_postal_code || $this->inspection->project_city)
+                                    @php
+                                        $formattedAddress = collect([
+                                            $this->inspection->project_address,
+                                            trim($this->inspection->project_postal_code . ' ' . $this->inspection->project_city)
+                                        ])->filter()->implode('<br>');
+
+                                        $addressParam = collect([
+                                            $this->inspection->project_address,
+                                            trim($this->inspection->project_postal_code . ' ' . $this->inspection->project_city)
+                                        ])->filter()->implode(', ');
+
+                                        $addressUrl = 'https://www.google.com/maps/place/' . urlencode($addressParam);
+                                        $address = '<a href="' . $addressUrl . '" target="_blank">' . $formattedAddress . '</a>';
+                                    @endphp
+                                    <x-data-item
+                                        :label="__('models/inspection.project_address.label')"
+                                        :value="$address"
+                                    />
+                                @endif
+                            </div>
+                        @else
+                            <p class="u-muted">—</p>
+                        @endif
+                    </div>
+                    {{-- Object --}}
+                    <div class="u-stack u-stack-gap-m">
+                        <header class="u-flex u-flex-align-center u-flex-justify-between">
+                            <h2>@lang('inspections.form.heading_object')</h2>
+                            <x-btn
+                                icon="pencil"
+                                small
+                                wire:click.prevent="$dispatch('openModal', {
+                                    component: 'inspection-objects.inspection-object-modal',
+                                    arguments: {
+                                        id: {{ $this->inspectionObject->id }},
+                                        type: '{{ $this->inspectionObject->type->value }}'
+                                    }
+                                })"
                             />
-                        </div>
-                        <div class="grid__col l:grid__col--span-4">
-                            <x-form.input
-                                :label="__('models/inspection.project_postal_code.label')"
-                                model="form.project_postal_code"
-                                :placeholder="$this->postalCodePlaceholder()"
+                        </header>
+                        @if ($this->inspectionObject)
+                            <x-inspection-object :inspectionObject="$this->inspectionObject" />
+                        @endif
+                    </div>
+                    {{-- Inspectable --}}
+                    <div class="u-stack u-stack-gap-m">
+                        <header class="u-flex u-flex-align-center u-flex-justify-between">
+                            @if ($this->inspectionObject->type === InspectionObjectType::CRANE)
+                                <h2>@lang('inspections.form.heading_crane')</h2>
+                            @else
+                                <h2>@lang('inspections.form.heading_operator_lift')</h2>
+                            @endif
+                            <x-btn
+                                :icon="$this->inspection->inspectable ? 'pencil' : 'plus'"
+                                small
+                                wire:click.prevent="$dispatch('openModal', {
+                                    component: 'inspections.inspectable-modal',
+                                    arguments: {
+                                        type: '{{ $this->inspectionObject->type->value }}',
+                                        inspectableId: {{ $this->inspection->inspectable->id ?? 'null' }}
+                                    }
+                                })"
                             />
-                        </div>
-                        <div class="grid__col l:grid__col--span-8">
-                            <x-form.input
-                                :label="__('models/inspection.project_city.label')"
-                                model="form.project_city"
-                            />
-                        </div>
-                        <div class="grid__col">
-                            <x-form.select
-                                :label="__('clients.form.country.label')"
-                                wire:model.live="form.project_country"
-                                :options="CountryCode::options()"
-                            />
-                        </div>
+                        </header>
+                        @if ($this->inspection->inspectable instanceof Crane)
+                            @include('pages.inspections._inspectable-crane', ['crane' => $this->inspection->inspectable])
+                        @elseif ($this->inspection->inspectable instanceof OperatorLift)
+                            @include('pages.inspections._inspectable-operator-lift', ['operatorLift' => $this->inspection->inspectable])
+                        @endif
                     </div>
                 </div>
             </div>
-        </div>
-        @php
-            $items = FormItems::get($this->schema);
-        @endphp
-        <div class="u-stack u-stack-gap-m">
-            <h2>{{ $this->schema->name }}</h2>
-            <div class="inspection">
-                @foreach ($items as $item)
-                    @switch($item['type'])
-                        @case('fieldGroup')
-                            @if($item['fieldGroup']->fields->count() > 0)
-                                <x-submission.field-group :field-group="$item['fieldGroup']" />
+            <div class="grid__col l:grid__col--span-8">
+                <div class="u-stack u-stack-gap-xl">
+                    @if ($this->inspection->exists)
+                        @php
+                            $items = FormItems::get($this->form);
+                        @endphp
+                        <div class="u-stack u-stack-gap-m">
+                            <h2>{{ $this->form->name }}</h2>
+                            <div class="inspection">
+                                @foreach ($items as $item)
+                                    @switch($item['type'])
+                                        @case('fieldGroup')
+                                            @if($item['fieldGroup']->fields->count() > 0)
+                                                <x-submission.field-group :field-group="$item['fieldGroup']" :form="$this->submissionForm" />
+                                            @endif
+                                            @break
+            
+                                        @case('field')
+                                            <x-submission.field :field="$item['field']" :form="$this->submissionForm" />
+                                            @break
+            
+                                        @case('formComment')
+                                            <x-submission.form-comment :form-comment="$item['formComment']" />
+                                            @break
+                                    @endswitch
+                                @endforeach
+                            </div>
+                        </div>
+                        @php
+                            $toggleFieldKeys = $this->form->fields
+                                ->filter(fn($f) => $f->type === FieldType::TOGGLE)
+                                ->map(fn($f) => 'field_' . $f->pivot->id)
+                                ->values()
+                                ->toArray();
+                        @endphp
+                        <div class="u-stack u-stack-gap-m" x-data="{
+                            get allTogglesPassed() {
+                                const keys = @js($toggleFieldKeys);
+
+                                if (keys.length === 0) {
+                                    return true;
+                                }
+
+                                return keys.every(key => {
+                                    const val = $wire.submissionForm.fields[key];
+                                    return val === 0 || val === 1 || val === '0' || val === '1';
+                                });
+                            }
+                        }">
+                            <div class="submission__complete" x-cloak x-show="allTogglesPassed">
+                                @lang('inspections.form.status.passed')
+                            </div>
+                            {{-- 
+                            <div class="submission__incomplete" x-cloak x-show="!allTogglesPassed">
+                                <x-icon icon="x" />
+                                @lang('inspections.form.status.failed')
+                            </div>
+                             --}}
+                            <x-form.lightswitch
+                                model="submissionForm.is_completed"
+                                :text="__('models/inspection.is_completed.text')"
+                            />
+                        </div>
+                        <div class="actions">
+                            <x-btn primary submit>@lang('ui.save')</x-btn>
+                            @if ($this->inspection->exists)
+                                <span>
+                                    @lang('ui.or')
+                                    <x-btn text href="{{ route('inspection-objects.show', $this->inspectionObject->id) }}">@lang('ui.cancel')</x-btn>
+                                </span>
                             @endif
-                            @break
-
-                        @case('field')
-                            <x-submission.field :field="$item['field']" />
-                            @break
-
-                        @case('formComment')
-                            <x-submission.form-comment :form-comment="$item['formComment']" />
-                            @break
-                    @endswitch
-                @endforeach
+                        </div>
+                    @else
+                        <div class="emptyState">
+                            <div class="emptyState__icon">
+                                <x-icon icon="info" />
+                            </div>
+                            <div class="u-stack u-stack-gap-xs">
+                                <h3 class="emptyState__title">@lang('inspections.form.empty.title')</h3>
+                                <p class="emptyState__description">@lang('inspections.form.empty.description')</p>
+                            </div>
+                        </div>
+                    @endif
+                </div>
             </div>
         </div>
-        <x-form.lightswitch
-            model="form.is_completed"
-            :text="__('models/inspection.is_completed.text')"
-        />
-        <div class="actions">
-            <x-btn primary submit>@lang('ui.save')</x-btn>
-            @if ($this->inspection->exists)
-                <span>
-                    @lang('ui.or')
-                    <x-btn text href="{{ route('inspection-objects.show', $this->inspectionObject->id) }}">@lang('ui.cancel')</x-btn>
-                </span>
-            @endif
-        </div>
+        @if ($this->inspection->exists)
+            <livewire:inspections.test-matrix :inspection-hash="$this->inspectionHash" />
+        @endif
     </x-form>
 </div>

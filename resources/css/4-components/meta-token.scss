@@ -1,0 +1,20 @@
+.metaToken {
+    background: var(--btn-bg-color);
+    border-radius: .25rem;
+    color: var(--color-1);
+    cursor: pointer;
+    display: inline-block;
+    font-variant-numeric: tabular-nums;
+    font-weight: 500;
+    margin-right: .25em;
+    min-width: 1.75em;
+    padding: 0 .35em;
+    text-align: center;
+    transition: background var(--duration-s);
+
+    &:hover,
+    &:focus-visible {
+        background: var(--btn-bg-color-hover);
+        outline: none;
+    }
+}

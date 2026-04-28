@@ -21,7 +21,7 @@
 
     &__label {
         align-self: flex-start;
-        color: var(--color-text-dark);
+        color: var(--color-text-hc);
         display: flex;
         font-size: var(--font-size-s);
         font-weight: 500;
@@ -37,7 +37,7 @@
     }
 
     &__description {
-        color: var(--color-text-light);
+        color: var(--color-text-lc);
         font-size: var(--font-size-s);
         line-height: var(--line-height-l);
         margin-top: -.5rem;

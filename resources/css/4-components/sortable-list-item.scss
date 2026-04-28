@@ -19,7 +19,7 @@
     &__handle {
         align-items: center;
         align-self: stretch;
-        color: var(--color-text-light);
+        color: var(--color-text-lc);
         cursor: grab;
         display: flex;
         font-size: 1em;
@@ -49,7 +49,7 @@
     }
 
     &__action {
-        color: var(--color-text-light);
+        color: var(--color-text-lc);
 
         &:hover {
             color: var(--color-text);

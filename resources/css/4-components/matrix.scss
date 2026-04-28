@@ -1,0 +1,97 @@
+.matrix {
+    table {
+        border-collapse: collapse;
+        border-spacing: 0;
+        min-width: 100%;
+
+        th, td {
+            border: 1px solid var(--color-border);
+            font-size: var(--font-size-xs);
+            font-weight: 500;
+            line-height: 1.25;
+            padding: .5rem;
+
+            &:has(input) {
+                padding: 0 4px;
+                position: relative;
+            }
+        }
+
+        th {
+            color: var(--color-text-hc);
+        }
+
+        th.subheading {
+            color: var(--color-text-hc);
+            font-weight: 500;
+        }
+
+        .border-right {
+            border-right-color: var(--color-border-hc);
+        }
+
+        thead {
+            th.rotate {
+                line-height: 1.25;
+                transform: rotate(-180deg);
+                writing-mode: vertical-rl;
+                // white-space: nowrap;
+                text-align: left;
+            }
+
+            th.heading {
+                font-weight: 600;
+                text-transform: uppercase;
+            }
+
+            th.border-bottom {
+                border-bottom-color: var(--color-border-hc);
+            }
+
+            th:not(.rotate) {
+                vertical-align: bottom;
+            }
+
+            tr:last-child {
+                th {
+                    border-bottom-color: var(--color-border-hc);
+                }
+            }
+        }
+
+        tbody {
+            td, th {
+                text-align: center;
+
+                svg {
+                    display: inline-block;
+                    height: 1rem;
+                    width: 1rem;
+                }
+            }
+
+            tr:hover {
+                th, td {
+                    background: var(--color-bg-tint);
+                }
+            }
+        }
+    }
+
+    input {
+        appearance: none;
+        background: var(--color-bg-tint);
+        border: none;
+        color: var(--color-text);
+        display: block;
+        font-size: var(--font-size-xs);
+        font-weight: 500;
+        height: 1.5rem;
+        line-height: 1.25;
+        margin: 0;
+        min-width: 0;
+        outline: none;
+        text-align: center;
+        width: 100%;
+    }
+}

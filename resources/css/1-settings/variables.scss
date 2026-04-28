@@ -47,15 +47,15 @@
     --color-dark-gray-lch: 25% 0.02 260;
 
     --color-text: oklch(45% 0.02 260);
-    --color-text-dark: oklch(0 0 0);
-    --color-text-light: oklch(67.5% 0.02 260);
+    --color-text-hc: oklch(0 0 0);
+    --color-text-lc: oklch(67.5% 0.02 260);
     --color-text-lc: oklch(80% 0.02 260);
 
     --color-link: var(--color-1);
-    --color-link-hover: var(--color-text-dark);
+    --color-link-hover: var(--color-text-hc);
 
     --color-border: oklch(90% .02 260);
-    --color-border-dark: oklch(85% .02 260);
+    --color-border-hc: oklch(75% .02 260);
     --color-border-lc: oklch(95% .015 260);
 
     --color-bg: rgb(255, 255, 255);

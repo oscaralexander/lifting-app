@@ -4,10 +4,10 @@
     display: flex;
     justify-content: space-between;
     line-height: var(--line-height-l);
-    padding: 1rem 0 .25rem;
+    padding: .75rem 0 .25rem;
 
     &__label {
-        color: var(--color-text-light);
+        color: var(--color-text-lc);
         font-size: var(--font-size-s);
     }
 

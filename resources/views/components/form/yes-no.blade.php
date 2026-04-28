@@ -1,8 +1,11 @@
+@use('App\Lib\MetaLabel')
+
 @props([
     'description' => null,
     'id' => null,
     'name' => null,
     'model' => null,
+    'metaFieldId' => null,
     'required' => false,
     'text' => null,
     'value' => 1,
@@ -31,12 +34,19 @@
 <div class="field">
     <div class="yesNo">
         @if ($text)
+            @php
+                $renderedLabel = nl2br(Purify::config('label')->clean($text));
+
+                if ($metaFieldId !== null) {
+                    $renderedLabel = MetaLabel::render($renderedLabel, $metaFieldId);
+                }
+            @endphp
             <label
                 @class([
                     'yesNo__label',
                     'yesNo__label--required' => $required,
                 ])
-            >{!! nl2br(Purify::config('label')->clean($text)) !!}</label>
+            >{!! $renderedLabel !!}</label>
         @endif
         <div class="yesNo__switch"
              x-data="{ index: {{ $highlightIndex }} }"

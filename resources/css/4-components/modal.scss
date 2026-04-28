@@ -70,7 +70,7 @@
     }
 
     &__title {
-        color: var(--color-text-dark);
+        color: var(--color-text-hc);
         font-weight: 500;
         flex: 1;
     }
@@ -81,7 +81,7 @@
         background: transparent;
         border: none;
         border-radius: 50%;
-        color: var(--color-text-light);
+        color: var(--color-text-lc);
         cursor: pointer;
         display: flex;
         height: 2.5rem;

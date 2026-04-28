@@ -39,7 +39,6 @@ new class extends Component
                 <tr>
                     <th scope="col">@lang('inspection_objects.index.col_name')</th>
                     <th scope="col">@lang('inspection_objects.index.col_type')</th>
-                    <th scope="col">@lang('inspection_objects.index.col_client')</th>
                     <th scope="col">@lang('inspection_objects.index.col_next_inspection_before')</th>
                     <th class="table__num" scope="col">@lang('inspection_objects.index.col_inspections')</th>
                     <th scope="col">&nbsp;</th>
@@ -49,19 +48,9 @@ new class extends Component
                 @foreach ($this->inspectionObjects as $inspectionObject)
                     <tr>
                         <td>
-                            <a href="{{ route('inspection-objects.show', $inspectionObject) }}" wire:navigate>{{ $inspectionObject->inspectable?->name ?? 'Geen naam' }}</a>
+                            <a href="{{ route('inspection-objects.show', $inspectionObject) }}" wire:navigate>{{ $inspectionObject->name ?: 'Geen naam' }}</a>
                         </td>
                         <td>{{ $inspectionObject->type->label() }}</td>
-                        <td>
-                            <a
-                                href="#"
-                                x-on:click.prevent="$dispatch('openModal', {
-                                    component: 'clients.client-modal',
-                                    arguments: {
-                                        id: {{ $inspectionObject->client->id }},
-                                    }})"
-                            >{{ $inspectionObject->client->name }}</a>
-                        </td>
                         <td>{{ $inspectionObject->next_inspection_before }}</td>
                         <td class="table__num">{{ $inspectionObject->inspections_count }}</td>
                         <td>

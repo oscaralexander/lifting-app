@@ -3,9 +3,16 @@
 
 <x-tabs.tab-panel id="boom">
     <div class="grid grid--gap-m">
+        <div class="grid__col l:grid__col--span-6">
+            <x-form.input
+                :label="__('models/crane.hook_height.label')"
+                model="inspectableForm.hook_height"
+                :suffix="__('ui.units.meters')"
+                type="number"
+            />
+        </div>
         <div class="grid__col">
-            <x-form.select
-                default="—"
+            <x-form.multi-select
                 :label="__('models/crane.boom_type.label')"
                 model="inspectableForm.boom_type"
                 :options="BoomType::options()"
@@ -36,11 +43,11 @@
             <x-form.input
                 :label="__('models/crane.boom_length.label')"
                 model="inspectableForm.boom_length"
-                :suffix="__('models/crane.boom_length.unit')"
+                :suffix="__('ui.units.meters')"
                 type="number"
             />
         </div>
-        <div class="grid__col l:grid__col--span-6" x-show="$wire.inspectableForm.boom_type === '{{ BoomType::TELESCOPIC->value }}'">
+        <div class="grid__col l:grid__col--span-6" x-show="Array.isArray($wire.inspectableForm.boom_type) && $wire.inspectableForm.boom_type.includes('{{ BoomType::TELESCOPIC->value }}')">
             <x-form.input
                 :label="__('models/crane.boom_parts.label')"
                 model="inspectableForm.boom_parts"
@@ -51,7 +58,7 @@
             <x-form.input
                 :label="__('models/crane.boom_luffing_angle.label')"
                 model="inspectableForm.boom_luffing_angle"
-                :suffix="__('models/crane.boom_luffing_angle.unit')"
+                :suffix="__('ui.units.degrees')"
                 type="number"
             />
         </div>

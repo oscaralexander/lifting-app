@@ -32,17 +32,9 @@ return [
         'col_type' => 'Type',
         'title' => 'Inspectieobjecten',
     ],
-    'form' => [
-        'tab_base' => 'Onderwagen',
-        'tab_boom' => 'Giek',
-        'tab_crane' => 'Kraan',
-        'tab_general' => 'Algemeen',
-        'tab_lift' => 'Lift',
-        'tab_rail' => 'Rail',
-    ],
     'modal' => [
-        'title_create' => 'Nieuwe kraan',
-        'title_edit' => 'Kraan bewerken',
+        'title_create' => 'Nieuw inspectieobject',
+        'title_edit' => 'Inspectieobject bewerken',
     ],
     'toast' => [
         'created' => 'Kraan aangemaakt',
