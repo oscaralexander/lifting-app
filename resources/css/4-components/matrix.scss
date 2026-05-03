@@ -26,8 +26,29 @@
             font-weight: 500;
         }
 
+        .border-left {
+            border-left-color: var(--color-border-hc);
+        }
+
         .border-right {
             border-right-color: var(--color-border-hc);
+        }
+
+        .passed {
+            background: var(--color-success-tint);
+            color: var(--color-success);
+            font-weight: 500;
+        }
+
+        .failed {
+            background: var(--color-danger-tint);
+            color: var(--color-danger);
+            font-weight: 500;
+        }
+
+        .neutral {
+            background: var(--color-bg);
+            color: var(--color-text-lc);
         }
 
         thead {
@@ -67,12 +88,6 @@
                     display: inline-block;
                     height: 1rem;
                     width: 1rem;
-                }
-            }
-
-            tr:hover {
-                th, td {
-                    background: var(--color-bg-tint);
                 }
             }
         }

@@ -296,43 +296,6 @@ new class extends Component
                                 ->values()
                                 ->toArray();
                         @endphp
-                        <div class="u-stack u-stack-gap-m" x-data="{
-                            get allTogglesPassed() {
-                                const keys = @js($toggleFieldKeys);
-
-                                if (keys.length === 0) {
-                                    return true;
-                                }
-
-                                return keys.every(key => {
-                                    const val = $wire.submissionForm.fields[key];
-                                    return val === 0 || val === 1 || val === '0' || val === '1';
-                                });
-                            }
-                        }">
-                            <div class="submission__complete" x-cloak x-show="allTogglesPassed">
-                                @lang('inspections.form.status.passed')
-                            </div>
-                            {{-- 
-                            <div class="submission__incomplete" x-cloak x-show="!allTogglesPassed">
-                                <x-icon icon="x" />
-                                @lang('inspections.form.status.failed')
-                            </div>
-                             --}}
-                            <x-form.lightswitch
-                                model="submissionForm.is_completed"
-                                :text="__('models/inspection.is_completed.text')"
-                            />
-                        </div>
-                        <div class="actions">
-                            <x-btn primary submit>@lang('ui.save')</x-btn>
-                            @if ($this->inspection->exists)
-                                <span>
-                                    @lang('ui.or')
-                                    <x-btn text href="{{ route('inspection-objects.show', $this->inspectionObject->id) }}">@lang('ui.cancel')</x-btn>
-                                </span>
-                            @endif
-                        </div>
                     @else
                         <div class="emptyState">
                             <div class="emptyState__icon">
@@ -350,5 +313,42 @@ new class extends Component
         @if ($this->inspection->exists)
             <livewire:inspections.test-matrix :inspection-hash="$this->inspectionHash" />
         @endif
+        <div class="u-stack u-stack-gap-m" x-data="{
+            get allTogglesPassed() {
+                const keys = @js($toggleFieldKeys);
+
+                if (keys.length === 0) {
+                    return true;
+                }
+
+                return keys.every(key => {
+                    const val = $wire.submissionForm.fields[key];
+                    return val === 0 || val === 1 || val === '0' || val === '1';
+                });
+            }
+        }">
+            <div class="submission__complete" x-cloak x-show="allTogglesPassed">
+                @lang('inspections.form.status.passed')
+            </div>
+            {{-- 
+            <div class="submission__incomplete" x-cloak x-show="!allTogglesPassed">
+                <x-icon icon="x" />
+                @lang('inspections.form.status.failed')
+            </div>
+             --}}
+            <x-form.lightswitch
+                model="submissionForm.is_completed"
+                :text="__('models/inspection.is_completed.text')"
+            />
+        </div>
+        <div class="actions">
+            <x-btn primary submit>@lang('ui.save')</x-btn>
+            @if ($this->inspection->exists)
+                <span>
+                    @lang('ui.or')
+                    <x-btn text href="{{ route('inspection-objects.show', $this->inspectionObject->id) }}">@lang('ui.cancel')</x-btn>
+                </span>
+            @endif
+        </div>
     </x-form>
 </div>

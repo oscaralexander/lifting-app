@@ -3,6 +3,7 @@
 namespace App\Livewire\Schemas;
 
 use App\Constants\Event;
+use App\Livewire\Concerns\HandlesDecimalInput;
 use App\Models\FieldGroup;
 use App\Models\Form;
 use Illuminate\View\View;
@@ -12,6 +13,10 @@ use LivewireUI\Modal\ModalComponent;
 
 class FieldGroupModal extends ModalComponent
 {
+    use HandlesDecimalInput;
+
+    protected array $decimalProperties = ['number'];
+
     #[Locked]
     public ?int $id = null;
 
@@ -27,6 +32,7 @@ class FieldGroupModal extends ModalComponent
     {
         $fieldGroup = FieldGroup::findOrNew($this->id);
         $fieldGroup->form()->associate($this->formId);
+
         return $fieldGroup;
     }
 
@@ -62,10 +68,11 @@ class FieldGroupModal extends ModalComponent
 
     public function submit(): void
     {
+        $this->normalizeDecimalInputs();
         $this->validate();
         $exists = $this->fieldGroup->exists;
 
-        if (!$exists) {
+        if (! $exists) {
             $this->fieldGroup->position = $this->form->getNextPosition();
         }
 
@@ -73,7 +80,7 @@ class FieldGroupModal extends ModalComponent
         $this->fieldGroup->number = $this->number;
         $this->fieldGroup->save();
 
-        $this->dispatch('toast', message: __('form_builder.toast.field_group_' . ($exists ? 'updated' : 'created')), type: 'success');
+        $this->dispatch('toast', message: __('form_builder.toast.field_group_saved'), type: 'success');
         $this->closeModalWithEvents([Event::REFRESH]);
     }
 }

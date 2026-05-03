@@ -13,16 +13,18 @@
                 <x-form.input
                     :label="__('models/crane.central_ballast.label')"
                     model="inspectableForm.central_ballast"
+                    step="0.01"
                     type="number"
-                    :suffix="__('ui.units.kilograms')"
+                    :suffix="__('ui.units.tons')"
                 />
             </div>
             <div class="grid__col l:grid__col--span-6">
                 <x-form.input
                     :label="__('models/crane.counter_ballast.label')"
                     model="inspectableForm.counter_ballast"
+                    step="0.01"
                     type="number"
-                    :suffix="__('ui.units.kilograms')"
+                    :suffix="__('ui.units.tons')"
                 />
             </div>
         </div>

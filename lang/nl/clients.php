@@ -45,8 +45,7 @@ return [
         'title_edit' => 'Klant bewerken',
     ],
     'toast' => [
-        'created' => 'Klant aangemaakt',
         'deleted' => 'Klant verwijderd',
-        'updated' => 'Klant aangepast',
+        'saved' => 'Klant opgeslagen',
     ],
 ];

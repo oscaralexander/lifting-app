@@ -24,7 +24,7 @@ new class extends Component
         $this->dispatch('toast', message: __('clients.toast.deleted'), type: 'success');
     }
 
-    #[On(Event::REFRESH)]
+    #[On(Event::CLIENT_SAVED)]
     public function render()
     {
         return $this->view()

@@ -29,7 +29,7 @@ class FieldGroupModal extends ModalComponent
     {
         $fieldGroup = $this->id
             ? FieldGroup::findOrFail($this->id)
-            : new FieldGroup();
+            : new FieldGroup;
         $fieldGroup->form_id = $this->formId;
 
         return $fieldGroup;
@@ -75,7 +75,7 @@ class FieldGroupModal extends ModalComponent
         $this->fieldGroup->name_nl = $this->name_nl;
         $this->fieldGroup->save();
 
-        $this->dispatch('toast', message: __('field_groups.toast.' . ($exists ? 'updated' : 'created')), type: 'success');
+        $this->dispatch('toast', message: __('field_groups.toast.saved'), type: 'success');
 
         $this->closeModalWithEvents([
             Edit::class => Event::REFRESH,

@@ -3,6 +3,8 @@
 namespace App\Livewire\Inspections;
 
 use App\Constants\Event;
+use App\Enums\InspectionObject\Type;
+use App\Enums\InspectionObject\Crane\Type as CraneType;
 use App\Models\Inspection;
 use Illuminate\View\View;
 use Livewire\Attributes\Computed;
@@ -20,7 +22,10 @@ class TestMatrix extends Component
     #[Computed]
     public function inspection(): Inspection
     {
-        return Inspection::with('inspectable')
+        return Inspection::with([
+                'inspectionObject',
+                'inspectable'
+            ])
             ->where('hash', $this->inspectionHash)
             ->firstOrFail();
     }
@@ -39,7 +44,16 @@ class TestMatrix extends Component
 
     public function render(): View
     {
-        return view('livewire.inspections.test-matrix');
+        $type = $this->inspection->inspectionObject?->type;
+        $craneType = $this->inspection->inspectable?->type;
+
+        if ($type === Type::CRANE) {
+            if ($craneType === CraneType::TOWER_CRANE || $craneType === CraneType::MOBILE_TOWER_CRANE) {
+                return view('livewire.inspections.test-matrix.tc-mtc');
+            }
+        }
+
+        return view('livewire.inspections.test-matrix.none');
     }
 
     #[On(Event::SAVE_MATRIX)]

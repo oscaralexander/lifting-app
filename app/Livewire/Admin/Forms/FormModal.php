@@ -28,7 +28,7 @@ class FormModal extends ModalComponent
     {
         return $this->id
             ? Form::findOrFail($this->id)
-            : new Form();
+            : new Form;
     }
 
     public function mount(?int $id): void
@@ -66,7 +66,7 @@ class FormModal extends ModalComponent
         $this->form->type = $this->type ?? FormType::BASELINE_INSPECTION;
         $this->form->save();
 
-        $this->dispatch('toast', message: __('forms.toast.' . ($exists ? 'updated' : 'created')), type: 'success');
+        $this->dispatch('toast', message: __('forms.toast.saved'), type: 'success');
 
         $this->closeModalWithEvents([
             Index::class => Event::REFRESH,

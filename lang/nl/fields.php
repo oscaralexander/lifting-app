@@ -29,5 +29,6 @@ return [
     'toast' => [
         'added' => 'Veld toegevoegd.',
         'deleted' => 'Veld verwijderd.',
+        'saved' => 'Veld opgeslagen',
     ],
 ];

@@ -57,6 +57,7 @@
                 <x-form.input
                     :label="__('models/crane.base_length.label')"
                     model="inspectableForm.base_length"
+                    step="0.01"
                     :suffix="__('ui.units.meters')"
                     type="number"
                 />
@@ -65,6 +66,7 @@
                 <x-form.input
                     :label="__('models/crane.base_width.label')"
                     model="inspectableForm.base_width"
+                    step="0.01"
                     :suffix="__('ui.units.meters')"
                     type="number"
                 />

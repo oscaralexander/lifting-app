@@ -14,32 +14,34 @@ return new class extends Migration
     {
         Schema::create('cranes', function (Blueprint $table) {
             $table->id();
+
+            // General
             $table->enum('type', array_column(Type::cases(), 'value'))->nullable();
             $table->integer('hook_height')->nullable();
-            $table->integer('central_ballast')->nullable();
-            $table->integer('counter_ballast')->nullable();
+            $table->decimal('central_ballast', 8, 2)->nullable();
+            $table->decimal('counter_ballast', 8, 2)->nullable();
             $table->string('exchangeable_parts')->nullable();
             $table->enum('undercarriage', array_column(Undercarriage::cases(), 'value'))->nullable();
             $table->enum('base_configuration', array_column(BaseConfiguration::cases(), 'value'))->nullable();
             $table->enum('outrigger_type', array_column(OutriggerType::cases(), 'value'))->nullable();
 
-            // Undercarriage/Base
+            // Base
             $table->string('base_manufacturer')->nullable();
             $table->string('base_model')->nullable();
             $table->string('base_serial_number')->nullable();
             $table->string('base_asset_number')->nullable();
-            $table->integer('base_length')->nullable();
-            $table->integer('base_width')->nullable();
-            $table->integer('base_rail_track_gauge')->nullable();
-            $table->integer('base_rail_wheelbase')->nullable();
-            $table->integer('base_crane_track_length')->nullable();
+            $table->decimal('base_length', 8, 2)->nullable();
+            $table->decimal('base_width', 8, 2)->nullable();
+            $table->decimal('base_rail_track_gauge', 8, 2)->nullable();
+            $table->decimal('base_rail_wheelbase', 8, 2)->nullable();
+            $table->decimal('base_crane_track_length', 8, 2)->nullable();
 
-            // Boom/jib
+            // Boom
             $table->json('boom_type')->nullable();
             $table->boolean('boom_is_adjustable')->default(0);
             $table->boolean('boom_is_luffing')->default(0);
             $table->boolean('boom_is_trolley')->default(0);
-            $table->integer('boom_length')->nullable();
+            $table->decimal('boom_length', 8, 2)->nullable();
             $table->integer('boom_parts')->nullable();
             $table->integer('boom_luffing_angle')->nullable();
 

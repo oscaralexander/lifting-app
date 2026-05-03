@@ -8,10 +8,10 @@ use App\Models\Sticker;
 use App\Models\StockItem;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Storage;
-use Livewire\Component;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Url;
+use Livewire\Component;
 use Livewire\WithPagination;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
@@ -31,7 +31,7 @@ class Index extends Component
     {
         $sticker = Sticker::with('stockItem')->findOrFail($stickerId);
 
-        return Storage::download($sticker->path, $sticker->stockItem->stock_id . '.pdf', [
+        return Storage::download($sticker->path, $sticker->stockItem->stock_id.'.pdf', [
             'Content-Type' => 'application/pdf',
         ]);
     }
@@ -41,7 +41,7 @@ class Index extends Component
         $this->stockId = $stockId;
     }
 
-    #[On(Event::DOCUMENT_CREATED)]
+    #[On(Event::DOCUMENT_SAVED)]
     public function render()
     {
         return view('livewire.admin.stock-items.index');
@@ -65,11 +65,11 @@ class Index extends Component
             })
             ->when($this->search, function ($query) {
                 return $query->where(function ($query) {
-                    $query->where('stock_id', 'like', '%' . $this->search . '%')
-                        ->orWhere('serial_no', 'like', '%' . $this->search . '%')
+                    $query->where('stock_id', 'like', '%'.$this->search.'%')
+                        ->orWhere('serial_no', 'like', '%'.$this->search.'%')
                         ->orWhereHas('machine', function ($query) {
-                            $query->where('name', 'like', '%' . $this->search . '%')
-                                ->orWhere('model', 'like', '%' . $this->search . '%');
+                            $query->where('name', 'like', '%'.$this->search.'%')
+                                ->orWhere('model', 'like', '%'.$this->search.'%');
                         });
                 });
             })

@@ -3,8 +3,8 @@
 namespace App\Livewire\Admin\Forms;
 
 use App\Constants\Event;
-use App\Models\FormComment;
 use App\Models\Form;
+use App\Models\FormComment;
 use Illuminate\View\View;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Locked;
@@ -29,7 +29,7 @@ class FormCommentModal extends ModalComponent
     {
         $formComment = $this->id
             ? FormComment::findOrFail($this->id)
-            : new FormComment();
+            : new FormComment;
         $formComment->form_id = $this->formId;
 
         return $formComment;
@@ -74,16 +74,16 @@ class FormCommentModal extends ModalComponent
         $this->formComment->comment_fr = $this->comment_fr ?? '';
         $this->formComment->comment_nl = $this->comment_nl;
 
-        if (!$exists) {
+        if (! $exists) {
             $maxFieldGroupPosition = $this->form->fieldGroups()->max('position') ?? 0;
-            $maxFieldPosition = $this->form->fields()->get()->max(fn($field) => $field->pivot->position ?? 0) ?? 0;
+            $maxFieldPosition = $this->form->fields()->get()->max(fn ($field) => $field->pivot->position ?? 0) ?? 0;
             $maxFormCommentPosition = $this->form->formComments()->max('position') ?? 0;
             $this->formComment->position = max($maxFieldGroupPosition, $maxFieldPosition, $maxFormCommentPosition) + 1;
         }
 
         $this->formComment->save();
 
-        $this->dispatch('toast', message: __('form_comments.toast.' . ($exists ? 'updated' : 'created')), type: 'success');
+        $this->dispatch('toast', message: __('form_comments.toast.saved'), type: 'success');
 
         $this->closeModalWithEvents([
             Edit::class => Event::REFRESH,

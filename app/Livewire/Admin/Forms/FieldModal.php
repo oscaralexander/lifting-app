@@ -6,11 +6,10 @@ use App\Constants\Event;
 use App\Enums\FieldType;
 use App\Models\Field;
 use App\Models\Form;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\View\View;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Locked;
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Validation\Rule;
 use LivewireUI\Modal\ModalComponent;
 
 class FieldModal extends ModalComponent
@@ -48,14 +47,14 @@ class FieldModal extends ModalComponent
     {
         return $this->id
             ? Field::findOrFail($this->id)
-            : new Field();
+            : new Field;
     }
 
     #[Computed]
     public function fields(): Collection
     {
         if (empty($this->search)) {
-            return Field::orderBy('label_' . app()->getLocale())->get();
+            return Field::orderBy('label_'.app()->getLocale())->get();
         }
 
         return Field::search($this->search)->get();
@@ -133,11 +132,11 @@ class FieldModal extends ModalComponent
         $this->field->save();
 
         // Attach newly created field to the form
-        if (!$exists && $this->form->id) {
+        if (! $exists && $this->form->id) {
             $this->form->fields()->attach($this->field->id, ['required' => false, 'public' => false]);
         }
 
-        $this->dispatch('toast', message: __('fields.toast.' . ($exists ? 'updated' : 'created')), type: 'success');
+        $this->dispatch('toast', message: __('fields.toast.saved'), type: 'success');
 
         $this->closeModalWithEvents([
             Edit::class => Event::REFRESH,

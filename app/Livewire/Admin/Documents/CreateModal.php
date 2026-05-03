@@ -5,16 +5,16 @@ namespace App\Livewire\Admin\Documents;
 use App\Constants\Event;
 use App\Enums\ActivityType;
 use App\Enums\DocumentType;
+use App\Livewire\Admin\StockItems\Show;
 use App\Models\Activity;
 use App\Models\Document;
 use App\Models\Machine;
 use App\Models\StockItem;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\View\View;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
+use Illuminate\View\View;
 use Livewire\Attributes\Computed;
-use Livewire\Attributes\Validate;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 use Livewire\WithFileUploads;
 use LivewireUI\Modal\ModalComponent;
@@ -52,7 +52,7 @@ class CreateModal extends ModalComponent
     {
         return $this->stockItemId
             ? StockItem::with('machine')->findOrFail($this->stockItemId)
-            : new StockItem();
+            : new StockItem;
     }
 
     public function render(): View
@@ -81,7 +81,7 @@ class CreateModal extends ModalComponent
 
                 // Create thumbnail from PDF
                 if ($file->getMimeType() === 'application/pdf') {
-                    $thumbnailPath = Storage::disk('public')->path(env('APP_PATH_THUMBNAILS') . '/' . $subfolder . '/' . Str::of($filename)->replaceEnd($extension, 'jpg'));
+                    $thumbnailPath = Storage::disk('public')->path(env('APP_PATH_THUMBNAILS').'/'.$subfolder.'/'.Str::of($filename)->replaceEnd($extension, 'jpg'));
 
                     try {
                         $pdf = new Pdf($file->getRealPath());
@@ -100,7 +100,7 @@ class CreateModal extends ModalComponent
                     $data['documentable_type'] = $this->isUniversal ? Machine::class : StockItem::class;
                 } else {
                     // Store other files in private folder
-                    $path = env('APP_PATH_DOCUMENTS') . '/' . $subfolder;
+                    $path = env('APP_PATH_DOCUMENTS').'/'.$subfolder;
                     $file->storeAs($path, $filename);
                     $data['documentable_id'] = $this->stockItem->id;
                     $data['documentable_type'] = StockItem::class;
@@ -124,7 +124,7 @@ class CreateModal extends ModalComponent
         ]);
 
         $this->closeModalWithEvents([
-            \App\Livewire\Admin\StockItems\Show::class => [Event::DOCUMENT_CREATED, [$document->id]],
+            Show::class => [Event::DOCUMENT_SAVED, [$document->id]],
         ]);
     }
 }

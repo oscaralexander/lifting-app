@@ -15,7 +15,7 @@ new class extends Component
         return InspectionObject::withCount('inspections')->paginate(10);
     }
 
-    #[On(Event::REFRESH)]
+    #[On(Event::INSPECTION_OBJECT_SAVED)]
     public function render()
     {
         return $this->view()

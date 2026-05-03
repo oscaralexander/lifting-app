@@ -5,8 +5,8 @@ namespace App\Livewire\Admin\StickerBatches;
 use App\Constants\Event;
 use App\Models\StickerBatch;
 use Illuminate\View\View;
-use LivewireUI\Modal\ModalComponent;
 use Livewire\Attributes\Validate;
+use LivewireUI\Modal\ModalComponent;
 
 class CreateModal extends ModalComponent
 {
@@ -24,11 +24,11 @@ class CreateModal extends ModalComponent
 
         $stickerBatch = StickerBatch::create([
             ...$data,
-            'filename' => now()->format('Y-m-d-H-i-s') . '.zip',
+            'filename' => now()->format('Y-m-d-H-i-s').'.zip',
         ]);
 
         $this->closeModalWithEvents([
-            \App\Livewire\Admin\StickerBatches\Index::class => [Event::STICKER_BATCH_CREATED, ['id' => $stickerBatch->id]],
+            Index::class => [Event::STICKER_BATCH_SAVED, ['id' => $stickerBatch->id]],
         ]);
     }
 }

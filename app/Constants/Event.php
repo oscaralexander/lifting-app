@@ -4,13 +4,13 @@ namespace App\Constants;
 
 final readonly class Event
 {
-    public const CLIENT_CREATED = 'client-created';
+    public const CLIENT_SAVED = 'client-saved';
 
-    public const DOCUMENT_CREATED = 'document-created';
+    public const DOCUMENT_SAVED = 'document-saved';
 
     public const FIELD_SAVED = 'field-saved';
 
-    public const FORM_CREATED = 'form-created';
+    public const FORM_SAVED = 'form-saved';
 
     public const FORM_SORTED = 'form-sorted';
 
@@ -34,7 +34,7 @@ final readonly class Event
 
     public const SORTED_VIDEOS = 'sorted-videos';
 
-    public const STICKER_BATCH_CREATED = 'sticker-batch-created';
+    public const STICKER_BATCH_SAVED = 'sticker-batch-saved';
 
     public const TOAST = 'toast';
 }

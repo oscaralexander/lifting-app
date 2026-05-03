@@ -24,5 +24,6 @@ return [
         'degrees' => 'º',
         'kilograms' => 'kg',
         'meters' => 'm',
+        'tons' => 't',
     ],
 ];

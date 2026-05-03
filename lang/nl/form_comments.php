@@ -9,7 +9,6 @@ return [
         'title_edit' => 'Opmerking bewerken',
     ],
     'toast' => [
-        'created' => 'Opmerking aangemaakt',
-        'updated' => 'Opmerking bijgewerkt',
+        'saved' => 'Opmerking opgeslagen',
     ],
 ];

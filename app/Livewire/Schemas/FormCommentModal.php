@@ -25,6 +25,7 @@ class FormCommentModal extends ModalComponent
     {
         $formComment = FormComment::findOrNew($this->id);
         $formComment->form()->associate($this->formId);
+
         return $formComment;
     }
 
@@ -61,14 +62,14 @@ class FormCommentModal extends ModalComponent
         $this->validate();
         $exists = $this->formComment->exists;
 
-        if (!$exists) {
+        if (! $exists) {
             $this->formComment->position = $this->form->getNextPosition();
         }
 
         $this->formComment->comment = $this->comment;
         $this->formComment->save();
 
-        $this->dispatch('toast', message: __('form_builder.toast.form_comment_' . ($exists ? 'updated' : 'created')), type: 'success');
-        $this->closeModalWithEvents([Event::REFRESH,]);
+        $this->dispatch('toast', message: __('form_builder.toast.form_comment_saved'), type: 'success');
+        $this->closeModalWithEvents([Event::REFRESH]);
     }
 }

@@ -35,8 +35,7 @@ return [
         'title_edit' => 'Keuringsschema bewerken',
     ],
     'toast' => [
-        'created' => 'Keuringsschema aangemaakt',
         'deleted' => 'Keuringsschema verwijderd',
-        'updated' => 'Keuringsschema aangepast',
+        'saved' => 'Keuringsschema opgeslagen',
     ],
 ];

@@ -4,10 +4,11 @@ namespace App\Livewire\Admin\StockItems;
 
 use App\Constants\Event;
 use App\Enums\ActivityType;
+use App\Livewire\Admin\Documents\CreateModal;
 use App\Models\Activity;
 use App\Models\Document;
-use App\Models\Submission;
 use App\Models\StockItem;
+use App\Models\Submission;
 use App\Models\Video;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Storage;
@@ -96,7 +97,7 @@ class Show extends Component
         return view('livewire.admin.stock-items.show');
     }
 
-    #[On(Event::DOCUMENT_CREATED)]
+    #[On(Event::DOCUMENT_SAVED)]
     public function onDocumentAdded(): void
     {
         $this->dispatch(Event::TOAST, message: __('documents.toast.added'), type: 'success');
@@ -132,7 +133,7 @@ class Show extends Component
     {
         $this->dispatch(
             'openModal',
-            component: \App\Livewire\Admin\Documents\CreateModal::class,
+            component: CreateModal::class,
             arguments: [
                 'stockItemId' => $this->stockItem->id,
             ]

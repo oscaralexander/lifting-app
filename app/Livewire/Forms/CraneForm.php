@@ -93,7 +93,7 @@ class CraneForm extends Form
         $this->base_rail_wheelbase = $crane->base_rail_wheelbase;
         $this->base_crane_track_length = $crane->base_crane_track_length;
 
-        // Boom/jib
+        // Boom
         $this->boom_type = $crane->boom_type ?? [];
         $this->boom_is_adjustable = $crane->boom_is_adjustable ?? false;
         $this->boom_is_luffing = $crane->boom_is_luffing ?? false;
@@ -108,21 +108,21 @@ class CraneForm extends Form
         return [
             // Crane
             'type' => ['required', Rule::enum(Type::class)],
-            'hook_height' => ['nullable', 'integer'],
-            'central_ballast' => ['nullable', 'integer'],
-            'counter_ballast' => ['nullable', 'integer'],
+            'central_ballast' => ['nullable', 'decimal:0,2'],
+            'counter_ballast' => ['nullable', 'decimal:0,2'],
             'exchangeable_parts' => ['nullable', 'string'],
             'undercarriage' => ['nullable', Rule::enum(Undercarriage::class)],
             'base_configuration' => ['nullable', Rule::enum(BaseConfiguration::class)],
             'outrigger_type' => ['nullable', Rule::enum(OutriggerType::class)],
 
             // Boom/jib
+            'hook_height' => ['nullable', 'decimal:0,2'],
             'boom_type' => ['nullable', 'array'],
             'boom_type.*' => [Rule::enum(BoomType::class)],
             'boom_is_adjustable' => ['nullable', 'boolean'],
             'boom_is_luffing' => ['nullable', 'boolean'],
             'boom_is_trolley' => ['nullable', 'boolean'],
-            'boom_length' => ['nullable', 'integer'],
+            'boom_length' => ['nullable', 'decimal:0,2'],
             'boom_luffing_angle' => ['nullable', 'integer'],
             'boom_parts' => ['nullable', 'integer'],
 
@@ -131,11 +131,11 @@ class CraneForm extends Form
             'base_model' => ['nullable', 'max:255'],
             'base_serial_number' => ['nullable', 'max:255'],
             'base_asset_number' => ['nullable', 'max:255'],
-            'base_length' => ['nullable', 'integer'],
-            'base_width' => ['nullable', 'integer'],
-            'base_rail_track_gauge' => ['nullable', 'integer'],
-            'base_rail_wheelbase' => ['nullable', 'integer'],
-            'base_crane_track_length' => ['nullable', 'integer'],
+            'base_length' => ['nullable', 'decimal:0,2'],
+            'base_width' => ['nullable', 'decimal:0,2'],
+            'base_rail_track_gauge' => ['nullable', 'decimal:0,2'],
+            'base_rail_wheelbase' => ['nullable', 'decimal:0,2'],
+            'base_crane_track_length' => ['nullable', 'decimal:0,2'],
         ];
     }
 }

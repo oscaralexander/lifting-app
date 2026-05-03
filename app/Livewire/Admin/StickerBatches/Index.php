@@ -7,14 +7,14 @@ use App\Jobs\GenerateStickers;
 use App\Models\StickerBatch;
 use Illuminate\Support\Collection;
 use Illuminate\View\View;
-use Livewire\Component;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\On;
+use Livewire\Component;
 
 class Index extends Component
 {
-    #[On(Event::STICKER_BATCH_CREATED)]
-    public function onCreated(int $id): void
+    #[On(Event::STICKER_BATCH_SAVED)]
+    public function onSaved(int $id): void
     {
         $stickerBatch = StickerBatch::findOrFail($id);
 

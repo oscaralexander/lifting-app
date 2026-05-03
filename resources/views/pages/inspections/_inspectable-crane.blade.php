@@ -4,10 +4,10 @@
         <x-data-item :label="__('models/crane.type.label')" :value="$crane->type->label()" />
     @endif
     @if ($crane->central_ballast)
-        <x-data-item :label="__('models/crane.central_ballast.label')" :value="$crane->central_ballast" :suffix="__('ui.units.kilograms')" />
+        <x-data-item :label="__('models/crane.central_ballast.label')" :value="$crane->central_ballast" :suffix="__('ui.units.tons')" />
     @endif
     @if ($crane->counter_ballast)
-        <x-data-item :label="__('models/crane.counter_ballast.label')" :value="$crane->counter_ballast" :suffix="__('ui.units.kilograms')" />
+        <x-data-item :label="__('models/crane.counter_ballast.label')" :value="$crane->counter_ballast" :suffix="__('ui.units.tons')" />
     @endif
     @if ($crane->exchangeable_parts)
         <x-data-item :label="__('models/crane.exchangeable_parts.label')" :value="$crane->exchangeable_parts" />

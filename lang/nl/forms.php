@@ -34,8 +34,7 @@ return [
         'type_label' => 'Type',
     ],
     'toast' => [
-        'created' => 'Formulier aangemaakt',
-        'updated' => 'Formulier bijgewerkt',
+        'saved' => 'Formulier opgeslagen',
         'field_added' => 'Veld toegevoegd',
         'field_deleted' => 'Veld verwijderd',
         'sorted' => 'Volgorde aangepast',

@@ -37,7 +37,6 @@ return [
         'title_edit' => 'Inspectieobject bewerken',
     ],
     'toast' => [
-        'created' => 'Kraan aangemaakt',
-        'updated' => 'Kraan aangepast',
+        'saved' => 'Inspectieobject opgeslagen',
     ],
 ];

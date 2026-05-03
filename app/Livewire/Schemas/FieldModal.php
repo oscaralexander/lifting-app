@@ -4,6 +4,7 @@ namespace App\Livewire\Schemas;
 
 use App\Constants\Event;
 use App\Enums\FieldType;
+use App\Livewire\Concerns\HandlesDecimalInput;
 use App\Models\Field;
 use App\Models\Form;
 use Illuminate\Database\Eloquent\Collection;
@@ -14,6 +15,10 @@ use LivewireUI\Modal\ModalComponent;
 
 class FieldModal extends ModalComponent
 {
+    use HandlesDecimalInput;
+
+    protected array $decimalProperties = ['number'];
+
     public $attrs = [];
 
     #[Locked]
@@ -95,6 +100,7 @@ class FieldModal extends ModalComponent
 
     public function submit(): void
     {
+        $this->normalizeDecimalInputs();
         $this->validate();
         $exists = $this->field->exists;
 
@@ -107,7 +113,7 @@ class FieldModal extends ModalComponent
         $this->field->save();
 
         // Attach newly created field to the form
-        if (!$exists && $this->form->id) {
+        if (! $exists && $this->form->id) {
             $position = $this->form->getNextPosition();
 
             $this->form->fields()->attach($this->field->id, [
@@ -116,7 +122,7 @@ class FieldModal extends ModalComponent
             ]);
         }
 
-        $this->dispatch('toast', message: __('form_builder.toast.field_' . ($exists ? 'updated' : 'created')), type: 'success');
+        $this->dispatch('toast', message: __('form_builder.toast.field_saved'), type: 'success');
 
         $this->closeModalWithEvents([
             Event::REFRESH,

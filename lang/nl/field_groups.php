@@ -9,7 +9,6 @@ return [
         'title_edit' => 'Groep bewerken',
     ],
     'toast' => [
-        'created' => 'Groep aangemaakt',
-        'updated' => 'Groep bijgewerkt',
+        'saved' => 'Groep opgeslagen',
     ],
 ];

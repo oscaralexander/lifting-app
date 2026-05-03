@@ -4,6 +4,7 @@ namespace App\Livewire\Inspections;
 
 use App\Constants\Event;
 use App\Enums\InspectionObject\Type;
+use App\Livewire\Concerns\HandlesDecimalInput;
 use App\Livewire\Forms\CraneForm;
 use App\Livewire\Forms\OperatorLiftForm;
 use App\Models\InspectionObjects\Crane;
@@ -15,6 +16,20 @@ use LivewireUI\Modal\ModalComponent;
 
 class InspectableModal extends ModalComponent
 {
+    use HandlesDecimalInput;
+
+    protected array $decimalProperties = [
+        'inspectableForm.hook_height',
+        'inspectableForm.central_ballast',
+        'inspectableForm.counter_ballast',
+        'inspectableForm.base_length',
+        'inspectableForm.base_width',
+        'inspectableForm.base_rail_track_gauge',
+        'inspectableForm.base_rail_wheelbase',
+        'inspectableForm.base_crane_track_length',
+        'inspectableForm.boom_length',
+    ];
+
     #[Locked]
     public ?int $inspectableId = null;
 
@@ -65,6 +80,8 @@ class InspectableModal extends ModalComponent
 
     public function submit(): void
     {
+        $this->normalizeDecimalInputs();
+
         $data = $this->inspectableForm->validate();
 
         $inspectable = $this->inspectable;

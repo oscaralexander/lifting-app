@@ -13,24 +13,24 @@ use LivewireUI\Modal\ModalComponent;
 
 class ClientModal extends ModalComponent
 {
-    public $address;
-    
+    public string $address;
+
     public string $city;
-    
-    public $contact_name;
-    
-    public $contact_email;
-    
-    public $contact_phone;
-    
+
+    public string $contact_name;
+
+    public string $contact_email;
+
+    public string $contact_phone;
+
     public CountryCode $country = CountryCode::NL;
 
     #[Locked]
     public ?int $id = null;
 
-    public $name;
+    public string $name;
 
-    public $postal_code;
+    public string $postal_code;
 
     #[Computed]
     public function client(): Client
@@ -72,7 +72,7 @@ class ClientModal extends ModalComponent
     #[Computed]
     public function phonePlaceholder(): string
     {
-        return match($this->country) {
+        return match ($this->country) {
             CountryCode::BE => '+32 ...',
             CountryCode::NL => '+31 ...',
             CountryCode::FR => '+33 ...',
@@ -103,12 +103,12 @@ class ClientModal extends ModalComponent
         return [
             'address' => ['required', 'string', 'max:255'],
             'city' => ['required', 'string', 'max:255'],
+            'contact_email' => ['nullable', 'email', 'max:255'],
+            'contact_name' => ['nullable', 'string', 'max:255'],
+            'contact_phone' => ['nullable', 'string', 'max:255', 'regex:/^\+\d{1,3}\s?.+$/'],
             'country' => ['required', Rule::enum(CountryCode::class)],
             'name' => ['required', 'string', Rule::unique('clients', 'name')->ignore($this->id)],
-            'postal_code' => ['required', 'string', 'max:255', 'regex:' . $this->postalCodePattern()],
-            'contact_name' => ['nullable', 'string', 'max:255'],
-            'contact_email' => ['nullable', 'email', 'max:255'],
-            'contact_phone' => ['nullable', 'string', 'max:255', 'regex:/^\+\d{1,3}\s?.+$/'],
+            'postal_code' => ['nullable', 'string', 'max:20'],
         ];
     }
 
@@ -127,10 +127,10 @@ class ClientModal extends ModalComponent
         $client->postal_code = preg_replace('/^(\d{4})\s?([A-Za-z]{2})$/', '$1 $2', $this->postal_code);
         $client->save();
 
-        $this->dispatch('toast', message: __('clients.toast.' . ($client->wasRecentlyCreated ? 'created' : 'updated')), type: 'success');
+        $this->dispatch('toast', message: __('clients.toast.saved'), type: 'success');
 
         $this->closeModalWithEvents([
-            [Event::CLIENT_CREATED, ['id' => $client->id]],
+            [Event::CLIENT_SAVED, ['id' => $client->id]],
         ]);
     }
 }

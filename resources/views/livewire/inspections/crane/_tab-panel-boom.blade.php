@@ -7,6 +7,7 @@
             <x-form.input
                 :label="__('models/crane.hook_height.label')"
                 model="inspectableForm.hook_height"
+                step="0.01"
                 :suffix="__('ui.units.meters')"
                 type="number"
             />
@@ -43,6 +44,7 @@
             <x-form.input
                 :label="__('models/crane.boom_length.label')"
                 model="inspectableForm.boom_length"
+                step="0.01"
                 :suffix="__('ui.units.meters')"
                 type="number"
             />

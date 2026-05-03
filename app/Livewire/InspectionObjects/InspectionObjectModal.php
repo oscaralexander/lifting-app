@@ -47,7 +47,7 @@ class InspectionObjectModal extends ModalComponent
         $inspectionObject->fill($inspectionObjectData);
         $inspectionObject->save();
 
-        $this->dispatch(Event::TOAST, message: __('inspection_objects.toast.'.($inspectionObject->wasRecentlyCreated ? 'created' : 'updated')), type: 'success');
+        $this->dispatch(Event::TOAST, message: __('inspection_objects.toast.saved'), type: 'success');
         $this->closeModalWithEvents([Event::INSPECTION_OBJECT_SAVED]);
     }
 }

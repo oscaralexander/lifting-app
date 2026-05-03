@@ -50,7 +50,7 @@ class SchemaModal extends ModalComponent
         return [
             'description' => ['nullable', 'string'],
             'name' => ['required', 'string', 'max:255'],
-            'type' => ['nullable', 'string', 'in:' . implode(',', array_column(Type::cases(), 'value'))],
+            'type' => ['nullable', 'string', 'in:'.implode(',', array_column(Type::cases(), 'value'))],
         ];
     }
 
@@ -64,7 +64,7 @@ class SchemaModal extends ModalComponent
         $schema->type = $this->type ? Type::from($this->type) : null;
         $schema->save();
 
-        $this->dispatch('toast', message: __('schemas.toast.' . ($schema->wasRecentlyCreated ? 'created' : 'updated')), type: 'success');
+        $this->dispatch('toast', message: __('schemas.toast.saved'), type: 'success');
 
         $this->closeModalWithEvents([
             Event::REFRESH,
