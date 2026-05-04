@@ -314,32 +314,43 @@ new class extends Component
             <livewire:inspections.test-matrix :inspection-hash="$this->inspectionHash" />
         @endif
         <div class="u-stack u-stack-gap-m" x-data="{
-            get allTogglesPassed() {
-                const keys = @js($toggleFieldKeys);
-
-                if (keys.length === 0) {
+            keys: @js($toggleFieldKeys),
+            get allTogglesCompleted() {
+                if (this.keys.length === 0) {
                     return true;
                 }
 
-                return keys.every(key => {
+                return this.keys.every(key => {
+                    const val = $wire.submissionForm.fields[key];
+                    return val !== null && val !== undefined;
+                });
+            },
+            get allTogglesPassed() {
+                if (this.keys.length === 0) {
+                    return true;
+                }
+
+                return this.keys.every(key => {
                     const val = $wire.submissionForm.fields[key];
                     return val === 0 || val === 1 || val === '0' || val === '1';
                 });
-            }
+            },
         }">
+            <div class="status status--neutral" x-cloak x-show="!allTogglesCompleted">
+                <x-icon icon="octagon-x" />
+                Keuringsschema nog niet voltooid.
+            </div>
+            <div class="status status--danger" x-cloak x-show="allTogglesCompleted && !allTogglesPassed">
+                <x-icon icon="check" />
+                Object afgekeurd.
+            </div>
+            <div class="status status--success" x-cloak x-show="allTogglesCompleted && allTogglesPassed">
+                <x-icon icon="octagon-x" />
+                Object goedgekeurd.
+            </div>
             <div class="submission__complete" x-cloak x-show="allTogglesPassed">
                 @lang('inspections.form.status.passed')
             </div>
-            {{-- 
-            <div class="submission__incomplete" x-cloak x-show="!allTogglesPassed">
-                <x-icon icon="x" />
-                @lang('inspections.form.status.failed')
-            </div>
-             --}}
-            <x-form.lightswitch
-                model="submissionForm.is_completed"
-                :text="__('models/inspection.is_completed.text')"
-            />
         </div>
         <div class="actions">
             <x-btn primary submit>@lang('ui.save')</x-btn>

@@ -10,7 +10,8 @@
         <link href="https://fonts.gstatic.com" rel="preconnect">
         <link href="https://rsms.me/" rel="preconnect">
         <link href="https://rsms.me/inter/inter.css" rel="stylesheet">
-        <link href="https://fonts.googleapis.com/css2?family=Google+Sans:opsz,wght@17..18,700&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Google+Sans:opsz,wght@17..18,700&family=Roboto:wdth,wght@75..100,400;75..100,500;75..100,600;75..100,700&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Roboto:wdth,wght@75..100,400;75..100,500;75..100,600;75..100,700&display=swap" rel="stylesheet">
         @stack('scripts.head')
         @vite(['resources/css/style.scss', 'resources/js/index.js'])
         @livewireStyles

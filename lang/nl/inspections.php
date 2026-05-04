@@ -18,6 +18,7 @@ return [
         'heading_object' => 'Object',
         'heading_operator_lift' => 'Machinistenlift',
         'heading_project' => 'Project',
+        'heading_test_matrix' => 'Beproevingstabel',
         'meta_prompt' => 'Vul een waarde in',
         'status' => [
             'passed' => 'Object is goedgekeurd.',

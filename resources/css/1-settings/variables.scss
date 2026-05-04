@@ -1,7 +1,7 @@
 :root {
     --base-size: 16px;
 
-    --font-1: Inter, system-ui, sans-serif;
+    --font-1: 'Roboto', 'Comic Sans MS', system-ui, sans-serif;
     --font-2: 'Google Sans', system-ui, sans-serif;
     --font-mono: 'JetBrains Mono', monospace;
 
@@ -66,10 +66,15 @@
     --color-success-tint: rgba(var(--color-success-rgb), .1);
     --color-success-tint-hover: rgba(var(--color-success-rgb), .2);
 
-    --color-danger: rgb(231, 0, 11);
-    --color-danger-rgb: 231, 0, 11;
+    --color-danger: rgb(236, 0, 63);
+    --color-danger-rgb: 236, 0, 63;
     --color-danger-tint: rgba(var(--color-danger-rgb), .1);
     --color-danger-tint-hover: rgba(var(--color-danger-rgb), .2);
+
+    --color-neutral: rgb(225, 113, 0);
+    --color-neutral-rgb: 225, 113, 0;
+    --color-neutral-tint: rgba(var(--color-neutral-rgb), .1);
+    --color-neutral-tint-hover: rgba(var(--color-neutral-rgb), .2);
 
     // Input
     --input-border-color: var(--color-border);

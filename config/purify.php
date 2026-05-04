@@ -60,7 +60,7 @@ return [
         'label' => [
             'Core.Encoding' => 'utf-8',
             'HTML.Doctype' => 'HTML 4.01 Transitional',
-            'HTML.Allowed' => 'b,u,strong,i,em,s,a[href|rel|target],br',
+            'HTML.Allowed' => 'b,u,strong,i,em,s,a[href|rel|target],br,span',
             'HTML.ForbiddenElements' => '',
             'CSS.AllowedProperties' => '',
             'AutoFormat.AutoParagraph' => false,

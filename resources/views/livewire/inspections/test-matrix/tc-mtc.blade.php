@@ -1,7 +1,7 @@
 @use('App\Enums\InspectionObject\Crane\BaseConfiguration')
 
 <div class="matrix u-stack u-stack-gap-m">
-    <h2>Beproevingstabel</h2>
+    <h2>@lang('inspections.form.heading_test_matrix')</h2>
     <table>
         <thead>
             <tr>
@@ -23,7 +23,7 @@
                 {{-- Beproeving --}}
                 <th class="border-right" scope="col" colspan="4">LMB</th>
                 <th class="border-right" scope="col" colspan="2">LB</th>
-                <th class="border-left" scope="col" rowspan="2">Akkoord</th>
+                <th class="border-left rotate" scope="col" rowspan="2">Akkoord</th>
             </tr>
             <tr>
                 <th class="rotate" scope="col">Aan fundatie</th>
@@ -62,7 +62,8 @@
                 <th scope="col">14</th>
                 <th class="border-right" scope="col">15</th>
                 <th scope="col">16</th>
-                <th colspan="2" scope="col">17</th>
+                <th scope="col">17.1</th>
+                <th scope="col">17.2</th>
                 <th class="border-right" scope="col">18</th>
                 <th scope="col">19</th>
                 <th class="border-right" scope="col">20</th>
@@ -74,11 +75,11 @@
                 <tr
                     wire:key="matrix-row-{{ $i }}"
                     x-data="{
-                        col_18: '...',
-                        col_20: '...',
+                        col_18: '—',
+                        col_20: '—',
                         get col_21() {
-                            if (this.col_18 === '...' || this.col_20 === '...') {
-                                return '...';
+                            if (this.col_18 === '—' || this.col_20 === '—') {
+                                return '—';
                             }
 
                             if (parseFloat(this.col_18) >= 10 || parseFloat(this.col_20) >= 10) {
@@ -153,7 +154,7 @@
                         class="border-right"
                         :class="{
                             'failed': parseFloat(col_18) >= 10,
-                            'neutral': col_18 === '...',
+                            'neutral': col_18 === '—',
                             'passed': parseFloat(col_18) < 10,
                         }"
                         x-text="col_18.replace('.', ',')"
@@ -163,15 +164,16 @@
                         class="border-right"
                         :class="{
                             'failed': parseFloat(col_20) >= 10,
-                            'neutral': col_20 === '...',
+                            'neutral': col_20 === '—',
                             'passed': parseFloat(col_20) < 10,
                         }"
                         x-text="col_20.replace('.', ',')"
                     ></td>{{-- 20 --}}
                     <td
+                        class="result"
                         :class="{
                             'failed': parseFloat(col_18) >= 10 || parseFloat(col_20) >= 10,
-                            'neutral': col_20 === '...',
+                            'neutral': col_20 === '—',
                             'passed': parseFloat(col_18) < 10 && parseFloat(col_20) < 10,
                         }"
                         x-text="col_21"

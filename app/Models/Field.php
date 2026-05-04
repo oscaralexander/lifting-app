@@ -20,7 +20,7 @@ class Field extends Model
     public function numberedLabel(): Attribute
     {
         return new Attribute(
-            get: fn () => '<b>' . $this->number . '</b> · ' . $this->label,
+            get: fn () => '<span>' . $this->number . '</span> · ' . $this->label,
         );
     }
 
