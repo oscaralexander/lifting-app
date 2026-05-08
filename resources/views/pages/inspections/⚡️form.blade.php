@@ -289,13 +289,6 @@ new class extends Component
                                 @endforeach
                             </div>
                         </div>
-                        @php
-                            $toggleFieldKeys = $this->form->fields
-                                ->filter(fn($f) => $f->type === FieldType::TOGGLE)
-                                ->map(fn($f) => 'field_' . $f->pivot->id)
-                                ->values()
-                                ->toArray();
-                        @endphp
                     @else
                         <div class="emptyState">
                             <div class="emptyState__icon">
@@ -313,6 +306,13 @@ new class extends Component
         @if ($this->inspection->exists)
             <livewire:inspections.test-matrix :inspection-hash="$this->inspectionHash" />
         @endif
+        @php
+            $toggleFieldKeys = $this->form->fields
+                ->filter(fn($f) => $f->type === FieldType::TOGGLE)
+                ->map(fn($f) => 'field_' . $f->pivot->id)
+                ->values()
+                ->toArray();
+        @endphp
         <div class="u-stack u-stack-gap-m" x-data="{
             keys: @js($toggleFieldKeys),
             get allTogglesCompleted() {
