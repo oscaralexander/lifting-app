@@ -24,6 +24,7 @@
 
     &--success {
         background: var(--color-success-tint);
+        border-color: rgba(var(--color-success-rgb), .25);
         color: var(--color-success);
     }
 

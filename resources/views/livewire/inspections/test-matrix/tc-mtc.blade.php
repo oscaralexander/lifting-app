@@ -95,7 +95,8 @@
                         row: {{ $i }},
                         updateCol18() {
                             if (!$wire.matrix[this.row].col_14 || !$wire.matrix[this.row].col_16) {
-                                return null;
+                                this.col_18 = '—';
+                                return;
                             }
 
                             const col_14 = parseFloat($wire.matrix[this.row].col_14.replace(',', '.'));
@@ -105,7 +106,8 @@
                         },
                         updateCol20() {
                             if (!$wire.matrix[this.row].col_15 || !$wire.matrix[this.row].col_19) {
-                                return null;
+                                this.col_20 = '—';
+                                return;
                             }
 
                             const col_15 = parseFloat($wire.matrix[this.row].col_15.replace(',', '.'));

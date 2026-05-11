@@ -15,9 +15,8 @@ class CraneForm extends Form
 {
     public $exchangeable_parts;
 
-    /**
-     * Crane
-     */
+    // Crane
+
     public ?Type $type = null;
 
     public ?Undercarriage $undercarriage = null;
@@ -32,9 +31,8 @@ class CraneForm extends Form
 
     public $counter_ballast;
 
-    /**
-     * Base / Undercarriage
-     */
+    // Base
+
     public $base_manufacturer;
 
     public $base_model;
@@ -53,9 +51,8 @@ class CraneForm extends Form
 
     public $base_crane_track_length;
 
-    /**
-     * Boom/jib
-     */
+    // Boom
+
     public array $boom_type = [];
 
     public bool $boom_is_adjustable = false;
