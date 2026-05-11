@@ -28,9 +28,11 @@ return [
         'col_client' => 'Klant',
         'col_inspections' => 'Inspecties',
         'col_name' => 'Naam',
+        'col_serial_no' => 'Serienummer',
         'col_next_inspection_before' => 'Volgende inspectie voor',
         'col_type' => 'Type',
         'title' => 'Inspectieobjecten',
+        'no_results' => 'Geen inspectieobjecten gevonden voor ":query".',
     ],
     'modal' => [
         'title_create' => 'Nieuw inspectieobject',

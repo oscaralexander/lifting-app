@@ -9,10 +9,18 @@ use Livewire\Component;
 
 new class extends Component
 {
+    public string $search = '';
+
     #[Computed]
     public function inspectionObjects(): LengthAwarePaginator
     {
-        return InspectionObject::withCount('inspections')->paginate(10);
+        return InspectionObject::withCount('inspections')
+            ->when($this->search, fn ($query) => $query->where(function ($q) {
+                $q->where('manufacturer', 'like', '%' . $this->search . '%')
+                    ->orWhere('model', 'like', '%' . $this->search . '%')
+                    ->orWhere('serial_number', 'like', '%' . $this->search . '%');
+            }))
+            ->paginate(10);
     }
 
     #[On(Event::INSPECTION_OBJECT_SAVED)]
@@ -34,10 +42,12 @@ new class extends Component
         </x-slot:actions>
     </x-header>
     <div class="u-stack u-stack-gap-l">
+        <x-form.input-search wire:model.live.debounce.200ms="search" placeholder="Zoek op naam of serienummer" />
         <table class="table">
             <thead>
                 <tr>
                     <th scope="col">@lang('inspection_objects.index.col_name')</th>
+                    <th scope="col">@lang('inspection_objects.index.col_serial_no')</th>
                     <th scope="col">@lang('inspection_objects.index.col_type')</th>
                     <th scope="col">@lang('inspection_objects.index.col_next_inspection_before')</th>
                     <th class="table__num" scope="col">@lang('inspection_objects.index.col_inspections')</th>
@@ -45,11 +55,12 @@ new class extends Component
                 </tr>
             </thead>
             <tbody>
-                @foreach ($this->inspectionObjects as $inspectionObject)
+                @forelse ($this->inspectionObjects as $inspectionObject)
                     <tr>
                         <td>
                             <a href="{{ route('inspection-objects.show', $inspectionObject) }}" wire:navigate>{{ $inspectionObject->name ?: 'Geen naam' }}</a>
                         </td>
+                        <td>{{ $inspectionObject->serial_number }}</td>
                         <td>{{ $inspectionObject->type->label() }}</td>
                         <td>{{ $inspectionObject->next_inspection_before }}</td>
                         <td class="table__num">{{ $inspectionObject->inspections_count }}</td>
@@ -78,7 +89,11 @@ new class extends Component
                             </div>
                         </td>
                     </tr>
-                @endforeach
+                @empty
+                    <tr>
+                        <td colspan="6" class="table__empty">@lang('inspection_objects.index.no_results', ['query' => $this->search])</td>
+                    </tr>
+                @endforelse
             </tbody>
         </table>
     </div>
