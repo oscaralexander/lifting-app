@@ -337,7 +337,7 @@ new class extends Component
             },
         }">
             <div class="status status--neutral" x-cloak x-show="!allTogglesCompleted">
-                <x-icon icon="octagon-x" />
+                <x-icon icon="hourglass" />
                 Keuringsschema nog niet voltooid.
             </div>
             <div class="status status--danger" x-cloak x-show="allTogglesCompleted && !allTogglesPassed">

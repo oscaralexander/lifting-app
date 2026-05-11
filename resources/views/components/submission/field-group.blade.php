@@ -41,12 +41,21 @@
     x-bind:class="{ 'is-expanded': isExpanded }"
     x-data="{
         isExpanded: false,
-        get allTogglesFilled() {
-            const keys = @js($toggleFieldKeys);
-            if (keys.length === 0) return false;
-            return keys.every(key => {
+        keys: @js($toggleFieldKeys),
+        get allTogglesPassed() {
+            if (this.keys.length === 0) return false;
+
+            return this.keys.every(key => {
                 const val = $wire.submissionForm.fields[key];
                 return val === 0 || val === 1 || val === '0' || val === '1';
+            });
+        },
+        get hasFailures() {
+            if (this.keys.length === 0) return false;
+
+            return this.keys.some(key => {
+                const val = $wire.submissionForm.fields[key];
+                return val === -1 || val === '-1';
             });
         }
     }"
@@ -60,8 +69,9 @@
         x-on:click="isExpanded = !isExpanded"
     >
         <span class="submission__fieldGroupToggleName">{!! $fieldGroup->numberedName !!}</span>
-        <span class="submission__fieldGroupToggleCheck" x-cloak x-show="allTogglesFilled"><x-icon icon="check" /></span>
         <span class="submission__fieldGroupToggleError"><x-icon icon="triangle-alert" /></span>
+        <span class="submission__fieldGroupToggleCheck" x-cloak x-show="allTogglesPassed"><x-icon icon="check" /></span>
+        <span class="submission__fieldGroupToggleError" x-cloak x-show="hasFailures"><x-icon icon="x" /></span>
         <span class="submission__fieldGroupToggleIcon"></span>
     </button>
     <div

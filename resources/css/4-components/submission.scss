@@ -64,6 +64,7 @@
         color: var(--color-link);
         display: flex;
         font-size: var(--font-size-s);
+        gap: .5rem;
         padding: .75rem .25rem .75rem .5rem;
         font-weight: 500;
         width: 100%;
@@ -78,9 +79,10 @@
 
     &__fieldGroupToggleCheck {
         color: var(--color-success);
-        display: flex;
-        flex: 0 0 20px;
-        height: 20px;
+    }
+
+    &__fieldGroupToggleError {
+        color: var(--color-danger);
     }
 
     &__fieldGroupToggleName {
