@@ -136,11 +136,11 @@
                             <x-icon icon="check" />
                         @endif
                     </td>{{-- 4 --}}
-                    <td>{{ format_number($this->inspection->inspectable?->boom_length) ?: '' }}</td>{{-- 5 --}}
+                    <td>{{ $this->inspection->inspectable?->boom_length ? format_number($this->inspection->inspectable?->boom_length) : '' }}</td>{{-- 5 --}}
                     <td><input type="text" wire:model="matrix.{{ $i }}.col_6" /></td>{{-- 6 --}}
-                    <td class="border-right">{{ format_number($this->inspection->inspectable?->hook_height) ?: '' }}</td>{{-- 7 --}}
-                    <td>{{ format_number($this->inspection->inspectable?->central_ballast) ?: '' }}</td>{{-- 8 --}}
-                    <td class="border-right">{{ format_number($this->inspection->inspectable?->counter_ballast) ?: '' }}</td>{{-- 9 --}}
+                    <td class="border-right">{{ $this->inspection->inspectable?->hook_height ? format_number($this->inspection->inspectable->hook_height) : '' }}</td>{{-- 7 --}}
+                    <td>{{ $this->inspection->inspectable?->central_ballast ? format_number($this->inspection->inspectable->central_ballast) : '' }}</td>{{-- 8 --}}
+                    <td class="border-right">{{ $this->inspection->inspectable?->counter_ballast ? format_number($this->inspection->inspectable->counter_ballast) : '' }}</td>{{-- 9 --}}
                     <td><input type="text" wire:model="matrix.{{ $i }}.col_10" /></td>{{-- 10 --}}
                     <td><input type="text" wire:model="matrix.{{ $i }}.col_11" /></td>{{-- 11 --}}
                     <td><input type="text" wire:model="matrix.{{ $i }}.col_12" /></td>{{-- 12 --}}
