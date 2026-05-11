@@ -18,9 +18,13 @@ class Inspection extends Model
     protected $casts = [
         'comment_data' => 'json:unicode',
         'form_data' => 'json:unicode',
+        'has_cat_a_deficiencies' => 'boolean',
+        'has_cat_b_deficiencies' => 'boolean',
         'image_data' => 'json:unicode',
         'matrix' => 'json',
         'meta_data' => 'json:unicode',
+        'requires_reinspection' => 'boolean',
+        'requires_written_deregistration' => 'boolean',
         'type' => InspectionType::class,
     ];
 

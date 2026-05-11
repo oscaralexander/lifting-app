@@ -25,4 +25,16 @@ return [
     'is_completed' => [
         'text' => 'Inspectie voltooid',
     ],
+    'has_cat_a_deficiencies' => [
+        'label' => 'Categorie A-tekortkomingen',
+    ],
+    'has_cat_b_deficiencies' => [
+        'label' => 'Categorie B-tekortkomingen',
+    ],
+    'requires_reinspection' => [
+        'label' => 'Nacontrole door Lifting Inspections noodzakelijk',
+    ],
+    'requires_written_deregistration' => [
+        'label' => 'Schriftelijk afmelden aan Lifting Inspections noodzakelijk',
+    ],
 ];

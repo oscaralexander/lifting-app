@@ -12,6 +12,7 @@
 
     &--danger {
         background: var(--color-danger-tint);
+        border-color: rgba(var(--color-danger-rgb), .25);
         color: var(--color-danger);
     }
 

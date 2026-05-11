@@ -16,6 +16,10 @@ class InspectionSubmissionForm extends LivewireForm
 
     public Form $form;
 
+    public bool $has_cat_a_deficiencies = false;
+
+    public bool $has_cat_b_deficiencies = false;
+
     public array $images = [];
 
     public Inspection $inspection;
@@ -23,6 +27,10 @@ class InspectionSubmissionForm extends LivewireForm
     public bool $is_completed = false;
 
     public array $meta = [];
+
+    public bool $requires_reinspection = false;
+
+    public bool $requires_written_deregistration = false;
 
     public function deleteImage(string $fieldId, string $image): void
     {
@@ -43,7 +51,11 @@ class InspectionSubmissionForm extends LivewireForm
     {
         $this->form = $form;
         $this->inspection = $inspection;
+        $this->has_cat_a_deficiencies = $inspection->has_cat_a_deficiencies ?? false;
+        $this->has_cat_b_deficiencies = $inspection->has_cat_b_deficiencies ?? false;
         $this->meta = $inspection->meta_data ?? [];
+        $this->requires_reinspection = $inspection->requires_reinspection ?? false;
+        $this->requires_written_deregistration = $inspection->requires_written_deregistration ?? false;
 
         foreach ($form->fields as $field) {
             $key = 'field_'.$field->pivot->id;
@@ -112,7 +124,11 @@ class InspectionSubmissionForm extends LivewireForm
 
         $this->inspection->comment_data = $commentData;
         $this->inspection->form_data = $formData;
+        $this->inspection->has_cat_a_deficiencies = $this->has_cat_a_deficiencies;
+        $this->inspection->has_cat_b_deficiencies = $this->has_cat_b_deficiencies;
         $this->inspection->meta_data = $metaData;
+        $this->inspection->requires_reinspection = $this->requires_reinspection;
+        $this->inspection->requires_written_deregistration = $this->requires_written_deregistration;
         $this->inspection->save();
     }
 

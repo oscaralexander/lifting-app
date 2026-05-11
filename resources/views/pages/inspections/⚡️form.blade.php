@@ -341,15 +341,24 @@ new class extends Component
                 Keuringsschema nog niet voltooid.
             </div>
             <div class="status status--danger" x-cloak x-show="allTogglesCompleted && !allTogglesPassed">
-                <x-icon icon="check" />
+                <x-icon icon="octagon-x" />
                 Object afgekeurd.
             </div>
-            <div class="status status--success" x-cloak x-show="allTogglesCompleted && allTogglesPassed">
-                <x-icon icon="octagon-x" />
-                Object goedgekeurd.
+            <div class="u-stack u-stack-gap-m" x-cloak x-show="allTogglesCompleted && !allTogglesPassed">
+                <x-form.lightswitch
+                    :text="__('models/inspection.has_cat_a_deficiencies.label')"
+                    wire:model="submissionForm.has_cat_a_deficiencies"
+                />
+                <x-form.lightswitch
+                    :text="__('models/inspection.has_cat_b_deficiencies.label')"
+                    wire:model="submissionForm.has_cat_b_deficiencies"
+                />
+                <x-form.lightswitch wire:model="submissionForm.requires_reinspection" :text="__('models/inspection.requires_reinspection.label')" />
+                <x-form.lightswitch wire:model="submissionForm.requires_written_deregistration" :text="__('models/inspection.requires_written_deregistration.label')" />
             </div>
-            <div class="submission__complete" x-cloak x-show="allTogglesPassed">
-                @lang('inspections.form.status.passed')
+            <div class="status status--success" x-cloak x-show="allTogglesCompleted && allTogglesPassed">
+                <x-icon icon="check" />
+                Object goedgekeurd.
             </div>
         </div>
         <div class="actions">
