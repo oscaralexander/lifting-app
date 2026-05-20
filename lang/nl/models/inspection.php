@@ -31,10 +31,19 @@ return [
     'has_cat_b_deficiencies' => [
         'label' => 'Categorie B-tekortkomingen',
     ],
+    'has_no_sticker_provided' => [
+        'label' => 'Geen sticker verstrekt',
+    ],
     'requires_reinspection' => [
         'label' => 'Nacontrole door Lifting Inspections noodzakelijk',
     ],
     'requires_written_deregistration' => [
         'label' => 'Schriftelijk afmelden aan Lifting Inspections noodzakelijk',
+    ],
+    'comment' => [
+        'label' => 'Opmerking',
+    ],
+    'images' => [
+        'label' => 'Foto\'s',
     ],
 ];

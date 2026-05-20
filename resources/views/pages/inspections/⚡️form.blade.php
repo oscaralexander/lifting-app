@@ -57,6 +57,15 @@ new class extends Component
         Storage::disk('local')->delete($image);
     }
 
+    public function deleteInspectionImage(string $image): void
+    {
+        $this->submissionForm->deleteInspectionImage($image);
+
+        if (Storage::disk('public')->exists($image)) {
+            Storage::disk('public')->delete($image);
+        }
+    }
+
     public function downloadImage(string $fieldId, string $image): BinaryFileResponse
     {
         if (!Storage::disk('local')->exists($image)) {
@@ -64,6 +73,15 @@ new class extends Component
         }
 
         return response()->download(Storage::disk('local')->path($image));
+    }
+
+    public function downloadInspectionImage(string $image): BinaryFileResponse
+    {
+        if (!Storage::disk('public')->exists($image)) {
+            abort(404);
+        }
+
+        return response()->download(Storage::disk('public')->path($image));
     }
 
     #[Computed]
@@ -306,69 +324,120 @@ new class extends Component
         @if ($this->inspection->exists)
             <livewire:inspections.test-matrix :inspection-hash="$this->inspectionHash" />
         @endif
-        @php
-            $toggleFieldKeys = $this->form->fields
-                ->filter(fn($f) => $f->type === FieldType::TOGGLE)
-                ->map(fn($f) => 'field_' . $f->pivot->id)
-                ->values()
-                ->toArray();
-        @endphp
-        <div class="u-stack u-stack-gap-m" x-data="{
-            keys: @js($toggleFieldKeys),
-            get allTogglesCompleted() {
-                if (this.keys.length === 0) {
-                    return true;
-                }
+        <div class="grid grid--end grid--gap-xxl">
+            <div class="grid__col l:grid__col--span-8">
+                <div class="u-stack u-stack-gap-xl">
+                    @php
+                        $toggleFieldKeys = $this->form->fields
+                            ->filter(fn($f) => $f->type === FieldType::TOGGLE)
+                            ->map(fn($f) => 'field_' . $f->pivot->id)
+                            ->values()
+                            ->toArray();
+                    @endphp
+                    <div class="u-stack u-stack-gap-m" x-data="{
+                        keys: @js($toggleFieldKeys),
+                        get allTogglesCompleted() {
+                            if (this.keys.length === 0) {
+                                return true;
+                            }
 
-                return this.keys.every(key => {
-                    const val = $wire.submissionForm.fields[key];
-                    return val !== null && val !== undefined;
-                });
-            },
-            get allTogglesPassed() {
-                if (this.keys.length === 0) {
-                    return true;
-                }
+                            return this.keys.every(key => {
+                                const val = $wire.submissionForm.fields[key];
+                                return val !== null && val !== undefined;
+                            });
+                        },
+                        get allTogglesPassed() {
+                            if (this.keys.length === 0) {
+                                return true;
+                            }
 
-                return this.keys.every(key => {
-                    const val = $wire.submissionForm.fields[key];
-                    return val === 0 || val === 1 || val === '0' || val === '1';
-                });
-            },
-        }">
-            <div class="status status--neutral" x-cloak x-show="!allTogglesCompleted">
-                <x-icon icon="hourglass" />
-                Keuringsschema nog niet voltooid.
+                            return this.keys.every(key => {
+                                const val = $wire.submissionForm.fields[key];
+                                return val === 0 || val === 1 || val === '0' || val === '1';
+                            });
+                        },
+                    }">
+                        <div class="status status--neutral" x-cloak x-show="!allTogglesCompleted">
+                            <x-icon icon="hourglass" />
+                            Keuringsschema nog niet voltooid.
+                        </div>
+                        <div class="status status--danger" x-cloak x-show="allTogglesCompleted && !allTogglesPassed">
+                            <x-icon icon="octagon-x" />
+                            Object afgekeurd.
+                        </div>
+                        <div class="u-stack u-stack-gap-m" x-cloak x-show="allTogglesCompleted && !allTogglesPassed">
+                            <x-form.lightswitch
+                                :text="__('models/inspection.has_cat_a_deficiencies.label')"
+                                wire:model="submissionForm.has_cat_a_deficiencies"
+                            />
+                            <x-form.lightswitch
+                                :text="__('models/inspection.has_cat_b_deficiencies.label')"
+                                wire:model="submissionForm.has_cat_b_deficiencies"
+                            />
+                            <x-form.lightswitch wire:model="submissionForm.requires_reinspection" :text="__('models/inspection.requires_reinspection.label')" />
+                            <x-form.lightswitch wire:model="submissionForm.requires_written_deregistration" :text="__('models/inspection.requires_written_deregistration.label')" />
+                            <x-form.lightswitch wire:model="submissionForm.has_no_sticker_provided" :text="__('models/inspection.has_no_sticker_provided.label')" />
+                            <x-form.textarea
+                                :label="__('models/inspection.comment.label')"
+                                model="submissionForm.inspectionComment"
+                            />
+                            <div class="u-stack u-stack-gap-s">
+                                <div class="u-flex u-flex-gap-s">
+                                    <x-submission.image-upload-button model="submissionForm.inspectionImages" />
+                                </div>
+                                @if (count($this->submissionForm->inspectionImages))
+                                    <div class="u-stack u-stack-gap-xs">
+                                        @foreach ($this->submissionForm->inspectionImages as $image)
+                                            <div class="upload__file">
+                                                <x-icon icon="image" />
+                                                @if ($image instanceof TemporaryUploadedFile)
+                                                    <div class="upload__fileName">{{ $image->getClientOriginalName() }}</div>
+                                                    <a
+                                                        class="upload__fileAction"
+                                                        href="{{ $image->temporaryUrl() }}"
+                                                        download="{{ $image->getClientOriginalName() }}"
+                                                    ><x-icon icon="download" /></a>
+                                                    <button
+                                                        class="upload__fileAction"
+                                                        wire:click="deleteInspectionImage('{{ $image->getClientOriginalName() }}')"
+                                                        wire:confirm="@lang('ui.delete_confirm')"
+                                                        type="button"
+                                                    ><x-icon icon="trash" /></button>
+                                                @else
+                                                    <div class="upload__fileName">{{ basename($image) }}</div>
+                                                    <a
+                                                        class="upload__fileAction"
+                                                        wire:click="downloadInspectionImage('{{ $image }}')"
+                                                    ><x-icon icon="download" /></a>
+                                                    <button
+                                                        class="upload__fileAction"
+                                                        wire:click="deleteInspectionImage('{{ $image }}')"
+                                                        wire:confirm="@lang('ui.delete_confirm')"
+                                                        type="button"
+                                                    ><x-icon icon="trash" /></button>
+                                                @endif
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                @endif
+                            </div>
+                        </div>
+                        <div class="status status--success" x-cloak x-show="allTogglesCompleted && allTogglesPassed">
+                            <x-icon icon="check" />
+                            Object goedgekeurd.
+                        </div>
+                    </div>
+                    <div class="actions">
+                        <x-btn primary submit>@lang('ui.save')</x-btn>
+                        @if ($this->inspection->exists)
+                            <span>
+                                @lang('ui.or')
+                                <x-btn text href="{{ route('inspection-objects.show', $this->inspectionObject->id) }}">@lang('ui.cancel')</x-btn>
+                            </span>
+                        @endif
+                    </div>
+                </div>
             </div>
-            <div class="status status--danger" x-cloak x-show="allTogglesCompleted && !allTogglesPassed">
-                <x-icon icon="octagon-x" />
-                Object afgekeurd.
-            </div>
-            <div class="u-stack u-stack-gap-m" x-cloak x-show="allTogglesCompleted && !allTogglesPassed">
-                <x-form.lightswitch
-                    :text="__('models/inspection.has_cat_a_deficiencies.label')"
-                    wire:model="submissionForm.has_cat_a_deficiencies"
-                />
-                <x-form.lightswitch
-                    :text="__('models/inspection.has_cat_b_deficiencies.label')"
-                    wire:model="submissionForm.has_cat_b_deficiencies"
-                />
-                <x-form.lightswitch wire:model="submissionForm.requires_reinspection" :text="__('models/inspection.requires_reinspection.label')" />
-                <x-form.lightswitch wire:model="submissionForm.requires_written_deregistration" :text="__('models/inspection.requires_written_deregistration.label')" />
-            </div>
-            <div class="status status--success" x-cloak x-show="allTogglesCompleted && allTogglesPassed">
-                <x-icon icon="check" />
-                Object goedgekeurd.
-            </div>
-        </div>
-        <div class="actions">
-            <x-btn primary submit>@lang('ui.save')</x-btn>
-            @if ($this->inspection->exists)
-                <span>
-                    @lang('ui.or')
-                    <x-btn text href="{{ route('inspection-objects.show', $this->inspectionObject->id) }}">@lang('ui.cancel')</x-btn>
-                </span>
-            @endif
         </div>
     </x-form>
 </div>

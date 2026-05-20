@@ -20,7 +20,13 @@ class InspectionSubmissionForm extends LivewireForm
 
     public bool $has_cat_b_deficiencies = false;
 
+    public bool $has_no_sticker_provided = false;
+
     public array $images = [];
+
+    public ?string $inspectionComment = null;
+
+    public array $inspectionImages = [];
 
     public Inspection $inspection;
 
@@ -53,6 +59,9 @@ class InspectionSubmissionForm extends LivewireForm
         $this->inspection = $inspection;
         $this->has_cat_a_deficiencies = $inspection->has_cat_a_deficiencies ?? false;
         $this->has_cat_b_deficiencies = $inspection->has_cat_b_deficiencies ?? false;
+        $this->has_no_sticker_provided = $inspection->has_no_sticker_provided ?? false;
+        $this->inspectionComment = $inspection->comment;
+        $this->inspectionImages = $inspection->images ?? [];
         $this->meta = $inspection->meta_data ?? [];
         $this->requires_reinspection = $inspection->requires_reinspection ?? false;
         $this->requires_written_deregistration = $inspection->requires_written_deregistration ?? false;
@@ -122,13 +131,32 @@ class InspectionSubmissionForm extends LivewireForm
             fn ($values) => ! empty($values),
         );
 
+        $this->inspection->comment = $this->inspectionComment ?: null;
         $this->inspection->comment_data = $commentData;
         $this->inspection->form_data = $formData;
         $this->inspection->has_cat_a_deficiencies = $this->has_cat_a_deficiencies;
         $this->inspection->has_cat_b_deficiencies = $this->has_cat_b_deficiencies;
+        $this->inspection->has_no_sticker_provided = $this->has_no_sticker_provided;
         $this->inspection->meta_data = $metaData;
         $this->inspection->requires_reinspection = $this->requires_reinspection;
         $this->inspection->requires_written_deregistration = $this->requires_written_deregistration;
+        $this->inspection->save();
+    }
+
+    public function deleteInspectionImage(string $image): void
+    {
+        $this->inspectionImages = array_values(array_filter(
+            $this->inspectionImages,
+            function ($i) use ($image) {
+                if ($i instanceof TemporaryUploadedFile) {
+                    return $i->getClientOriginalName() !== $image;
+                }
+
+                return $i !== $image;
+            },
+        ));
+
+        $this->inspection->images = $this->inspectionImages ?: null;
         $this->inspection->save();
     }
 
@@ -156,6 +184,30 @@ class InspectionSubmissionForm extends LivewireForm
 
             // Save the inspection
             $this->inspection->image_data = array_filter($this->images);
+            $this->inspection->save();
+        }
+    }
+
+    public function updatingInspectionImages($value): void
+    {
+        if (count($value) > count($this->inspectionImages)) {
+            $storedImages = [];
+
+            foreach ($value as $file) {
+                if ($file instanceof TemporaryUploadedFile) {
+                    $storedImages[] = $file->storeAs(
+                        name: $file->getClientOriginalName(),
+                        path: config('path.inspections.images').'/'.$this->inspection->hash,
+                        options: ['disk' => 'public'],
+                    );
+                } else {
+                    $storedImages[] = $file;
+                }
+            }
+
+            $this->inspectionImages = $storedImages;
+
+            $this->inspection->images = $storedImages;
             $this->inspection->save();
         }
     }

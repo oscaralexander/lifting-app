@@ -204,9 +204,19 @@
         }
     }
 
+    &.is-spinning {
+        .lucide {
+            animation: btnSpinner 1s linear infinite;
+        }
+    }
+
     &[disabled] {
         cursor: not-allowed;
         opacity: .5;
+
+        &.btn--primary {
+            color: var(--btn-primary-color);
+        }
     }
 
     &[type=submit] {

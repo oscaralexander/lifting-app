@@ -31,8 +31,9 @@ return [
         'tab_contact' => 'Contactpersoon',
     ],
     'index' => [
-        'btn_create' => 'Nieuwe klant',
+        'btn_import_from_outsmart' => 'Ophalen uit Outsmart',
         'col_name' => 'Naam',
+        'col_debtor_number' => 'Debiteurnummer',
         'col_city' => 'Plaats',
         'col_contact' => 'Contactpersoon',
         'col_contact_phone' => 'Telefoonnummer',
@@ -46,6 +47,7 @@ return [
     ],
     'toast' => [
         'deleted' => 'Klant verwijderd',
+        'imported' => ':count klanten gesynchroniseerd',
         'saved' => 'Klant opgeslagen',
     ],
 ];
