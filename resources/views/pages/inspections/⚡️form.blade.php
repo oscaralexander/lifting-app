@@ -334,7 +334,7 @@ new class extends Component
                             ->values()
                             ->toArray();
                     @endphp
-                    <div class="u-stack u-stack-gap-m" x-data="{
+                    <div class="u-stack u-stack-gap-l" x-data="{
                         keys: @js($toggleFieldKeys),
                         get allTogglesCompleted() {
                             if (this.keys.length === 0) {
@@ -365,26 +365,16 @@ new class extends Component
                             <x-icon icon="octagon-x" />
                             Object afgekeurd.
                         </div>
-                        <div class="u-stack u-stack-gap-m" x-cloak x-show="allTogglesCompleted && !allTogglesPassed">
-                            <x-form.lightswitch
-                                :text="__('models/inspection.has_cat_a_deficiencies.label')"
-                                wire:model="submissionForm.has_cat_a_deficiencies"
-                            />
-                            <x-form.lightswitch
-                                :text="__('models/inspection.has_cat_b_deficiencies.label')"
-                                wire:model="submissionForm.has_cat_b_deficiencies"
-                            />
-                            <x-form.lightswitch wire:model="submissionForm.requires_reinspection" :text="__('models/inspection.requires_reinspection.label')" />
-                            <x-form.lightswitch wire:model="submissionForm.requires_written_deregistration" :text="__('models/inspection.requires_written_deregistration.label')" />
-                            <x-form.lightswitch wire:model="submissionForm.has_no_sticker_provided" :text="__('models/inspection.has_no_sticker_provided.label')" />
+                        <div class="status status--success" x-cloak x-show="allTogglesCompleted && allTogglesPassed">
+                            <x-icon icon="check" />
+                            Object goedgekeurd.
+                        </div>
+                        <div class="u-stack u-stack-gap-m" x-cloak x-show="allTogglesCompleted">
                             <x-form.textarea
                                 :label="__('models/inspection.comment.label')"
                                 model="submissionForm.inspectionComment"
                             />
                             <div class="u-stack u-stack-gap-s">
-                                <div class="u-flex u-flex-gap-s">
-                                    <x-submission.image-upload-button model="submissionForm.inspectionImages" />
-                                </div>
                                 @if (count($this->submissionForm->inspectionImages))
                                     <div class="u-stack u-stack-gap-xs">
                                         @foreach ($this->submissionForm->inspectionImages as $image)
@@ -420,11 +410,23 @@ new class extends Component
                                         @endforeach
                                     </div>
                                 @endif
+                                <div class="u-flex u-flex-gap-s">
+                                    <x-submission.image-upload-button model="submissionForm.inspectionImages" />
+                                </div>
                             </div>
                         </div>
-                        <div class="status status--success" x-cloak x-show="allTogglesCompleted && allTogglesPassed">
-                            <x-icon icon="check" />
-                            Object goedgekeurd.
+                        <div class="u-stack u-stack-gap-m" x-cloak x-show="allTogglesCompleted && !allTogglesPassed">
+                            <x-form.lightswitch
+                                :text="__('models/inspection.has_cat_a_deficiencies.label')"
+                                wire:model="submissionForm.has_cat_a_deficiencies"
+                            />
+                            <x-form.lightswitch
+                                :text="__('models/inspection.has_cat_b_deficiencies.label')"
+                                wire:model="submissionForm.has_cat_b_deficiencies"
+                            />
+                            <x-form.lightswitch wire:model="submissionForm.requires_reinspection" :text="__('models/inspection.requires_reinspection.label')" />
+                            <x-form.lightswitch wire:model="submissionForm.requires_written_deregistration" :text="__('models/inspection.requires_written_deregistration.label')" />
+                            <x-form.lightswitch wire:model="submissionForm.has_no_sticker_provided" :text="__('models/inspection.has_no_sticker_provided.label')" />
                         </div>
                     </div>
                     <div class="actions">

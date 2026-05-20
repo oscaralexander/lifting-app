@@ -41,9 +41,9 @@ return [
         'label' => 'Schriftelijk afmelden aan Lifting Inspections noodzakelijk',
     ],
     'comment' => [
-        'label' => 'Opmerking',
+        'label' => 'Opmerkingen',
     ],
     'images' => [
-        'label' => 'Foto\'s',
+        'label' => 'Foto\’s',
     ],
 ];

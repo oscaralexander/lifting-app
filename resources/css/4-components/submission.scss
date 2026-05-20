@@ -180,7 +180,7 @@
         justify-content: center;
         padding: 1px 0;
         position: relative;
-        width: var(--btn-height);
+        min-width: var(--btn-height);
 
         .icon:nth-child(2) {
             animation: iconSpinner 1s linear infinite;
