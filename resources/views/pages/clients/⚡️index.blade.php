@@ -15,7 +15,10 @@ new class extends Component
     #[Computed]
     public function clients(): LengthAwarePaginator
     {
-        return Client::withCount('inspections')->orderBy('name')->paginate(10);
+        return Client::withCount('inspections')
+            ->orderBy('name')
+            ->paginate(10, pageName: 'p')
+            ->setPath(route('clients'));
     }
 
     /**
@@ -116,6 +119,7 @@ new class extends Component
                     @endforeach
                 </tbody>
             </table>
+            {{ $this->clients->links() }}
         </div>
     </div>
 </div>
