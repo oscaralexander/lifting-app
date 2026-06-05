@@ -170,9 +170,50 @@ new class extends Component
 ?>
 
 <div>
+    @php
+        $toggleFieldKeys = $this->form->fields
+            ->filter(fn($f) => $f->type === FieldType::TOGGLE)
+            ->map(fn($f) => 'field_' . $f->pivot->id)
+            ->values()
+            ->toArray();
+    @endphp
+    <div x-data="{
+        keys: @js($toggleFieldKeys),
+        get allTogglesCompleted() {
+            if (this.keys.length === 0) {
+                return true;
+            }
+
+            return this.keys.every(key => {
+                const val = $wire.submissionForm.fields[key];
+                return val !== null && val !== undefined;
+            });
+        },
+        get allTogglesPassed() {
+            if (this.keys.length === 0) {
+                return true;
+            }
+
+            return this.keys.every(key => {
+                const val = $wire.submissionForm.fields[key];
+                return val === 0 || val === 1 || val === '0' || val === '1';
+            });
+        },
+    }">
     <x-header
         :intro="$this->intro"
         :title="$this->inspection->project_name ?: __('inspections.create.title')">
+        @if ($this->inspection->exists)
+            <x-slot:actions>
+                <x-btn
+                    icon="download"
+                    :href="route('inspection.pdf', $this->inspection->hash)"
+                    :navigate="false"
+                    x-cloak
+                    x-show="allTogglesCompleted"
+                >@lang('inspections.form.btn_download_report')</x-btn>
+            </x-slot:actions>
+        @endif
     </x-header>
     <x-form class="form form--full u-stack u-stack-gap-xl">
         <div class="grid grid--gap-xxl">
@@ -327,36 +368,7 @@ new class extends Component
         <div class="grid grid--end grid--gap-xxl">
             <div class="grid__col l:grid__col--span-8">
                 <div class="u-stack u-stack-gap-xl">
-                    @php
-                        $toggleFieldKeys = $this->form->fields
-                            ->filter(fn($f) => $f->type === FieldType::TOGGLE)
-                            ->map(fn($f) => 'field_' . $f->pivot->id)
-                            ->values()
-                            ->toArray();
-                    @endphp
-                    <div class="u-stack u-stack-gap-l" x-data="{
-                        keys: @js($toggleFieldKeys),
-                        get allTogglesCompleted() {
-                            if (this.keys.length === 0) {
-                                return true;
-                            }
-
-                            return this.keys.every(key => {
-                                const val = $wire.submissionForm.fields[key];
-                                return val !== null && val !== undefined;
-                            });
-                        },
-                        get allTogglesPassed() {
-                            if (this.keys.length === 0) {
-                                return true;
-                            }
-
-                            return this.keys.every(key => {
-                                const val = $wire.submissionForm.fields[key];
-                                return val === 0 || val === 1 || val === '0' || val === '1';
-                            });
-                        },
-                    }">
+                    <div class="u-stack u-stack-gap-l">
                         <div class="status status--neutral" x-cloak x-show="!allTogglesCompleted">
                             <x-icon icon="hourglass" />
                             Keuringsschema nog niet voltooid.
@@ -442,4 +454,5 @@ new class extends Component
             </div>
         </div>
     </x-form>
+    </div>
 </div>

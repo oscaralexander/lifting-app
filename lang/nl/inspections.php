@@ -5,6 +5,7 @@ return [
         'title' => 'Nieuwe inspectie',
     ],
     'form' => [
+        'btn_download_report' => 'Download Keuringsrapport (PDF)',
         'crane' => [
             'heading_crane' => 'Kraan',
             'heading_base' => 'Onderstel',
