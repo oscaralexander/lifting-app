@@ -44,6 +44,10 @@ return [
     'modal' => [
         'title_create' => 'Nieuwe klant',
         'title_edit' => 'Klant bewerken',
+        'loading' => 'Gegevens ophalen uit Outsmart…',
+        'no_debtor' => 'Deze klant heeft geen Outsmart-debiteurnummer.',
+        'work_orders_heading' => 'Werkbonnen',
+        'no_work_orders' => 'Geen werkbonnen gevonden.',
     ],
     'toast' => [
         'deleted' => 'Klant verwijderd',

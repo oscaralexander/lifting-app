@@ -3,8 +3,9 @@
 use App\Http\Controllers\DownloadController;
 use App\Http\Controllers\ImportBelgiumController;
 use App\Http\Controllers\ImportController;
+use App\Http\Controllers\InspectionReportHtmlController;
+use App\Http\Controllers\InspectionReportPdfController;
 use App\Http\Controllers\SubmissionDownloadController;
-use App\Http\Controllers\SubmissionPdfController;
 use App\Livewire\App\QR\Link;
 use App\Livewire\App\QR\Show;
 use App\Livewire\App\Submission\Form;
@@ -30,7 +31,8 @@ Route::get('submission/download', SubmissionDownloadController::class)->name('su
 Route::get('submission/{stickerHash}', FormSelect::class)->name('submission.form-select');
 Route::get('submission/{stickerHash}/form/{formId}', Form::class)->name('submission.form');
 Route::get('submission/{stickerHash}/{hash}', App\Livewire\App\Submission\Show::class)->name('submission.show');
-Route::get('submission/{stickerHash}/{hash}/download/{type}', SubmissionPdfController::class)->name('submission.pdf');
+Route::get('inspection/{hash}/pdf', InspectionReportPdfController::class)->name('inspection.pdf');
+Route::get('inspection/{hash}/html', InspectionReportHtmlController::class)->name('inspection.html');
 
 Route::get('info', function () {
     exit(phpinfo());

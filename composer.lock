@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "4136e6f187a558299c0f9ec3460e1977",
+    "content-hash": "58407476ebd3545801410c8e6ce526c1",
     "packages": [
         {
             "name": "bacon/bacon-qr-code",
@@ -596,6 +596,64 @@
                 "source": "https://github.com/dflydev/dflydev-dot-access-data/tree/v3.0.3"
             },
             "time": "2024-07-08T12:26:09+00:00"
+        },
+        {
+            "name": "docraptor/docraptor",
+            "version": "4.2.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/DocRaptor/docraptor-php.git",
+                "reference": "80b8bd84866874bf7a6cf879c8a46ac796e51dc5"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/DocRaptor/docraptor-php/zipball/80b8bd84866874bf7a6cf879c8a46ac796e51dc5",
+                "reference": "80b8bd84866874bf7a6cf879c8a46ac796e51dc5",
+                "shasum": ""
+            },
+            "require": {
+                "ext-curl": "*",
+                "ext-json": "*",
+                "ext-mbstring": "*",
+                "guzzlehttp/guzzle": "^7.3",
+                "guzzlehttp/psr7": "^1.7 || ^2.0",
+                "php": "^7.4 || ^8.0"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "^3.5",
+                "phpunit/phpunit": "^8.0 || ^9.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "DocRaptor\\": "lib/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Expected Behavior",
+                    "homepage": "https://github.com/expectedbehavior"
+                }
+            ],
+            "description": "A native client library for the DocRaptor HTML to PDF/XLS service.",
+            "homepage": "https://github.com/docraptor/docraptor-php",
+            "keywords": [
+                "api",
+                "docraptor",
+                "html",
+                "pdf",
+                "xls",
+                "xlsx"
+            ],
+            "support": {
+                "issues": "https://github.com/DocRaptor/docraptor-php/issues",
+                "source": "https://github.com/DocRaptor/docraptor-php/tree/v4.2.0"
+            },
+            "time": "2024-03-12T19:01:38+00:00"
         },
         {
             "name": "doctrine/inflector",

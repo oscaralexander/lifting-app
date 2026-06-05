@@ -1,0 +1,377 @@
+@font-face {
+    font-display: swap;
+    font-family: Söhne Schmall;
+    font-style: normal;
+    font-weight: 700;
+    src: url('https://www.liftinginspections.nl/dist/assets/SoehneSchmall-Fett-DFoX6Oz0.woff2') format('woff2');
+}
+
+:root {
+    --color-text: #1f336a;
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+@page {
+    margin: 25mm 14mm 25mm 14mm;
+    size: A4;
+
+    @bottom {
+        align-items: center;
+        content: element(footer);
+        display: flex;
+        z-index: 1;
+    }
+
+    @top {
+        align-items: center;
+        content: element(header);
+        display: flex;
+        z-index: 2;
+    }
+}
+
+@page :first {
+    background-image: url('https://app.liftinginspections.nl/assets/img/pdf/cover.svg');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+
+    @top { content: none; }
+    @bottom { content: none; }
+}
+
+body {
+    color: var(--color-text);
+    font-family: 'Roboto', sans-serif;
+    font-size: 9pt;
+    line-height: 1.4;
+}
+
+a {
+    color: #1B3A6B;
+}
+
+img {
+    display: block;
+    height: auto;
+}
+
+.page-break-after  {
+    break-after: page;
+}
+
+.page-break-before {
+    break-before: page;
+}
+
+.intro {
+    break-after: page;
+}
+
+.header {
+    align-items: center;
+    display: flex;
+    flex: 1;
+    justify-content: flex-end;
+    position: running(header);
+    z-index: 1;
+}
+
+.header__logo {
+    aspect-ratio: 66/20;
+    display: block;
+    height: 12mm;
+    width: auto;
+}
+
+.footer {
+    align-items: flex-end;
+    display: flex;
+    font-size: 7pt;
+    line-height: 1.25;
+    position: running(footer);
+    z-index: 2;
+}
+
+.footer__left {
+    flex: 1;
+}
+
+.footer__center {
+    flex: 1;
+    text-align: center;
+}
+
+.footer__right {
+    display: flex;
+    flex: 1;
+    justify-content: flex-end;
+}
+
+.footer__pageNo {
+    content: counter(page);
+}
+
+.footer__logo {
+    aspect-ratio: 20/20;
+    display: inline-block;
+    height: 12mm;
+}
+
+.page {
+    break-after: page;
+}
+
+h1 {
+    color: #1f336a;
+    font-family: 'Söhne Schmall', sans-serif;
+    font-size: 56px;
+}
+
+.cover {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    width: 100vw;
+}
+
+.cover__content {
+    align-items: flex-start;
+    justify-content: center;
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+}
+
+.cover__footer {
+    font-size: 8pt;
+}
+
+.cover__logo {
+    height: 2cm;
+}
+
+.cover h2 {
+    font-size: 24pt;
+}
+
+.formatted {
+    line-height: 1.3;
+}
+
+.formatted p {
+    margin-bottom: 1em;
+}
+
+.formatted h2 {
+    font-size: 14pt;
+    font-weight: 500;
+    margin-bottom: .25em;
+}
+
+.formatted h3 {
+    font-size: 10pt;
+    font-weight: 500;
+    margin: 0 0 .125em 0;
+}
+
+.formatted h4 {
+    font-size: 9pt;
+    font-weight: 600;
+    margin: 0;
+}
+
+.formatted ul {
+    margin-bottom: 1em;
+}
+
+.formatted ul li {
+    margin-left: 1.25em;
+}
+
+/**
+ * Tables
+ */
+
+.table {
+    border-collapse: separate;
+    margin-bottom: 1em;
+    page-break-inside: avoid;
+    width: 100%;
+}
+
+.table thead th {
+    background: #1f336a;
+    border-radius: 1mm;
+    color: #fff;
+    font-feature-settings: 'tnum';
+    font-variant-numeric: tabular-nums;
+    font-weight: 500;
+    padding: 1.5mm 2mm;
+    text-align: left;
+}
+
+.table tbody th {
+    font-weight: 500;
+    text-align: left;
+    width: 33.33333%;
+}
+
+.table tbody th,
+.table tbody td {
+    border-bottom: 1px solid #eee;
+    font-size: 9pt;
+    padding: 1.5mm 2mm;
+    text-align: left;
+}
+
+.table--form {
+    border-spacing: 0;
+    page-break-inside: auto;
+}
+
+.table--form thead th {
+    border-radius: 0;
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: 'tnum';
+}
+
+.table--form thead th:first-child {
+    border-radius: 1mm 0 0 1mm;
+}
+
+.table--form thead th:last-child {
+    border-radius: 0 1mm 1mm 0;
+}
+
+.table--form .table__toggleCol {
+    vertical-align: middle;
+    padding: 1mm;
+    text-align: center;
+    width: 7mm;
+}
+
+.table--form .table__toggleCol img {
+    display: block;
+    margin: auto;
+}
+
+.table--form th,
+.table--form td {
+    vertical-align: top;
+}
+
+.table--form tbody .table__fieldNum {
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: 'tnum';
+    width: 12mm;
+}
+
+.table__formQ {
+    font-weight: 500;
+}
+
+.table__formComment {
+    font-style: italic;
+}
+
+/**
+ * Test matrix
+ */
+
+.matrix {
+    break-before: page;
+}
+
+.matrix h2 {
+    font-size: 12pt;
+    font-weight: 600;
+    margin-bottom: 0.5em;
+}
+
+.matrix table {
+    border-collapse: collapse;
+    table-layout: fixed;
+    width: 100%;
+}
+
+.matrix th,
+.matrix td {
+    border: 0.5pt solid #d4d8e2;
+    font-feature-settings: 'tnum';
+    font-size: 6pt;
+    line-height: 1.15;
+    padding: 1mm 0.5mm;
+    text-align: center;
+    vertical-align: middle;
+    word-break: break-word;
+}
+
+.matrix thead th {
+    font-weight: 500;
+    vertical-align: bottom;
+}
+
+.matrix thead th.rotate {
+    /* height: 35mm; */
+    text-align: center;
+    vertical-align: bottom;
+}
+
+.matrix thead th.rotate > div {
+    display: inline-block;
+    white-space: nowrap;
+    text-align: right;
+    writing-mode: vertical-rl;
+}
+
+.matrix thead tr:last-child th {
+    border-bottom: 0.75pt solid #1f336a;
+}
+
+.matrix thead th.heading {
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.matrix thead th.subheading {
+    font-weight: 500;
+}
+
+.matrix .border-right {
+    border-right: 0.75pt solid #1f336a;
+}
+
+.matrix .border-left {
+    border-left: 0.75pt solid #1f336a;
+}
+
+.matrix .border-bottom {
+    border-bottom: 0.75pt solid #1f336a;
+}
+
+.matrix .passed {
+    background: #e7f6ec;
+    color: #1a7f43;
+}
+
+.matrix .failed {
+    background: #fbe9e9;
+    color: #c0392b;
+}
+
+.matrix .neutral {
+    color: #9aa0b3;
+}
+
+.matrix .result.passed,
+.matrix .result.failed {
+    font-weight: 600;
+}

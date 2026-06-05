@@ -141,7 +141,7 @@
     </head>
     <body>
         <header class="header">
-            <img alt="Van der Spek" class="header__logo"src="{{ public_path() . '/assets/img/van-der-spek.svg' }}" />
+            <img alt="Van der Spek" class="header__logo" src="{{ public_path() . '/assets/img/van-der-spek.svg' }}" />
             <table class="header__details">
                 <tr>
                     <td>

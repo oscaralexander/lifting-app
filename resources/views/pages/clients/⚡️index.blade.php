@@ -17,17 +17,8 @@ new class extends Component
     {
         return Client::withCount('inspections')
             ->orderBy('name')
-            ->paginate(10, pageName: 'p')
+            ->paginate(Client::PER_PAGE, pageName: 'p')
             ->setPath(route('clients'));
-    }
-
-    /**
-     * @return array<int, array<string, mixed>>
-     */
-    #[Computed]
-    public function outsmartRelations(): array
-    {
-        return app(OutsmartService::class)->getRelations();
     }
 
     public function delete(int $id): void
@@ -99,7 +90,16 @@ new class extends Component
                 <tbody>
                     @foreach ($this->clients as $client)
                         <tr wire:key="client-{{ $client->id }}">
-                            <td>{{ $client->name }}</td>
+                            <td>
+                                @if ($client->outsmart_debtor_number)
+                                    <a
+                                        href="#"
+                                        wire:click.prevent="$dispatch('openModal', { component: 'clients.projects-modal', arguments: { clientId: {{ $client->id }} } })"
+                                    >{{ $client->name }}</a>
+                                @else
+                                    {{ $client->name }}
+                                @endif
+                            </td>
                             <td>{{ $client->outsmart_debtor_number }}</td>
                             <td>{{ $client->city }}, {{ $client->country->labelShort() }}</td>
                             <td>

@@ -10,6 +10,7 @@
     "require": {
         "php": "^8.4",
         "barryvdh/laravel-dompdf": "^3.1",
+        "docraptor/docraptor": "^4.2",
         "embed/embed": "^4.4",
         "endroid/qr-code": "^6.0",
         "laravel/framework": "^13.0",

@@ -42,4 +42,9 @@ return [
         ],
     ],
 
+    'docraptor' => [
+        'key' => env('DOCRAPTOR_API_KEY'),
+        'url' => 'https://api.docraptor.com/docs',
+    ],
+
 ];

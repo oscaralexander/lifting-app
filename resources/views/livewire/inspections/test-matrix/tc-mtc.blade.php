@@ -6,8 +6,8 @@
         <thead>
             <tr>
                 <th class="border-bottom border-right rotate" scope="col" rowspan="4">Volgnummer beproeving</th>
-                <th class="border-right heading" scope="col" colspan="15">Gegevens volgens hijstabel</th>
-                <th class="heading" scope="col" colspan="7">Beproeving</th>
+                <th class="border-right heading" scope="col" colspan="12">Gegevens volgens hijstabel</th>
+                <th class="heading" scope="col" colspan="10">Beproeving</th>
             </tr>
             <tr>
                 {{-- Gegevens volgens hijstabel --}}
@@ -16,13 +16,10 @@
                 <th class="border-right subheading" scope="col" colspan="2">Ballast</th>
                 <th class="border-left rotate" scope="col" rowspan="2">Aantal parten hijskabel</th>
                 <th scope="col">Zwenk&shy;hoek</th>
-                <th class="rotate" scope="col" rowspan="2">LMB code</th>
-                <th class="rotate" scope="col" rowspan="2">Gang (snelheid)</th>
-                <th class="rotate" scope="col" rowspan="2">Toelaatbare bedrijfslast LMB</th>
-                <th class="border-right rotate" scope="col" rowspan="2">Toelaatbare bedrijfslast LB</th>
+                <th class="border-right rotate" scope="col" rowspan="2">LMB Code / Gang</th>
                 {{-- Beproeving --}}
-                <th class="border-right" scope="col" colspan="4">LMB</th>
-                <th class="border-right" scope="col" colspan="2">LB</th>
+                <th class="border-right" scope="col" colspan="6">LMB</th>
+                <th class="border-right" scope="col" colspan="3">LB</th>
                 <th class="border-left rotate" scope="col" rowspan="2">Akkoord</th>
             </tr>
             <tr>
@@ -38,11 +35,16 @@
                 <th class="rotate" scope="col">Massa centraal ballast (t/kg)</th>
                 <th class="border-right rotate" scope="col">Massa contraballast (t/kg)</th>
                 <th class="rotate" scope="col">R = 360º, A = Achter<br>Z = Zij, V = Voor</th>
+                {{-- LMB --}}
                 <th class="rotate" scope="col">Proeflast (t/kg)</th>
-                <th class="rotate" scope="col">LMB treed in werking bij<br>katten uit (m)</th>
-                <th class="rotate" scope="col">LMB treed in werking bij<br>hijsen (m)</th>
+                <th class="rotate" scope="col">Toelaatbare vlucht bij proeflast</th>
+                <th class="rotate" scope="col">LMB treed in werking<br>bij katten uit (m)</th>
+                <th class="rotate" scope="col">LMB treed in werking<br>bij hijsen (m)</th>
+                <th class="rotate" scope="col">Toelaatbare bedrijfslast<br>bij kolom 18</th>
                 <th class="border-right rotate" scope="col">Afwijking LMB</th>
+                {{-- LB --}}
                 <th class="rotate" scope="col">LB treedt in werking bij (t/kg)</th>
+                <th class="rotate" scope="col">Toelaatbare bedrijfslast<br>bij kolom 20</th>
                 <th class="border-right rotate" scope="col">Afwijking LB</th>
             </tr>
             <tr>
@@ -57,14 +59,14 @@
                 <th class="border-right" scope="col">9</th>
                 <th scope="col">10</th>
                 <th scope="col">11</th>
-                <th scope="col">12</th>
+                <th class="border-right" scope="col">12</th>
                 <th scope="col">13</th>
                 <th scope="col">14</th>
-                <th class="border-right" scope="col">15</th>
+                <th scope="col">15.1</th>
+                <th scope="col">15.2</th>
                 <th scope="col">16</th>
-                <th scope="col">17.1</th>
-                <th scope="col">17.2</th>
-                <th class="border-right" scope="col">18</th>
+                <th class="border-right" scope="col">17</th>
+                <th scope="col">18</th>
                 <th scope="col">19</th>
                 <th class="border-right" scope="col">20</th>
                 <th scope="col">21</th>
@@ -75,34 +77,37 @@
                 <tr
                     wire:key="matrix-row-{{ $i }}"
                     x-data="{
-                        col_18: '—',
+                        col_17: '—',
                         col_20: '—',
                         get col_21() {
-                            if (this.col_18 === '—' || this.col_20 === '—') {
+                            const col_17 = parseFloat(this.col_17);
+                            const col_20 = parseFloat(this.col_20);
+
+                            if (isNaN(col_17) && isNaN(col_20)) {
                                 return '—';
                             }
 
-                            if (parseFloat(this.col_18) >= 10 || parseFloat(this.col_20) >= 10) {
+                            if (col_17 >= 10 || col_20 >= 10) {
                                 return 'NEE';
                             }
 
                             return 'JA';
                         },
                         init() {
-                            this.updateCol18();
+                            this.updateCol17();
                             this.updateCol20();
                         },
                         row: {{ $i }},
-                        updateCol18() {
+                        updateCol17() {
                             if (!$wire.matrix[this.row].col_14 || !$wire.matrix[this.row].col_16) {
-                                this.col_18 = '—';
+                                this.col_17 = '—';
                                 return;
                             }
 
                             const col_14 = parseFloat($wire.matrix[this.row].col_14.replace(',', '.'));
                             const col_16 = parseFloat($wire.matrix[this.row].col_16.replace(',', '.'));
 
-                            this.col_18 = (((col_16 - col_14) / col_14) * 100).toFixed(2) + '%';
+                            this.col_17 = (((col_16 - col_14) / col_14) * 100).toFixed(2) + '%';
                         },
                         updateCol20() {
                             if (!$wire.matrix[this.row].col_15 || !$wire.matrix[this.row].col_19) {
@@ -145,23 +150,23 @@
                     <td class="border-right">{{ $this->inspection->inspectable?->counter_ballast ? format_number($this->inspection->inspectable->counter_ballast) : '' }}</td>{{-- 9 --}}
                     <td><input type="text" wire:model="matrix.{{ $i }}.col_10" /></td>{{-- 10 --}}
                     <td><input type="text" wire:model="matrix.{{ $i }}.col_11" /></td>{{-- 11 --}}
-                    <td><input type="text" wire:model="matrix.{{ $i }}.col_12" /></td>{{-- 12 --}}
-                    <td><input type="text" wire:model="matrix.{{ $i }}.col_13" /></td>{{-- 13 --}}
-                    <td><input type="text" wire:model="matrix.{{ $i }}.col_14" x-on:blur="updateCol18()" /></td>{{-- 14 --}}
-                    <td class="border-right"><input type="text" wire:model="matrix.{{ $i }}.col_15" x-on:blur="updateCol20()" /></td>{{-- 15 --}}
-                    <td><input type="text" wire:model="matrix.{{ $i }}.col_16" x-on:blur="updateCol18()" /></td>{{-- 16 --}}
-                    <td><input type="text" wire:model="matrix.{{ $i }}.col_17_1" /></td>{{-- 17.1 --}}
-                    <td><input type="text" wire:model="matrix.{{ $i }}.col_17_2" /></td>{{-- 17.2 --}}
+                    <td class="border-right"><input type="text" wire:model="matrix.{{ $i }}.col_12" /></td>{{-- 12 (LMB Code / Gang) --}}
+                    <td><input type="text" wire:model="matrix.{{ $i }}.col_16" x-on:blur="updateCol17()" /></td>{{-- 13 (Proeflast) --}}
+                    <td><input type="text" wire:model="matrix.{{ $i }}.col_18" /></td>{{-- 14 (Toelaatbare vlucht bij proeflast) --}}
+                    <td><input type="text" wire:model="matrix.{{ $i }}.col_17_1" /></td>{{-- 15.1 --}}
+                    <td><input type="text" wire:model="matrix.{{ $i }}.col_17_2" /></td>{{-- 15.2 --}}
+                    <td><input type="text" wire:model="matrix.{{ $i }}.col_14" x-on:blur="updateCol17()" /></td>{{-- 16 (Toelaatbare bedrijfslast bij kolom 18) --}}
                     <td
                         class="border-right"
                         :class="{
-                            'failed': parseFloat(col_18) >= 10,
-                            'neutral': col_18 === '—',
-                            'passed': parseFloat(col_18) < 10,
+                            'failed': parseFloat(col_17) >= 10,
+                            'neutral': col_17 === '—',
+                            'passed': parseFloat(col_17) < 10,
                         }"
-                        x-text="col_18.replace('.', ',')"
-                    ></td>{{-- 18 --}}
-                    <td><input type="text" wire:model="matrix.{{ $i }}.col_19" x-on:blur="updateCol20()" /></td>{{-- 19 --}}
+                        x-text="col_17.replace('.', ',')"
+                    ></td>{{-- 17 (Afwijking LMB) --}}
+                    <td><input type="text" wire:model="matrix.{{ $i }}.col_19" x-on:blur="updateCol20()" /></td>{{-- 18 (LB treedt in werking bij) --}}
+                    <td><input type="text" wire:model="matrix.{{ $i }}.col_15" x-on:blur="updateCol20()" /></td>{{-- 19 (Toelaatbare bedrijfslast bij kolom 20) --}}
                     <td
                         class="border-right"
                         :class="{
@@ -170,17 +175,17 @@
                             'passed': parseFloat(col_20) < 10,
                         }"
                         x-text="col_20.replace('.', ',')"
-                    ></td>{{-- 20 --}}
+                    ></td>{{-- 20 (Afwijking LB) --}}
                     <td
                         class="result"
                         :class="{
-                            'failed': parseFloat(col_18) >= 10 || parseFloat(col_20) >= 10,
-                            'neutral': col_20 === '—',
-                            'passed': parseFloat(col_18) < 10 && parseFloat(col_20) < 10,
+                            'failed': col_21 === 'NEE',
+                            'neutral': col_21 === '—',
+                            'passed': col_21 === 'JA',
                         }"
                         x-text="col_21"
                     >
-                    </td>{{-- 21 --}}
+                    </td>{{-- 21 (Akkoord) --}}
                 </tr>
             @endfor
         </tbody>
