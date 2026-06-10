@@ -6,6 +6,13 @@ return [
     ],
     'form' => [
         'btn_download_report' => 'Download Keuringsrapport (PDF)',
+        'btn_fetch_outsmart' => 'Ophalen uit Outsmart',
+        'outsmart' => [
+            'toast' => [
+                'fetched' => 'Gegevens opgehaald uit Outsmart',
+                'not_found' => 'Werkbon niet gevonden in Outsmart',
+            ],
+        ],
         'crane' => [
             'heading_crane' => 'Kraan',
             'heading_base' => 'Onderstel',
@@ -24,6 +31,25 @@ return [
         'status' => [
             'passed' => 'Object is goedgekeurd.',
             'failed' => 'Object is afgekeurd.',
+        ],
+    ],
+    'start' => [
+        'modal' => [
+            'title' => 'Nieuwe inspectie starten',
+            'title_relink' => 'Werkbon koppelen',
+            'client' => 'Klant',
+            'statuses' => 'Filter op status',
+            'statuses_placeholder' => 'Alle statussen',
+            'work_order' => 'Werkbon',
+            'loading_work_orders' => 'Werkbonnen laden…',
+            'summary_status' => 'Status',
+            'summary_reference' => 'Referentie',
+            'summary_creation_date' => 'Aanmaakdatum',
+            'btn_start' => 'Inspectie starten',
+            'btn_relink' => 'Werkbon koppelen',
+        ],
+        'toast' => [
+            'relinked' => 'Werkbon gekoppeld',
         ],
     ],
     'project' => [
@@ -54,6 +80,7 @@ return [
         'col_client' => 'Klant',
         'col_date' => 'Datum',
         'col_project_name' => 'Projectnaam',
+        'col_report' => 'Rapport',
         'col_signed' => 'Ondertekend',
         'col_type' => 'Type',
         'btn_create' => 'Nieuwe inspectie',

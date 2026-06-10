@@ -9,6 +9,7 @@
 .field {
     display: flex;
     flex: 1;
+    align-items: stretch;
     flex-direction: column;
     gap: .5rem;
 

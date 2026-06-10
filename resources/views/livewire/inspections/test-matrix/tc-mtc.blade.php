@@ -40,11 +40,11 @@
                 <th class="rotate" scope="col">Toelaatbare vlucht bij proeflast</th>
                 <th class="rotate" scope="col">LMB treed in werking<br>bij katten uit (m)</th>
                 <th class="rotate" scope="col">LMB treed in werking<br>bij hijsen (m)</th>
-                <th class="rotate" scope="col">Toelaatbare bedrijfslast<br>bij kolom 18</th>
+                <th class="rotate" scope="col">Toelaatbare bedrijfslast<br>bij kolom 15</th>
                 <th class="border-right rotate" scope="col">Afwijking LMB</th>
                 {{-- LB --}}
                 <th class="rotate" scope="col">LB treedt in werking bij (t/kg)</th>
-                <th class="rotate" scope="col">Toelaatbare bedrijfslast<br>bij kolom 20</th>
+                <th class="rotate" scope="col">Toelaatbare bedrijfslast<br>bij kolom 18</th>
                 <th class="border-right rotate" scope="col">Afwijking LB</th>
             </tr>
             <tr>

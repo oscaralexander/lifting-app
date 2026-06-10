@@ -4,8 +4,8 @@
         <x-popout icon="plus" small :label="__('inspection_objects.show.btn_create_inspection')">
             @foreach ($this->forms as $form)
                 <x-popout.item
-                    :href="route('inspections.form', ['inspectionObjectId' => $this->inspectionObject->id, 'formSlug' => $form->slug])"
                     :label="$form->name"
+                    wire:click="$dispatch('openModal', { component: 'inspections.start-inspection-modal', arguments: { formId: {{ $form->id }}, inspectionObjectId: {{ $this->inspectionObject->id }} } })"
                 />
             @endforeach
         </x-popout>

@@ -12,6 +12,7 @@ use App\Models\InspectionObject;
 use App\Models\InspectionObjects\Crane;
 use App\Models\InspectionObjects\OperatorLift;
 use App\Models\Form;
+use App\Services\OutsmartService;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Livewire\Component;
@@ -161,6 +162,43 @@ new class extends Component
             ->title(__('inspections.create.title'));
     }
 
+    public function fetchFromOutsmart(OutsmartService $outsmart): void
+    {
+        $inspection = $this->inspection;
+
+        if (!$inspection->exists || !$inspection->outsmart_work_order_id) {
+            return;
+        }
+
+        $workOrder = $outsmart->getWorkOrder($inspection->outsmart_work_order_id);
+
+        if ($workOrder === null) {
+            $this->dispatch(Event::TOAST, message: __('inspections.form.outsmart.toast.not_found'), type: 'error');
+
+            return;
+        }
+
+        $employeeNr = $workOrder['EmployeeNr'] ?? null;
+        $employee = $employeeNr ? $outsmart->getEmployee((string) $employeeNr) : null;
+        $inspectorName = $employee
+            ? (trim(($employee['firstname'] ?? '') . ' ' . ($employee['lastname'] ?? '')) ?: null)
+            : null;
+
+        $inspection->update([
+            'project_name' => ($workOrder['Reference'] ?? null) ?: ($workOrder['OrderNr'] ?? null),
+            'project_address' => trim(($workOrder['CustomerStreet'] ?? '') . ' ' . ($workOrder['CustomerStreetNo'] ?? '')),
+            'project_postal_code' => $workOrder['CustomerZIP'] ?? null,
+            'project_city' => $workOrder['CustomerCity'] ?? null,
+            'inspector_name' => $inspectorName,
+            'outsmart_order_number' => $workOrder['OrderNr'] ?? null,
+            'outsmart_photos' => $workOrder['Photos'] ?? null,
+        ]);
+
+        unset($this->inspection);
+
+        $this->dispatch(Event::TOAST, message: __('inspections.form.outsmart.toast.fetched'), type: 'success');
+    }
+
     public function submit(): void
     {
         $this->submissionForm->save();
@@ -203,15 +241,16 @@ new class extends Component
     <x-header
         :intro="$this->intro"
         :title="$this->inspection->project_name ?: __('inspections.create.title')">
-        @if ($this->inspection->exists)
+        @if ($this->inspection->exists && $this->inspection->outsmart_work_order_id)
             <x-slot:actions>
                 <x-btn
-                    icon="download"
-                    :href="route('inspection.pdf', $this->inspection->hash)"
-                    :navigate="false"
-                    x-cloak
-                    x-show="allTogglesCompleted"
-                >@lang('inspections.form.btn_download_report')</x-btn>
+                    icon="refresh-cw"
+                    primary
+                    wire:click="fetchFromOutsmart"
+                    wire:loading.attr="disabled"
+                    wire:loading.class="is-spinning"
+                    wire:target="fetchFromOutsmart"
+                >@lang('inspections.form.btn_fetch_outsmart')</x-btn>
             </x-slot:actions>
         @endif
     </x-header>
@@ -227,7 +266,7 @@ new class extends Component
                                 :icon="$this->inspection->exists ? 'pencil' : 'plus'"
                                 small
                                 wire:click.prevent="$dispatch('openModal', {
-                                    component: 'inspections.inspection-modal',
+                                    component: 'inspections.start-inspection-modal',
                                     arguments: {
                                         formId: {{ $this->form->id }},
                                         inspectionObjectId: {{ $this->inspectionObjectId }},
@@ -240,6 +279,12 @@ new class extends Component
                             <div>
                                 @if ($this->inspection->type)
                                     <x-data-item :label="__('models/inspection.type.label')" :value="$this->inspection->type->label()" />
+                                @endif
+                                @if ($this->inspection->outsmart_order_number)
+                                    <x-data-item :label="__('models/inspection.outsmart_order_number.label')" :value="$this->inspection->outsmart_order_number" />
+                                @endif
+                                @if ($this->inspection->inspector_name)
+                                    <x-data-item :label="__('models/inspection.inspector_name.label')" :value="$this->inspection->inspector_name" />
                                 @endif
                                 @if ($this->inspection->project_name)
                                     <x-data-item :label="__('models/inspection.project_name.label')" :value="$this->inspection->project_name" />
@@ -362,6 +407,18 @@ new class extends Component
                 </div>
             </div>
         </div>
+        @if (!empty($this->inspection->outsmart_photos) && is_array($this->inspection->outsmart_photos))
+            <div class="u-stack u-stack-gap-l">
+                <h3>Outsmart Photos</h3>
+                <div class="grid grid--gap-m">
+                    @foreach($this->inspection->outsmart_photos as $photo)
+                        <div class="outsmart-photo">
+                            <img src="{{ $photo['image'] }}" alt="" class="outsmart-photo__img" style="max-width: 200px; max-height: 200px;" />
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+        @endif
         @if ($this->inspection->exists)
             <livewire:inspections.test-matrix :inspection-hash="$this->inspectionHash" />
         @endif
@@ -444,6 +501,13 @@ new class extends Component
                     <div class="actions">
                         <x-btn primary submit>@lang('ui.save')</x-btn>
                         @if ($this->inspection->exists)
+                            <x-btn
+                                icon="download"
+                                :href="route('inspection.pdf', $this->inspection->hash)"
+                                :navigate="false"
+                                x-cloak
+                                x-show="allTogglesCompleted"
+                            >@lang('inspections.form.btn_download_report')</x-btn>
                             <span>
                                 @lang('ui.or')
                                 <x-btn text href="{{ route('inspection-objects.show', $this->inspectionObject->id) }}">@lang('ui.cancel')</x-btn>

@@ -44,6 +44,11 @@
             display: flex;
             flex-direction: row;
             justify-content: space-between;
+            gap: 3rem;
+
+            h1 {
+                text-wrap: balance;
+            }
 
             &-content {
                 font-size: var(--font-size-l);

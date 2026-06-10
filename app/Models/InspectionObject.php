@@ -12,6 +12,8 @@ class InspectionObject extends Model
 {
     use SoftDeletes;
 
+    public const PER_PAGE = 25;
+
     protected $casts = [
         'type' => Type::class,
         'year_manufacture' => 'integer',

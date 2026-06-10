@@ -40,6 +40,14 @@
         z-index: 5;
     }
 
+    .lucide {
+        flex: 0 0 1.5em;
+        height: 1.5em;
+        min-height: auto;
+        min-width: auto;
+        stroke-width: 1.75;
+    }
+
     &__uploadLabel {
         &.is-hidden {
             color: transparent !important;

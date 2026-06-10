@@ -11,6 +11,7 @@
             @else
                 <div class="u-stack u-stack-gap-l">
                     @foreach ($workOrders as $workOrder)
+                        @dump($workOrder)
                         {{-- 
                         <div wire:key="wo-{{ $loop->index }}" class="u-stack u-stack-gap-xs">
                             @foreach ($workOrder as $key => $value)
@@ -19,7 +20,6 @@
                                 @endif
                             @endforeach
                         </div>
-                        --}}
                         <div>{{ $workOrder['OrderNr'] }}</div>
                         <div>{{ $workOrder['TypeOfWork'] }}</div>
                         <div>{{ $workOrder['WorkDescription'] }}</div>
@@ -28,6 +28,7 @@
                         @if ($workOrder['PdfUrl'])
                             <a href="{{ $workOrder['PdfUrl'] }}" target="_blank">Download PDF</a>
                         @endif
+                        --}}
                     @endforeach
                 </div>
             @endif

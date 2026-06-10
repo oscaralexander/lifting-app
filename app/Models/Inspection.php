@@ -13,6 +13,8 @@ use Illuminate\Support\Str;
 
 class Inspection extends Model
 {
+    public const PER_PAGE = 25;
+
     protected $guarded = ['id'];
 
     protected $casts = [
@@ -25,6 +27,7 @@ class Inspection extends Model
         'images' => 'json:unicode',
         'matrix' => 'json',
         'meta_data' => 'json:unicode',
+        'outsmart_photos' => 'json:unicode',
         'requires_reinspection' => 'boolean',
         'requires_written_deregistration' => 'boolean',
         'type' => InspectionType::class,

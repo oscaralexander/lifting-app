@@ -83,6 +83,80 @@ class OutsmartService
     }
 
     /**
+     * Get the employees from OutSmart.
+     *
+     * @return array<int, array<string, mixed>>
+     */
+    public function getEmployees(): array
+    {
+        try {
+            $response = $this->client->get('employees/', [
+                'query' => $this->baseQuery(),
+            ]);
+
+            $data = json_decode($response->getBody()->getContents(), true);
+
+            return $data['response'] ?? [];
+        } catch (GuzzleException) {
+            return [];
+        }
+    }
+
+    /**
+     * Get a single employee by their unique number.
+     *
+     * @return array<string, mixed>|null
+     */
+    public function getEmployee(string $number): ?array
+    {
+        try {
+            $response = $this->client->get('employees/', [
+                'query' => array_merge($this->baseQuery(), [
+                    'key' => ['number'],
+                    'operator' => ['eq'],
+                    'value' => [$number],
+                ]),
+            ]);
+
+            $data = json_decode($response->getBody()->getContents(), true);
+
+            return $data['response'][0] ?? null;
+        } catch (GuzzleException) {
+            return null;
+        }
+    }
+
+    /**
+     * Get a single work order by its WBA database row id.
+     *
+     * @return array<string, mixed>|null
+     */
+    public function getWorkOrder(string $id): ?array
+    {
+        try {
+            $response = $this->client->get('GetWorkorder/', [
+                'query' => array_merge($this->baseQuery(), [
+                    'row_id' => $id,
+                    'update_status' => 'false',
+                    'include_private_photos' => 'true',
+                ]),
+            ]);
+
+            $data = json_decode($response->getBody()->getContents(), true);
+
+            $workOrder = $data['response'] ?? null;
+
+            if (is_array($workOrder) && array_is_list($workOrder)) {
+                return $workOrder[0] ?? null;
+            }
+
+            return $workOrder;
+        } catch (GuzzleException) {
+            return null;
+        }
+    }
+
+    /**
      * @return array<string, string>
      */
     private function baseQuery(): array

@@ -1,0 +1,24 @@
+@keyframes spinner {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.selectLoader {
+    align-items: center;
+    background: var(--color-bg-tint);
+    border: 1px solid var(--input-border-color);
+    border-radius: var(--input-border-radius);
+    color: var(--color-text);
+    display: flex;
+    gap: .5rem;
+    height: var(--input-height);
+    padding: 0 3em 0 .75em;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 100%;
+
+    .lucide {
+        animation: spinner 1s linear infinite;
+    }
+}

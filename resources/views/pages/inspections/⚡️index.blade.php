@@ -4,15 +4,19 @@ use App\Models\Inspection;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Livewire\Attributes\Computed;
 use Livewire\Component;
+use Livewire\WithPagination;
 
 new class extends Component
 {
+    use WithPagination;
+
     #[Computed]
     public function inspections(): LengthAwarePaginator
     {
         return Inspection::query()
             ->with('inspectionObject', 'form', 'client')
-            ->paginate(10);
+            ->paginate(Inspection::PER_PAGE, pageName: 'p')
+            ->setPath(route('inspections'));
     }
 
     public function render()
@@ -38,6 +42,7 @@ new class extends Component
             <thead>
                 <tr>
                     <th scope="col">@lang('inspections.index.col_project_name')</th>
+                    <th scope="col">@lang('inspections.index.col_report')</th>
                     <th scope="col">@lang('inspections.index.col_type')</th>
                     <th scope="col">@lang('inspections.index.col_client')</th>
                     <th scope="col"></th>
@@ -57,6 +62,7 @@ new class extends Component
                                 wire:navigate
                             >{{ $inspection->project_name ?: 'Geen naam' }}</a>
                         </td>
+                        <td>{{ $inspection->outsmart_order_number ?: '—' }}</td>
                         <td>{{ $inspection->inspectionObject->type->label() }}</td>
                         <td>{{ $inspection->client?->name ?: 'Geen klant' }}</td>
                         <td>
@@ -90,5 +96,6 @@ new class extends Component
                 @endforeach
             </tbody>
         </table>
+        {{ $this->inspections->links('livewire::custom') }}
     </div>
 </div>

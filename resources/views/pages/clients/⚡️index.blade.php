@@ -119,7 +119,7 @@ new class extends Component
                     @endforeach
                 </tbody>
             </table>
-            {{ $this->clients->links() }}
+            {{ $this->clients->links('livewire::custom') }}
         </div>
     </div>
 </div>

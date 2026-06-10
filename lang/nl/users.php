@@ -14,6 +14,8 @@ return [
         'col_role' => 'Rol',
         'col_status' => 'Status',
         'delete_confirm' => 'Weet u zeker dat u deze gebruiker wilt verwijderen?',
+        'employees_loading' => 'Medewerkers laden…',
+        'employees_title' => 'Outsmart medewerkers',
         'popout_resend_invite' => 'Uitnodiging opnieuw versturen',
         'title' => 'Gebruikers',
     ],

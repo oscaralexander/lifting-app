@@ -22,6 +22,12 @@ return [
     'project_country' => [
         'label' => 'Land',
     ],
+    'inspector_name' => [
+        'label' => 'Keurmeester',
+    ],
+    'outsmart_order_number' => [
+        'label' => 'Rapport',
+    ],
     'is_completed' => [
         'text' => 'Inspectie voltooid',
     ],

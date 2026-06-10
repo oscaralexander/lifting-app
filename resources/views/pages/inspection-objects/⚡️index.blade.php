@@ -6,10 +6,18 @@ use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\On;
 use Livewire\Component;
+use Livewire\WithPagination;
 
 new class extends Component
 {
+    use WithPagination;
+
     public string $search = '';
+
+    public function updatedSearch(): void
+    {
+        $this->resetPage();
+    }
 
     #[Computed]
     public function inspectionObjects(): LengthAwarePaginator
@@ -20,7 +28,8 @@ new class extends Component
                     ->orWhere('model', 'like', '%' . $this->search . '%')
                     ->orWhere('serial_number', 'like', '%' . $this->search . '%');
             }))
-            ->paginate(10);
+            ->paginate(InspectionObject::PER_PAGE, pageName: 'p')
+            ->setPath(route('inspection-objects'));
     }
 
     #[On(Event::INSPECTION_OBJECT_SAVED)]
@@ -96,5 +105,6 @@ new class extends Component
                 @endforelse
             </tbody>
         </table>
+        {{ $this->inspectionObjects->links('livewire::custom') }}
     </div>
 </div>

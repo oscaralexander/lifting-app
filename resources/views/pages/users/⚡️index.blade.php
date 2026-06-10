@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\User;
+use App\Services\OutsmartService;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Livewire\Attributes\Computed;
 use Livewire\Component;
@@ -14,6 +15,15 @@ new class extends Component
     public function users(): LengthAwarePaginator
     {
         return User::paginate(10);
+    }
+
+    /**
+     * @return array<int, array<string, mixed>>
+     */
+    #[Computed]
+    public function employees(): array
+    {
+        return app(OutsmartService::class)->getEmployees();
     }
 
     public function render()
@@ -104,5 +114,20 @@ new class extends Component
                 @endforeach
             </tbody>
         </table>
+        <div class="u-stack u-stack-gap-m">
+            <h2>@lang('users.index.employees_title')</h2>
+            @island(lazy: true)
+                @placeholder
+                    <div class="selectLoader">
+                        <x-icon icon="loader-circle" />
+                        @lang('users.index.employees_loading')
+                    </div>
+                @endplaceholder
+
+                @foreach ($this->employees as $employee)
+                    @dump($employee)
+                @endforeach
+            @endisland
+        </div>
     </div>
 </div>
