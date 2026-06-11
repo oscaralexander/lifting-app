@@ -111,10 +111,15 @@ class StartInspectionModal extends ModalComponent
     }
 
     /**
-     * Fetch the full, untrimmed work orders for the selected client from Outsmart.
+     * Fetch the work orders for the selected client from Outsmart, without the heavy
+     * per-order `Photos` payload.
      *
      * Cached briefly per debtor so the lazy island and subsequent re-renders (e.g. selecting
-     * a work order) don't repeatedly hit the Outsmart API within a single modal session.
+     * a work order) don't repeatedly hit the Outsmart API within a single modal session. The
+     * base64 `Photos` are stripped before caching: a client with many work orders would
+     * otherwise overflow the database cache column (truncated at 1 MB), corrupting the entry
+     * and breaking `unserialize()` on read. Photos for the chosen order are re-fetched on
+     * submit via {@see OutsmartService::getWorkOrder()}.
      *
      * @return array<int, array<string, mixed>>
      */
@@ -131,7 +136,13 @@ class StartInspectionModal extends ModalComponent
         return cache()->remember(
             "outsmart.work_orders.{$debtorNumber}",
             now()->addMinutes(5),
-            fn () => app(OutsmartService::class)->getWorkOrders($debtorNumber),
+            fn () => collect(app(OutsmartService::class)->getWorkOrders($debtorNumber))
+                ->map(function (array $order): array {
+                    unset($order['Photos']);
+
+                    return $order;
+                })
+                ->all(),
         );
     }
 
@@ -166,8 +177,7 @@ class StartInspectionModal extends ModalComponent
 
         $form = Form::findOrFail($this->formId);
 
-        $workOrder = collect($this->fetchWorkOrders())
-            ->first(fn (array $order) => (string) ($order['id'] ?? '') === (string) $this->workOrderId);
+        $workOrder = app(OutsmartService::class)->getWorkOrder((string) $this->workOrderId);
 
         abort_if($workOrder === null, 404);
 
