@@ -13,6 +13,8 @@ use App\Models\InspectionObjects\Crane;
 use App\Models\InspectionObjects\OperatorLift;
 use App\Models\Form;
 use App\Services\OutsmartService;
+use Carbon\Exceptions\InvalidFormatException;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Livewire\Component;
@@ -190,6 +192,7 @@ new class extends Component
             'project_postal_code' => $workOrder['CustomerZIP'] ?? null,
             'project_city' => $workOrder['CustomerCity'] ?? null,
             'inspector_name' => $inspectorName,
+            'inspection_date' => $this->resolveInspectionDate($workOrder),
             'outsmart_order_number' => $workOrder['OrderNr'] ?? null,
             'outsmart_photos' => $workOrder['Photos'] ?? null,
         ]);
@@ -197,6 +200,27 @@ new class extends Component
         unset($this->inspection);
 
         $this->dispatch(Event::TOAST, message: __('inspections.form.outsmart.toast.fetched'), type: 'success');
+    }
+
+    /**
+     * Resolve the inspection date from the work order's `WorkDate` (in Dutch d-m-Y format),
+     * falling back to today when no usable date is available.
+     *
+     * @param  array<string, mixed>  $workOrder
+     */
+    private function resolveInspectionDate(array $workOrder): Carbon
+    {
+        $workDate = $workOrder['WorkDate'] ?? null;
+
+        if (is_string($workDate) && $workDate !== '') {
+            try {
+                return Carbon::createFromFormat('d-m-Y', $workDate)->startOfDay();
+            } catch (InvalidFormatException) {
+                // Fall through to today when Outsmart returns an unparseable date.
+            }
+        }
+
+        return Carbon::today();
     }
 
     public function submit(): void
@@ -279,6 +303,9 @@ new class extends Component
                             <div>
                                 @if ($this->inspection->type)
                                     <x-data-item :label="__('models/inspection.type.label')" :value="$this->inspection->type->label()" />
+                                @endif
+                                @if ($this->inspection->inspection_date)
+                                    <x-data-item :label="__('models/inspection.inspection_date.label')" :value="$this->inspection->inspection_date->translatedFormat('j F Y')" />
                                 @endif
                                 @if ($this->inspection->outsmart_order_number)
                                     <x-data-item :label="__('models/inspection.outsmart_order_number.label')" :value="$this->inspection->outsmart_order_number" />

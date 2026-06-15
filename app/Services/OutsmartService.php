@@ -67,7 +67,7 @@ class OutsmartService
                 'query' => array_merge($this->baseQuery(), [
                     // 'status' => '',
                     'update_status' => 'false',
-                    'include_private_photos' => 'true',
+                    // 'include_private_photos' => 'false',
                     'key' => ['CustomerDebtorNr'],
                     'operator' => ['eq'],
                     'value' => [$debtorNumber],

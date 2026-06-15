@@ -45,7 +45,7 @@ return [
             'loading_work_orders' => 'Werkbonnen laden…',
             'summary_status' => 'Status',
             'summary_reference' => 'Referentie',
-            'summary_creation_date' => 'Aanmaakdatum',
+            'summary_work_date' => 'Inspectiedatum',
             'btn_start' => 'Inspectie starten',
             'btn_relink' => 'Werkbon koppelen',
         ],

@@ -25,6 +25,7 @@ class Inspection extends Model
         'has_no_sticker_provided' => 'boolean',
         'image_data' => 'json:unicode',
         'images' => 'json:unicode',
+        'inspection_date' => 'date',
         'matrix' => 'json',
         'meta_data' => 'json:unicode',
         'outsmart_photos' => 'json:unicode',

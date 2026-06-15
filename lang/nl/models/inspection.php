@@ -4,6 +4,9 @@ return [
     'type' => [
         'label' => 'Type',
     ],
+    'inspection_date' => [
+        'label' => 'Keuringsdatum',
+    ],
     'client_id' => [
         'label' => 'Klant',
     ],

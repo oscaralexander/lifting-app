@@ -8,6 +8,8 @@ use App\Models\Client;
 use App\Models\Form;
 use App\Models\Inspection;
 use App\Services\OutsmartService;
+use Carbon\Exceptions\InvalidFormatException;
+use Illuminate\Support\Carbon;
 use Illuminate\Validation\Rules\Enum;
 use Illuminate\View\View;
 use Livewire\Attributes\Computed;
@@ -68,19 +70,7 @@ class StartInspectionModal extends ModalComponent
     #[Computed]
     public function workOrders(): array
     {
-        return collect($this->fetchWorkOrders())
-            ->map(fn (array $order) => [
-                'id' => $order['id'] ?? null,
-                'OrderNr' => $order['OrderNr'] ?? null,
-                'Reference' => $order['Reference'] ?? null,
-                'status' => $order['status'] ?? null,
-                'CreationDate' => $order['CreationDate'] ?? null,
-                'CustomerStreet' => $order['CustomerStreet'] ?? null,
-                'CustomerStreetNo' => $order['CustomerStreetNo'] ?? null,
-                'CustomerZIP' => $order['CustomerZIP'] ?? null,
-                'CustomerCity' => $order['CustomerCity'] ?? null,
-            ])
-            ->all();
+        return $this->fetchWorkOrders();
     }
 
     /**
@@ -131,11 +121,12 @@ class StartInspectionModal extends ModalComponent
      * per-order `Photos` payload.
      *
      * Cached briefly per debtor so the lazy island and subsequent re-renders (e.g. selecting
-     * a work order) don't repeatedly hit the Outsmart API within a single modal session. The
-     * base64 `Photos` are stripped before caching: a client with many work orders would
-     * otherwise overflow the database cache column (truncated at 1 MB), corrupting the entry
-     * and breaking `unserialize()` on read. Photos for the chosen order are re-fetched on
-     * submit via {@see OutsmartService::getWorkOrder()}.
+     * a work order) don't repeatedly hit the Outsmart API within a single modal session. Only
+     * the lightweight fields used by the modal are cached: the full Outsmart payload (notably
+     * the base64 `Photos`, but also the many other per-order fields) would otherwise overflow
+     * the database cache column (truncated at 1 MB), corrupting the entry and breaking
+     * `unserialize()` on read. Photos for the chosen order are re-fetched on submit via
+     * {@see OutsmartService::getWorkOrder()}.
      *
      * @return array<int, array<string, mixed>>
      */
@@ -153,11 +144,18 @@ class StartInspectionModal extends ModalComponent
             "outsmart.work_orders.{$debtorNumber}",
             now()->addMinutes(5),
             fn () => collect(app(OutsmartService::class)->getWorkOrders($debtorNumber))
-                ->map(function (array $order): array {
-                    unset($order['Photos']);
-
-                    return $order;
-                })
+                ->map(fn (array $order): array => [
+                    'id' => $order['id'] ?? null,
+                    'OrderNr' => $order['OrderNr'] ?? null,
+                    'Reference' => $order['Reference'] ?? null,
+                    'status' => $order['status'] ?? null,
+                    'CreationDate' => $order['CreationDate'] ?? null,
+                    'CustomerStreet' => $order['CustomerStreet'] ?? null,
+                    'CustomerStreetNo' => $order['CustomerStreetNo'] ?? null,
+                    'CustomerZIP' => $order['CustomerZIP'] ?? null,
+                    'CustomerCity' => $order['CustomerCity'] ?? null,
+                    'WorkDate' => $order['WorkDate'] ?? null,
+                ])
                 ->all(),
         );
     }
@@ -184,6 +182,27 @@ class StartInspectionModal extends ModalComponent
         return trim(($employee['firstname'] ?? '').' '.($employee['lastname'] ?? '')) ?: null;
     }
 
+    /**
+     * Resolve the inspection date from the work order's `WorkDate` (in Dutch d-m-Y format),
+     * falling back to today when no usable date is available.
+     *
+     * @param  array<string, mixed>  $workOrder
+     */
+    private function resolveInspectionDate(array $workOrder): Carbon
+    {
+        $workDate = $workOrder['WorkDate'] ?? null;
+
+        if (is_string($workDate) && $workDate !== '') {
+            try {
+                return Carbon::createFromFormat('d-m-Y', $workDate)->startOfDay();
+            } catch (InvalidFormatException) {
+                // Fall through to today when Outsmart returns an unparseable date.
+            }
+        }
+
+        return Carbon::today();
+    }
+
     public function submit(): void
     {
         $this->validate([
@@ -200,6 +219,7 @@ class StartInspectionModal extends ModalComponent
 
         $attributes = [
             'type' => $this->type,
+            'inspection_date' => $this->resolveInspectionDate($workOrder),
             'client_id' => $this->clientId,
             'project_name' => ($workOrder['Reference'] ?? null) ?: ($workOrder['OrderNr'] ?? null),
             'project_address' => trim(($workOrder['CustomerStreet'] ?? '').' '.($workOrder['CustomerStreetNo'] ?? '')),

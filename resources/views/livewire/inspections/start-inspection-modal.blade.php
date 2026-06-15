@@ -59,10 +59,14 @@
                         </div>
                     </div>
                     @if ($this->selectedWorkOrder)
+                        @php
+                            $workDate = $this->selectedWorkOrder['WorkDate'] ?? null;
+                            $workDate = !empty($workDate) ? \Carbon\Carbon::createFromFormat('d-m-Y', $workDate)->translatedFormat('j F Y') : '—';
+                        @endphp
                         <div class="grid__col">
                             <x-data-item :label="__('inspections.start.modal.summary_status')" :value="($this->selectedWorkOrder['status'] ?? null) ?: '—'" />
                             <x-data-item :label="__('inspections.start.modal.summary_reference')" :value="($this->selectedWorkOrder['Reference'] ?? null) ?: '—'" />
-                            <x-data-item :label="__('inspections.start.modal.summary_creation_date')" :value="($this->selectedWorkOrder['CreationDate'] ?? null) ?: '—'" />
+                            <x-data-item :label="__('inspections.start.modal.summary_work_date')" :value="$workDate" />
                         </div>
                     @endif
                 @endisland
