@@ -105,25 +105,20 @@ class OutsmartService
     /**
      * Get a single employee by their unique number.
      *
+     * The Outsmart `employees/` endpoint ignores the key/operator/value filter
+     * and always returns the full list, so the match is performed client-side.
+     *
      * @return array<string, mixed>|null
      */
     public function getEmployee(string $number): ?array
     {
-        try {
-            $response = $this->client->get('employees/', [
-                'query' => array_merge($this->baseQuery(), [
-                    'key' => ['number'],
-                    'operator' => ['eq'],
-                    'value' => [$number],
-                ]),
-            ]);
-
-            $data = json_decode($response->getBody()->getContents(), true);
-
-            return $data['response'][0] ?? null;
-        } catch (GuzzleException) {
-            return null;
+        foreach ($this->getEmployees() as $employee) {
+            if ((string) ($employee['number'] ?? '') === $number) {
+                return $employee;
+            }
         }
+
+        return null;
     }
 
     /**

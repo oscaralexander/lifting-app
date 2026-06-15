@@ -6,6 +6,16 @@
                 <div class="grid__col">
                     <x-form.select
                         default="—"
+                        :label="__('inspections.start.modal.type')"
+                        wire:model="type"
+                        :options="$this->typeOptions"
+                        :selected="$type"
+                        required
+                    />
+                </div>
+                <div class="grid__col">
+                    <x-form.select
+                        default="—"
                         :label="__('inspections.start.modal.client')"
                         wire:model.live="clientId"
                         :options="$this->clients"

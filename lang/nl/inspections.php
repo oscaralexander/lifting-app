@@ -37,6 +37,7 @@ return [
         'modal' => [
             'title' => 'Nieuwe inspectie starten',
             'title_relink' => 'Werkbon koppelen',
+            'type' => 'Type',
             'client' => 'Klant',
             'statuses' => 'Filter op status',
             'statuses_placeholder' => 'Alle statussen',

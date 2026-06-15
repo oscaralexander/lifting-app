@@ -3,10 +3,12 @@
 namespace App\Livewire\Inspections;
 
 use App\Constants\Event;
+use App\Enums\InspectionType;
 use App\Models\Client;
 use App\Models\Form;
 use App\Models\Inspection;
 use App\Services\OutsmartService;
+use Illuminate\Validation\Rules\Enum;
 use Illuminate\View\View;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Locked;
@@ -23,6 +25,8 @@ class StartInspectionModal extends ModalComponent
     #[Locked]
     public ?string $inspectionHash = null;
 
+    public ?string $type = null;
+
     public ?int $clientId = null;
 
     public ?string $workOrderId = null;
@@ -36,9 +40,21 @@ class StartInspectionModal extends ModalComponent
         if ($inspectionHash) {
             $inspection = Inspection::where('hash', $inspectionHash)->firstOrFail();
 
+            $this->type = $inspection->type?->value;
             $this->clientId = $inspection->client_id;
             $this->workOrderId = $inspection->outsmart_work_order_id;
         }
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    #[Computed]
+    public function typeOptions(): array
+    {
+        return collect(InspectionType::cases())
+            ->mapWithKeys(fn (InspectionType $type) => [$type->value => $type->label()])
+            ->toArray();
     }
 
     /**
@@ -171,6 +187,7 @@ class StartInspectionModal extends ModalComponent
     public function submit(): void
     {
         $this->validate([
+            'type' => ['required', new Enum(InspectionType::class)],
             'clientId' => ['required', 'exists:clients,id'],
             'workOrderId' => ['required', 'string'],
         ]);
@@ -182,6 +199,7 @@ class StartInspectionModal extends ModalComponent
         abort_if($workOrder === null, 404);
 
         $attributes = [
+            'type' => $this->type,
             'client_id' => $this->clientId,
             'project_name' => ($workOrder['Reference'] ?? null) ?: ($workOrder['OrderNr'] ?? null),
             'project_address' => trim(($workOrder['CustomerStreet'] ?? '').' '.($workOrder['CustomerStreetNo'] ?? '')),
