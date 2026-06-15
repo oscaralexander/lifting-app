@@ -437,11 +437,19 @@ new class extends Component
         @if (!empty($this->inspection->outsmart_photos) && is_array($this->inspection->outsmart_photos))
             <div class="u-stack u-stack-gap-l">
                 <h3>Outsmart Photos</h3>
-                <div class="grid grid--gap-m">
-                    @foreach($this->inspection->outsmart_photos as $photo)
-                        <div class="outsmart-photo">
-                            <img src="{{ $photo['image'] }}" alt="" class="outsmart-photo__img" style="max-width: 200px; max-height: 200px;" />
-                        </div>
+                <div class="inspection__photos">
+                    @foreach ($this->inspection->outsmart_photos as $photo)
+                        <figure class="inspection__photos-item">
+                            <div class="inspection__photos-imgBox">
+                                <img
+                                    alt="{{ $photo['title'] }}"
+                                    class="inspection__photos-img"
+                                    loading="lazy"
+                                    src="{{ $photo['image'] }}"
+                                />
+                            </div>
+                            <figcaption class="inspection__photos-caption">{{ $photo['title'] }}</figcaption>
+                        </figure>
                     @endforeach
                 </div>
             </div>
