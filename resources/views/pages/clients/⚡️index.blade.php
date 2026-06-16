@@ -93,8 +93,9 @@ new class extends Component
                             <td>
                                 @if ($client->outsmart_debtor_number)
                                     <a
-                                        href="#"
-                                        wire:click.prevent="$dispatch('openModal', { component: 'clients.projects-modal', arguments: { clientId: {{ $client->id }} } })"
+                                        href="{{ $client->outsmart_url }}"
+                                        target="_blank"
+                                        {{-- wire:click.prevent="$dispatch('openModal', { component: 'clients.projects-modal', arguments: { clientId: {{ $client->id }} } })" --}}
                                     >{{ $client->name }}</a>
                                 @else
                                     {{ $client->name }}

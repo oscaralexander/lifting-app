@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Inspection;
+use App\Enums\InspectionStatus;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Livewire\Attributes\Computed;
 use Livewire\Component;
@@ -42,9 +43,9 @@ new class extends Component
             <thead>
                 <tr>
                     <th scope="col">@lang('inspections.index.col_project_name')</th>
+                    <th scope="col">@lang('inspections.index.col_status')</th>
                     <th scope="col">@lang('inspections.index.col_report')</th>
                     <th scope="col">@lang('inspections.index.col_type')</th>
-                    <th scope="col">@lang('inspections.index.col_client')</th>
                     <th scope="col"></th>
                 </tr>
             </thead>
@@ -53,7 +54,7 @@ new class extends Component
                     <tr>
                         <td>
                             <a
-                                class="table__link"
+                                class="table__main"
                                 href="{{ route('inspections.form', [
                                     'inspectionObjectId' => $inspection->inspection_object_id,
                                     'formSlug' => $inspection->form->slug,
@@ -61,10 +62,21 @@ new class extends Component
                                 ]) }}"
                                 wire:navigate
                             >{{ $inspection->project_name ?: 'Geen naam' }}</a>
+                            @if ($inspection->client)
+                                <div class="u-text-lc u-text-s">{{ $inspection->client->name }}</div>
+                            @endif
                         </td>
-                        <td>{{ $inspection->outsmart_order_number ?: '—' }}</td>
+                        <td>
+                            <span
+                                @class([
+                                    'label' ,
+                                    'label--danger' => in_array($inspection->status, [InspectionStatus::REJECTED, InspectionStatus::CAT_A_DEFICIENCIES, InspectionStatus::CAT_B_DEFICIENCIES]),
+                                    'label--success' => $inspection->status === InspectionStatus::APPROVED,
+                                ])
+                            >{{ $inspection->status->label() }}</span>
+                        </td>
+                        <td><span class="u-text-nowrap">{{ $inspection->outsmart_order_number ?: '—' }}</span></td>
                         <td>{{ $inspection->inspectionObject->type->label() }}</td>
-                        <td>{{ $inspection->client?->name ?: 'Geen klant' }}</td>
                         <td>
                             <div class="table__actions">
                                 <x-popout

@@ -7,6 +7,10 @@ return [
     'form' => [
         'btn_download_report' => 'Download Keuringsrapport (PDF)',
         'btn_fetch_outsmart' => 'Ophalen uit Outsmart',
+        'select_photos' => 'Foto\'s selecteren',
+        'no_photos_heading' => 'Geen foto\'s beschikbaar',
+        'no_photos_text' => 'Upload foto’s via de Outsmart app.',
+        'no_photos_text_not_linked' => 'Koppel de Outsmart werkbon aan dit project om foto’s te importeren.',
         'outsmart' => [
             'toast' => [
                 'fetched' => 'Gegevens opgehaald uit Outsmart',
@@ -83,6 +87,7 @@ return [
         'col_project_name' => 'Projectnaam',
         'col_report' => 'Rapport',
         'col_signed' => 'Ondertekend',
+        'col_status' => 'Status',
         'col_type' => 'Type',
         'btn_create' => 'Nieuwe inspectie',
         'title' => 'Inspecties',

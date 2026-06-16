@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\FieldType;
+use App\Enums\InspectionStatus;
 use App\Enums\InspectionType;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
@@ -26,6 +27,8 @@ class Inspection extends Model
         'image_data' => 'json:unicode',
         'images' => 'json:unicode',
         'inspection_date' => 'date',
+        'is_approved' => 'boolean',
+        'is_completed' => 'boolean',
         'matrix' => 'json',
         'meta_data' => 'json:unicode',
         'outsmart_photos' => 'json:unicode',
@@ -120,6 +123,22 @@ class Inspection extends Model
 
         return new Attribute(
             get: fn (): Collection => $answers,
+        );
+    }
+
+    /**
+     * Derive the inspection's status from its completion and approval state.
+     */
+    public function status(): Attribute
+    {
+        return new Attribute(
+            get: fn (): InspectionStatus => match (true) {
+                ! $this->is_completed => InspectionStatus::PENDING,
+                $this->is_approved => InspectionStatus::APPROVED,
+                $this->has_cat_a_deficiencies => InspectionStatus::CAT_A_DEFICIENCIES,
+                $this->has_cat_b_deficiencies => InspectionStatus::CAT_B_DEFICIENCIES,
+                default => InspectionStatus::REJECTED,
+            },
         );
     }
 

@@ -1,6 +1,23 @@
 @use '@css/2-tools/mixins' as *;
 
 .inspection {
+    &__footer {
+        background: var(--color-bg);
+        padding: 1rem 0;
+        position: sticky;
+        bottom: 0;
+
+        &::before {
+            background: linear-gradient(to bottom, transparent, var(--color-bg));
+            content: '';
+            height: 2rem;
+            left: 0;
+            position: absolute;
+            top: -2rem;
+            width: 100%;
+        }
+    }
+
     &__photos {
         display: grid;
         grid-template-columns: repeat(2, 1fr);

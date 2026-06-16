@@ -1,6 +1,4 @@
 @use('App\Enums\FieldType')
-@use('Illuminate\Support\Str')
-@use('Livewire\Features\SupportFileUploads\TemporaryUploadedFile')
 
 @props([
     'field' => null,
@@ -24,66 +22,58 @@
         --}}
 
         @case (FieldType::TOGGLE)
+            @php
+                $fieldKey = 'field_'.$field->pivot->id;
+                $selectedPhotos = array_values($form->images[$fieldKey] ?? []);
+            @endphp
             <x-form.yes-no
-                model="submissionForm.fields.field_{{ $field->pivot->id }}"
                 :meta-field-id="$field->pivot->id"
+                model="submissionForm.fields.{{ $fieldKey }}"
                 :required="$field->pivot->required == 1"
                 :text="$field->numberedLabel"
             />
-            <div class="submission__comment u-stack u-stack-gap-s" x-cloak x-show="$wire.submissionForm.fields.field_{{ $field->pivot->id }} == -1">
+            <div
+                class="submission__comment u-stack u-stack-gap-m"
+                x-cloak
+                x-data="{ fieldKey: '{{ $fieldKey }}', title: @js(strip_tags($field->numberedLabel)) }"
+                x-show="$wire.submissionForm.fields.{{ $fieldKey }} == -1"
+            >
                 <div class="u-flex u-flex-gap-s">
                     <div class="u-flex-flex">
                         <x-form.input
-                            model="submissionForm.comments.field_{{ $field->pivot->id }}"
+                            model="submissionForm.comments.{{ $fieldKey }}"
                             :placeholder="__('inspection.form.comment')"
                             type="text"
-                            x-bind:required="$wire.fields.field_{{ $field->pivot->id }} == -1"
+                            x-bind:required="$wire.fields.{{ $fieldKey }} == -1"
                         />
                     </div>
-                    <x-submission.image-upload-button :model="'submissionForm.images.field_' . $field->pivot->id" />
+                    <x-btn icon="image" type="button" x-on:click="$dispatch('photo-picker-open', {
+                        fieldKey,
+                        title,
+                        selected: $refs.thumbs ? Array.from($refs.thumbs.querySelectorAll('img')).map((img) => img.getAttribute('src')) : [],
+                    })">
+                        @lang('inspections.form.select_photos')
+                    </x-btn>
                 </div>
-                <div class="u-stack u-stack-gap-s">
-                    @php
-                        $images = $form->images['field_' . $field->pivot->id] ?? [];
-                    @endphp
-                    @if (count($images))
-                        <div class="u-stack u-stack-gap-xs">
-                            @foreach ($images as $image)
-                                <div class="upload__file">
-                                    <x-icon icon="image" />
-                                    @if ($image instanceof TemporaryUploadedFile)
-                                        <div class="upload__fileName">{{ $image->getClientOriginalName() }}</div>
-                                        @if (Str::startsWith($image->getMimeType(), 'image/'))
-                                            <a
-                                                class="upload__fileAction"
-                                                href="{{ $image->temporaryUrl() }}"
-                                                download="{{ $image->getClientOriginalName() }}"
-                                            ><x-icon icon="download" /></a>
-                                        @endif
-                                        <button
-                                            class="upload__fileAction"
-                                            wire:click="deleteImage('field_{{ $field->pivot->id }}', '{{ $image->getClientOriginalName() }}')"
-                                            wire:confirm="@lang('ui.delete_confirm')"
-                                            type="button"
-                                        ><x-icon icon="trash" /></button>
-                                    @else
-                                        <div class="upload__fileName">{{ basename($image) }}</div>
-                                        <a
-                                            class="upload__fileAction"
-                                            wire:click="downloadImage('field_{{ $field->pivot->id }}', '{{ $image }}')"
-                                        ><x-icon icon="download" /></a>
-                                        <button
-                                            class="upload__fileAction"
-                                            wire:click="deleteImage('field_{{ $field->pivot->id }}', '{{ $image }}')"
-                                            wire:confirm="@lang('ui.delete_confirm')"
-                                            type="button"
-                                        ><x-icon icon="trash" /></button>
-                                    @endif
-                                </div>
-                            @endforeach
-                        </div>
-                    @endif
-                </div>
+                @if (count($selectedPhotos))
+                    <div class="submission__photoThumbs" x-ref="thumbs">
+                        @foreach ($selectedPhotos as $photoUrl)
+                            <div class="submission__photoThumb" wire:key="thumb-{{ $fieldKey }}-{{ $loop->index }}">
+                                <img alt="" loading="lazy" src="{{ $photoUrl }}" x-on:click="$dispatch('photo-picker-open', {
+                                    fieldKey,
+                                    title,
+                                    selected: Array.from($refs.thumbs.querySelectorAll('img')).map((img) => img.getAttribute('src')),
+                                })" />
+                                <button
+                                    class="submission__photoThumb-remove"
+                                    type="button"
+                                    wire:click="removeFieldPhoto('{{ $fieldKey }}', {{ $loop->index }})"
+                                    wire:loading.attr="disabled"
+                                ><x-icon icon="x" /></button>
+                            </div>
+                        @endforeach
+                    </div>
+                @endif
             </div>
             @break;
 

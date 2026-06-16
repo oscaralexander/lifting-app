@@ -30,27 +30,34 @@ class InspectionSubmissionForm extends LivewireForm
 
     public Inspection $inspection;
 
-    public bool $is_completed = false;
-
     public array $meta = [];
 
     public bool $requires_reinspection = false;
 
     public bool $requires_written_deregistration = false;
 
-    public function deleteImage(string $fieldId, string $image): void
+    /**
+     * Stage the Outsmart photo URLs selected for a given toggle field.
+     *
+     * Held in form state only; persisted to the database when the inspection is saved.
+     *
+     * @param  array<int, string>  $urls
+     */
+    public function setFieldPhotos(string $key, array $urls): void
     {
-        $this->images[$fieldId] = array_filter($this->images[$fieldId], function ($i) use ($image) {
-            if ($i instanceof TemporaryUploadedFile) {
-                return $i->getClientOriginalName() !== $image;
-            }
+        $this->images[$key] = array_values(array_unique($urls));
+    }
 
-            return $i !== $image;
-        });
+    /**
+     * Remove a single staged photo from a toggle field by its position.
+     */
+    public function removeFieldPhoto(string $key, int $index): void
+    {
+        $photos = array_values($this->images[$key] ?? []);
 
-        // Save the inspection
-        $this->inspection->image_data = array_filter($this->images);
-        $this->inspection->save();
+        unset($photos[$index]);
+
+        $this->images[$key] = array_values($photos);
     }
 
     public function init(Inspection $inspection, Form $form): void
@@ -70,7 +77,10 @@ class InspectionSubmissionForm extends LivewireForm
             $key = 'field_'.$field->pivot->id;
 
             $this->comments[$key] = $inspection->comment_data[$key] ?? null;
-            $this->images[$key] = $inspection->image_data[$key] ?? [];
+            $this->images[$key] = array_values(array_filter(
+                $inspection->image_data[$key] ?? [],
+                fn ($photo) => is_string($photo) && $photo !== '',
+            ));
 
             if ($field->type === FieldType::SELECT_MULTIPLE) {
                 $this->fields[$key] = $inspection->exists
@@ -131,9 +141,18 @@ class InspectionSubmissionForm extends LivewireForm
             fn ($values) => ! empty($values),
         );
 
+        // Mirrors the Alpine `allTogglesCompleted` / `allTogglesPassed` getters: completed when
+        // every toggle is answered, approved when every toggle is "yes" (1) or "n/a" (0).
+        $toggleValues = $this->form->fields
+            ->filter(fn ($field) => $field->type === FieldType::TOGGLE)
+            ->map(fn ($field) => $this->fields['field_'.$field->pivot->id] ?? null);
+
         $this->inspection->comment = $this->inspectionComment ?: null;
         $this->inspection->comment_data = $commentData;
         $this->inspection->form_data = $formData;
+        $this->inspection->image_data = array_filter($this->images);
+        $this->inspection->is_completed = $toggleValues->every(fn ($value) => ! is_null($value));
+        $this->inspection->is_approved = $toggleValues->every(fn ($value) => in_array((string) $value, ['0', '1'], true));
         $this->inspection->has_cat_a_deficiencies = $this->has_cat_a_deficiencies;
         $this->inspection->has_cat_b_deficiencies = $this->has_cat_b_deficiencies;
         $this->inspection->has_no_sticker_provided = $this->has_no_sticker_provided;
@@ -158,34 +177,6 @@ class InspectionSubmissionForm extends LivewireForm
 
         $this->inspection->images = $this->inspectionImages ?: null;
         $this->inspection->save();
-    }
-
-    public function updatingImages($value, $key): void
-    {
-        if (count($value) > count($this->images[$key])) {
-            $storedImages = [];
-
-            foreach ($value as $file) {
-                if ($file instanceof TemporaryUploadedFile) {
-                    $storedImages[] = $file->storeAs(
-                        name: $file->getClientOriginalName(),
-                        path: implode('/', [
-                            config('path.inspections.images'),
-                            $this->inspection->hash,
-                            $key,
-                        ]),
-                    );
-                } else {
-                    $storedImages[] = $file;
-                }
-            }
-
-            $this->images[$key] = $storedImages;
-
-            // Save the inspection
-            $this->inspection->image_data = array_filter($this->images);
-            $this->inspection->save();
-        }
     }
 
     public function updatingInspectionImages($value): void
