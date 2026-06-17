@@ -52,9 +52,9 @@ class InspectionReportPdf
 
         $storagePath = $this->storagePath();
 
-        if (Storage::disk('local')->exists($storagePath)) {
-            return Storage::disk('local')->get($storagePath);
-        }
+        // if (Storage::disk('local')->exists($storagePath)) {
+        //     return Storage::disk('local')->get($storagePath);
+        // }
 
         $bytes = $this->generate();
 
