@@ -91,5 +91,6 @@ return [
         'col_type' => 'Type',
         'btn_create' => 'Nieuwe inspectie',
         'title' => 'Inspecties',
+        'outsmart_link' => 'Outsmart werkbon',
     ],
 ];

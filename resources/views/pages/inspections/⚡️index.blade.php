@@ -94,6 +94,14 @@ new class extends Component
                                         icon="pencil"
                                         :label="__('ui.edit')"
                                     />
+                                    @if ($inspection->outsmart_work_order_id)
+                                        <x-popout.item
+                                            href="{{ $inspection->outsmart_url }}"
+                                            icon="outsmart"
+                                            :label="__('inspections.index.outsmart_link')"
+                                            target="_blank"
+                                        />
+                                    @endif
                                     <x-popout.item
                                         danger
                                         icon="trash"

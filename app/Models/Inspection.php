@@ -55,6 +55,15 @@ class Inspection extends Model
         });
     }
 
+    public function getOutsmartUrlAttribute(): ?string
+    {
+        if (! $this->outsmart_work_order_id) {
+            return null;
+        }
+
+        return "https://app.out-smart.com/next/crm/work-orders/{$this->outsmart_work_order_id}/";
+    }
+
     public function getAnswerForField(int $pivotId, $default = null)
     {
         $answer = $this->answers->firstWhere('field.pivot.id', $pivotId);
