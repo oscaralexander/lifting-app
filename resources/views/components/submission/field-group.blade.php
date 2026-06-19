@@ -13,6 +13,15 @@
         ->values()
         ->toArray();
 
+    $requiredFieldKeys = $fieldGroup->fields
+        ->filter(fn($f) => $f->type !== FieldType::TOGGLE && $f->pivot->required == 1)
+        ->map(fn($f) => [
+            'key' => 'field_' . $f->pivot->id,
+            'multiple' => $f->type === FieldType::SELECT_MULTIPLE,
+        ])
+        ->values()
+        ->toArray();
+
     // Collect all fields and comments, order by position
     $items = collect();
 
@@ -42,13 +51,27 @@
     x-data="{
         isExpanded: false,
         keys: @js($toggleFieldKeys),
-        get allTogglesPassed() {
-            if (this.keys.length === 0) return false;
+        requiredKeys: @js($requiredFieldKeys),
+        isRequiredFieldFilled(field) {
+            const val = $wire.submissionForm.fields[field.key];
 
-            return this.keys.every(key => {
+            if (field.multiple) {
+                return Array.isArray(val) && val.length > 0;
+            }
+
+            return val !== null && val !== undefined && val !== '';
+        },
+        get allFieldsPassed() {
+            if (this.keys.length === 0 && this.requiredKeys.length === 0) return false;
+
+            const togglesPassed = this.keys.every(key => {
                 const val = $wire.submissionForm.fields[key];
                 return val === 0 || val === 1 || val === '0' || val === '1';
             });
+
+            const requiredFilled = this.requiredKeys.every(field => this.isRequiredFieldFilled(field));
+
+            return togglesPassed && requiredFilled;
         },
         get hasFailures() {
             if (this.keys.length === 0) return false;
@@ -70,7 +93,7 @@
     >
         <span class="submission__fieldGroupToggleName">{!! $fieldGroup->numberedName !!}</span>
         <span class="submission__fieldGroupToggleError"><x-icon icon="triangle-alert" /></span>
-        <span class="submission__fieldGroupToggleCheck" x-cloak x-show="allTogglesPassed"><x-icon icon="check" /></span>
+        <span class="submission__fieldGroupToggleCheck" x-cloak x-show="allFieldsPassed"><x-icon icon="check" /></span>
         <span class="submission__fieldGroupToggleError" x-cloak x-show="hasFailures"><x-icon icon="x" /></span>
         <span class="submission__fieldGroupToggleIcon"></span>
     </button>
@@ -81,14 +104,7 @@
         <div class="submission__box">
             @foreach ($items as $item)
                 @if ($item['type'] === 'field')
-                    @if ($submission)
-                        <x-submission.formatted-answer
-                            :answer="$submission->getAnswerForField($item['field']->pivot->id)"
-                            :field="$item['field']"
-                        />
-                    @else
-                        <x-submission.field :field="$item['field']" :form="$form" />
-                    @endif
+                    <x-submission.field :field="$item['field']" :form="$form" />
                 @elseif ($item['type'] === 'formComment')
                     <x-submission.form-comment :form-comment="$item['formComment']" />
                 @endif
