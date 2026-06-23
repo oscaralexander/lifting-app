@@ -56,7 +56,17 @@
 
     &__fieldGroupFlex,
     &__fieldFlex {
+        align-items: flex-start;
+        display: flex;
         flex: 1;
+        min-width: 0;
+
+        &--required::after {
+            color: var(--color-danger);
+            content: '*';
+            flex: 0 0 auto;
+            padding-left: 0.25rem;
+        }
     }
 
     &__fieldGroupFlex {
@@ -104,7 +114,9 @@
         -webkit-box-orient: vertical;
         -webkit-line-clamp: 2;
         display: -webkit-box;
+        flex: 1;
         line-clamp: 2;
+        min-width: 0;
         overflow: hidden;
     }
     

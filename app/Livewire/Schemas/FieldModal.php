@@ -33,6 +33,8 @@ class FieldModal extends ModalComponent
 
     public $number;
 
+    public bool $required = true;
+
     public ?FieldType $type = null;
 
     public $values;
@@ -59,6 +61,14 @@ class FieldModal extends ModalComponent
         return Form::findOrFail($this->formId);
     }
 
+    #[Computed]
+    public function isAddedToForm(): bool
+    {
+        return $this->id !== null
+            && $this->formId !== null
+            && $this->form->fields()->whereKey($this->id)->exists();
+    }
+
     public function mount(?int $formId, ?int $id): void
     {
         $this->formId = $formId;
@@ -71,6 +81,10 @@ class FieldModal extends ModalComponent
             $this->number = $this->field->number;
             $this->type = $this->field->type;
             $this->values = $this->field->values;
+
+            if ($this->isAddedToForm) {
+                $this->required = (bool) $this->form->fields()->find($this->id)->pivot->required;
+            }
         }
     }
 
@@ -118,7 +132,11 @@ class FieldModal extends ModalComponent
 
             $this->form->fields()->attach($this->field->id, [
                 'position' => $position,
-                'required' => false,
+                'required' => $this->required,
+            ]);
+        } elseif ($this->isAddedToForm) {
+            $this->form->fields()->updateExistingPivot($this->field->id, [
+                'required' => $this->required,
             ]);
         }
 

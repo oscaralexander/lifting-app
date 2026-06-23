@@ -23,7 +23,10 @@
     @endif
 >
     <x-icon class="formBuilder__icon" :icon="$field->type->icon()" />
-    <div class="formBuilder__fieldFlex">
+    <div @class([
+        'formBuilder__fieldFlex',
+        'formBuilder__fieldFlex--required' => $field->pivot?->required,
+    ])>
         <div class="formBuilder__fieldTruncate">
             @unless (empty($field->number))
                 <b>{{ $field->number }}</b> &middot;

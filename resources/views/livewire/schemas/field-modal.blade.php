@@ -88,6 +88,14 @@
                                 />
                             </div>
                         @endif
+                        @if ($this->isAddedToForm)
+                            <div class="grid__col">
+                                <x-form.lightswitch
+                                    model="required"
+                                    :text="__('fields.modal.label_required')"
+                                />
+                            </div>
+                        @endif
                     </div>
                     <div class="actions">
                         <button

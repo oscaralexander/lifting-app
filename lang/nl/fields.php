@@ -17,6 +17,7 @@ return [
         'label_values_en' => 'Opties (EN)',
         'label_values_fr' => 'Opties (FR)',
         'label_values_nl' => 'Opties (NL)',
+        'label_required' => 'Dit veld is verplicht',
         'search_placeholder' => 'Zoek bestaand veld',
         'title_create' => 'Veld toevoegen',
         'title_edit' => 'Veld bewerken',

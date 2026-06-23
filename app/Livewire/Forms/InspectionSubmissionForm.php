@@ -141,17 +141,30 @@ class InspectionSubmissionForm extends LivewireForm
             fn ($values) => ! empty($values),
         );
 
-        // Mirrors the Alpine `allTogglesCompleted` / `allTogglesPassed` getters: completed when
-        // every toggle is answered, approved when every toggle is "yes" (1) or "n/a" (0).
+        // Mirrors the Alpine `allFieldsPassed` / `allTogglesPassed` getters: completed when every
+        // toggle is answered and every required non-toggle field is filled, approved when every
+        // toggle is "yes" (1) or "n/a" (0).
         $toggleValues = $this->form->fields
             ->filter(fn ($field) => $field->type === FieldType::TOGGLE)
             ->map(fn ($field) => $this->fields['field_'.$field->pivot->id] ?? null);
+
+        $requiredFieldsFilled = $this->form->fields
+            ->filter(fn ($field) => $field->type !== FieldType::TOGGLE && $field->pivot->required == 1)
+            ->every(function ($field) {
+                $value = $this->fields['field_'.$field->pivot->id] ?? null;
+
+                if ($field->type === FieldType::SELECT_MULTIPLE) {
+                    return is_array($value) && count($value) > 0;
+                }
+
+                return ! is_null($value) && $value !== '';
+            });
 
         $this->inspection->comment = $this->inspectionComment ?: null;
         $this->inspection->comment_data = $commentData;
         $this->inspection->form_data = $formData;
         $this->inspection->image_data = array_filter($this->images);
-        $this->inspection->is_completed = $toggleValues->every(fn ($value) => ! is_null($value));
+        $this->inspection->is_completed = $toggleValues->every(fn ($value) => ! is_null($value)) && $requiredFieldsFilled;
         $this->inspection->is_approved = $toggleValues->every(fn ($value) => in_array((string) $value, ['0', '1'], true));
         $this->inspection->has_cat_a_deficiencies = $this->has_cat_a_deficiencies;
         $this->inspection->has_cat_b_deficiencies = $this->has_cat_b_deficiencies;

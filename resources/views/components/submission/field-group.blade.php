@@ -62,7 +62,7 @@
             return val !== null && val !== undefined && val !== '';
         },
         get allFieldsPassed() {
-            if (this.keys.length === 0 && this.requiredKeys.length === 0) return false;
+            if (this.keys.length === 0 && this.requiredKeys.length === 0) return true;
 
             const togglesPassed = this.keys.every(key => {
                 const val = $wire.submissionForm.fields[key];
