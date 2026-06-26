@@ -36,6 +36,8 @@ class InspectionSubmissionForm extends LivewireForm
 
     public bool $requires_written_deregistration = false;
 
+    public ?string $stickerNumber = null;
+
     /**
      * Stage the Outsmart photo URLs selected for a given toggle field.
      *
@@ -72,6 +74,7 @@ class InspectionSubmissionForm extends LivewireForm
         $this->meta = $inspection->meta_data ?? [];
         $this->requires_reinspection = $inspection->requires_reinspection ?? false;
         $this->requires_written_deregistration = $inspection->requires_written_deregistration ?? false;
+        $this->stickerNumber = $inspection->sticker_number;
 
         foreach ($form->fields as $field) {
             $key = 'field_'.$field->pivot->id;
@@ -166,6 +169,7 @@ class InspectionSubmissionForm extends LivewireForm
         $this->inspection->image_data = array_filter($this->images);
         $this->inspection->is_completed = $toggleValues->every(fn ($value) => ! is_null($value)) && $requiredFieldsFilled;
         $this->inspection->is_approved = $toggleValues->every(fn ($value) => in_array((string) $value, ['0', '1'], true));
+        $this->inspection->sticker_number = $this->inspection->is_approved ? ($this->stickerNumber ?: null) : null;
         $this->inspection->has_cat_a_deficiencies = $this->has_cat_a_deficiencies;
         $this->inspection->has_cat_b_deficiencies = $this->has_cat_b_deficiencies;
         $this->inspection->has_no_sticker_provided = $this->has_no_sticker_provided;

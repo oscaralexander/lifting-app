@@ -43,6 +43,9 @@ return [
     'has_no_sticker_provided' => [
         'label' => 'Geen sticker verstrekt',
     ],
+    'sticker_number' => [
+        'label' => 'Stickernummer',
+    ],
     'requires_reinspection' => [
         'label' => 'Nacontrole door Lifting Inspections noodzakelijk',
     ],

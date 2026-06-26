@@ -453,6 +453,12 @@ new class extends Component
                                 Object goedgekeurd.
                             </div>
                             <div class="u-stack u-stack-gap-m" x-cloak x-show="allTogglesCompleted">
+                                <div x-cloak x-show="allTogglesPassed">
+                                    <x-form.input
+                                        :label="__('models/inspection.sticker_number.label')"
+                                        model="submissionForm.stickerNumber"
+                                    />
+                                </div>
                                 <x-form.textarea
                                     :label="__('models/inspection.comment.label')"
                                     model="submissionForm.inspectionComment"

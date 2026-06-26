@@ -12,10 +12,16 @@
     $meta        = $inspection->meta_data ?? [];
     $isCrane     = $inspectable instanceof Crane;
 
-    $reportNumber    = $meta['report_number'] ?? null;
-    $stickerNumber   = $meta['sticker_number'] ?? null;
-    $nextPeriodical  = $meta['next_periodical_date'] ?? null;
-    $nextTcvt        = $meta['next_tcvt_date'] ?? null;
+    $nextPeriodical = null;
+    $nextTcvt = null;
+
+    if ($inspection->type === InspectionType::TCVT) {
+        $nextPeriodical = \Carbon\Carbon::parse($inspection->inspection_date)->addMonths(12)->translatedFormat('j F Y');
+        $nextTcvt = \Carbon\Carbon::parse($inspection->inspection_date)->addMonths(24)->translatedFormat('j F Y');
+    } else {
+        $nextPeriodical = \Carbon\Carbon::parse($inspection->inspection_date)->addMonths(24)->translatedFormat('j F Y');
+        $nextTcvt = \Carbon\Carbon::parse($inspection->inspection_date)->addMonths(12)->translatedFormat('j F Y');
+    }
 
     $docRef = implode('_', array_filter([
         $inspection->created_at->format('Ymd'),
@@ -72,6 +78,7 @@
                 KvK 23047245
             </div>
             <div class="footer__center">
+                {{ $inspection->outsmart_order_number }}/{{ $inspection->created_at->format('Ymd') }}<br>
                 p. <span class="footer__pageNo"></span>
             </div>
             <div class="footer__right">
@@ -93,7 +100,7 @@
         <!-- Intro -->
         @include('pdf._intro-tcvt')
         <!-- Section -->
-        <div class="page-break-after">
+        {{-- <div class="page-break-after"> --}}
             <table class="table">
                 <thead>
                     <tr>
@@ -101,13 +108,13 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <x-pdf.row label="Rapportnummer" :value="$reportNumber ?? '—'" />
-                    <x-pdf.row label="Inspectiedatum" :value="$inspection->created_at->isoFormat('D-M-YYYY')" />
-                    <x-pdf.row label="Inspecteur" :value="$inspection->user->name ?? '—'" />
+                    <x-pdf.row label="Rapportnummer" :value="$inspection->outsmart_order_number ?? '—'" />
+                    <x-pdf.row label="Inspectiedatum" :value="$inspection->inspection_date->translatedFormat('j F Y')" />
+                    <x-pdf.row label="Inspecteur" :value="$inspection->inspector_name ?? '—'" />
                     <x-pdf.row label="Bevindingen" :value="$result" />
                     <x-pdf.row label="Volgende periodieke keuring voor" :value="$nextPeriodical ?? '—'" />
                     <x-pdf.row label="Volgende TCVT keuring voor" :value="$nextTcvt ?? '—'" />
-                    <x-pdf.row label="Stickernummer" :value="$stickerNumber ?? '—'" />
+                    <x-pdf.row label="Stickernummer" :value="$inspection->sticker_number ?? '—'" />
                 </tbody>
             </table>
             @if ($client)
@@ -119,7 +126,7 @@
                     </thead>
                     <tbody>
                         <x-pdf.row :label="__('models/client.name.label')" :value="$client->name" />
-                        <x-pdf.row :label="__('models/client.address.label')" :value="$client->address . '<br>' . $client->postal_code . ' ' . $client->city" />
+                        <x-pdf.row :label="__('models/client.address.label')" :value="$client->address . ', ' . $client->postal_code . ' ' . $client->city" />
                         <x-pdf.row :label="__('models/client.contact_name.label')" :value="$client->contact_name" />
                     </tbody>
                 </table>
@@ -133,7 +140,7 @@
                 </thead>
                 <tbody>
                     <x-pdf.row :label="__('models/inspection.project_name.label')" :value="$inspection->project_name" />
-                    <x-pdf.row :label="__('models/inspection.project_address.label')" :value="$inspection->project_address . '<br>' . $inspection->project_postal_code . ' ' . $inspection->project_city" />
+                    <x-pdf.row :label="__('models/inspection.project_address.label')" :value="$inspection->project_address . ', ' . $inspection->project_postal_code . ' ' . $inspection->project_city" />
                 </tbody>
             </table>
             <!-- Inspectable -->
@@ -155,11 +162,10 @@
             @elseif ($inspectable instanceof OperatorLift)
                 @include('pdf._inspectable-operator-lift', ['operatorLift' => $inspectable])
             @endif
-        </div>
+        {{-- </div> --}}
         <!-- Form groups -->
         @php
             $formItems = FormItems::get($inspection->form);
-
             $svgYes = '<img alt="" height="16" src="https://app.liftinginspections.nl/assets/img/pdf/check.svg" width="16">';
             $svgNo = '<img alt="" height="16" src="https://app.liftinginspections.nl/assets/img/pdf/x.svg" width="16">';
             $svgNa = '<img alt="" height="16" src="https://app.liftinginspections.nl/assets/img/pdf/circle-slash.svg" width="16">';
