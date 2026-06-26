@@ -218,8 +218,8 @@
                                     <tr>
                                         <td class="table__fieldNum">{{ $field->number }}</td>
                                         <td colspan="4">
-                                            <div class="table__formQ">{{ nl2br(e($field->label)) }}</div>
-                                            <div class="table__formA">{{ $answer }}</div>
+                                            <span class="table__formQ">{{ nl2br(e($field->label)) }}</span>
+                                            <span class="table__formA">{{ $answer }}</span>
                                         </td>
                                     </tr>
                                 @endif
