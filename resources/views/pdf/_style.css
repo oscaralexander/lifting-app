@@ -375,3 +375,49 @@ h1 {
 .matrix .result.failed {
     font-weight: 600;
 }
+
+/**
+ * Deficiencies
+ */
+
+.deficiencies {
+    break-before: page;
+}
+
+.deficiencies__heading {
+    font-size: 12pt;
+    font-weight: 600;
+    margin-bottom: 0.5em;
+}
+
+.deficiency {
+    margin-bottom: 1em;
+    page-break-inside: avoid;
+}
+
+.deficiency__title {
+    background: #1f336a;
+    border-radius: 1mm;
+    color: #fff;
+    font-feature-settings: 'tnum';
+    font-size: 9pt;
+    font-variant-numeric: tabular-nums;
+    font-weight: 500;
+    margin-bottom: 0.5em;
+    padding: 1mm 2mm;
+}
+
+.deficiency__comment {
+    margin-bottom: 3mm;
+}
+
+.deficiency__photos {
+}
+
+.deficiency__photo {
+    display: inline-block;
+    margin: 0 2mm 2mm 0;
+    max-height: 60mm;
+    max-width: 85mm;
+    width: auto;
+}

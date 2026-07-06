@@ -109,7 +109,7 @@
                 </thead>
                 <tbody>
                     <x-pdf.row label="Rapportnummer" :value="$inspection->outsmart_order_number ?? '—'" />
-                    <x-pdf.row label="Inspectiedatum" :value="$inspection->inspection_date->translatedFormat('j F Y')" />
+                    <x-pdf.row label="Inspectiedatum" :value="$inspection->inspection_date?->translatedFormat('j F Y') ?? '—'" />
                     <x-pdf.row label="Inspecteur" :value="$inspection->inspector_name ?? '—'" />
                     <x-pdf.row label="Bevindingen" :value="$result" />
                     <x-pdf.row label="Volgende periodieke keuring voor" :value="$nextPeriodical ?? '—'" />
@@ -268,5 +268,7 @@
         @if ($isCrane && ! empty($inspection->matrix))
             @include('pdf._test-matrix')
         @endif
+        <!-- Deficiencies -->
+        @include('pdf._deficiencies')
     </body>
 </html>
