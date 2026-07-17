@@ -19,10 +19,28 @@
 @font-face {
     font-display: swap;
     font-family: 'Archivo Condensed';
+    font-style: normal;
+    font-weight: 400;
+    src: url('@fonts/ArchivoCondensed-Regular.woff2') format('woff2'),
+         url('@fonts/ArchivoCondensed-Regular.woff') format('woff');
+}
+
+@font-face {
+    font-display: swap;
+    font-family: 'Archivo Condensed';
     font-style: italic;
     font-weight: 400;
     src: url('@fonts/ArchivoCondensed-Italic.woff2') format('woff2'),
          url('@fonts/ArchivoCondensed-Italic.woff') format('woff');
+}
+
+@font-face {
+    font-display: swap;
+    font-family: 'Archivo Condensed';
+    font-style: normal;
+    font-weight: 600;
+    src: url('@fonts/ArchivoCondensed-SemiBold.woff2') format('woff2'),
+         url('@fonts/ArchivoCondensed-SemiBold.woff') format('woff');
 }
 
 @font-face {

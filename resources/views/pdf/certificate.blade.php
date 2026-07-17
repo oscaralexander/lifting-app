@@ -113,7 +113,14 @@
                     <p>00-036.335</p>
                 </div>
                 <div>
-
+                    <h4>Lifting Inspections BV</h4>
+                    Nijverheidsweg 1a<br>
+                    3433 NP Nieuwegein<br>
+                    <br>
+                    info@liftinginspections.nl<br>
+                    +31 (0)30 340 00 87<br>
+                    <br>
+                    KVK 2347241
                 </div>
             </div>
         </div>

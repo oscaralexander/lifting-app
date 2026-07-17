@@ -11,8 +11,8 @@
     font-family: 'Archivo';
     font-style: normal;
     font-weight: 400;
-    src: url('https://www.liftinginspections.nl/build/assets/Archivo-Regular-maUW-N6X.woff2') format('woff2'),
-         url('https://www.liftinginspections.nl/build/assets/Archivo-Regular-Cxgh80dk.woff') format('woff');
+    src: url('https://app.liftinginspections.nl/build/assets/Archivo-Regular-maUW-N6X.woff2') format('woff2'),
+         url('https://app.liftinginspections.nl/build/assets/Archivo-Regular-Cxgh80dk.woff') format('woff');
 }
 
 @font-face {
@@ -20,8 +20,17 @@
     font-family: 'Archivo';
     font-style: normal;
     font-weight: 700;
-    src: url('https://www.liftinginspections.nl/build/assets/Archivo-Bold-CGc1C_Cp.woff2') format('woff2'),
-         url('https://www.liftinginspections.nl/build/assets/Archivo-Bold-BOOMZe0U.woff') format('woff');
+    src: url('https://app.liftinginspections.nl/build/assets/Archivo-Bold-CGc1C_Cp.woff2') format('woff2'),
+         url('https://app.liftinginspections.nl/build/assets/Archivo-Bold-BOOMZe0U.woff') format('woff');
+}
+
+@font-face {
+    font-display: swap;
+    font-family: 'Archivo Condensed';
+    font-style: normal;
+    font-weight: 400;
+    src: url('https://app.liftinginspections.nl/build/assets/ArchivoCondensed-Regular-C2V-hU5l.woff2') format('woff2'),
+         url('https://app.liftinginspections.nl/build/assets/ArchivoCondensed-Regular-xq_cL6f2.woff') format('woff');
 }
 
 @font-face {
@@ -29,8 +38,17 @@
     font-family: 'Archivo Condensed';
     font-style: italic;
     font-weight: 400;
-    src: url('https://www.liftinginspections.nl/build/assets/ArchivoCondensed-Italic-DMuJiD-k.woff2') format('woff2'),
-         url('https://www.liftinginspections.nl/build/assets/ArchivoCondensed-Italic-B3wbLjI5.woff') format('woff');
+    src: url('https://app.liftinginspections.nl/build/assets/ArchivoCondensed-Italic-DMuJiD-k.woff2') format('woff2'),
+         url('https://app.liftinginspections.nl/build/assets/ArchivoCondensed-Italic-B3wbLjI5.woff') format('woff');
+}
+
+@font-face {
+    font-display: swap;
+    font-family: 'Archivo Condensed';
+    font-style: normal;
+    font-weight: 600;
+    src: url('https://app.liftinginspections.nl/build/assets/ArchivoCondensed-SemiBold-Bc0Ma2Jh.woff2') format('woff2'),
+         url('https://app.liftinginspections.nl/build/assets/ArchivoCondensed-SemiBold-C7eAJTkR.woff') format('woff');
 }
 
 @font-face {
@@ -38,8 +56,8 @@
     font-family: 'Archivo Condensed';
     font-style: normal;
     font-weight: 900;
-    src: url('https://www.liftinginspections.nl/build/assets/ArchivoCondensed-Black-D2cQS4K_.woff2') format('woff2'),
-         url('https://www.liftinginspections.nl/build/assets/ArchivoCondensed-Black-BxZ21GwI.woff') format('woff');
+    src: url('https://app.liftinginspections.nl/build/assets/ArchivoCondensed-Black-D2cQS4K_.woff2') format('woff2'),
+         url('https://app.liftinginspections.nl/build/assets/ArchivoCondensed-Black-BxZ21GwI.woff') format('woff');
 }
 
 :root {
@@ -132,4 +150,11 @@ h1 i {
 
 .split__right {
     width: 36mm;
+}
+
+.split__left,
+.split__right {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
