@@ -15,6 +15,7 @@ export default defineConfig({
     resolve: {
         alias: {
             '@css': path.resolve(__dirname, 'resources/css'),
+            '@fonts': path.resolve(__dirname, 'resources/fonts'),
             '@js': path.resolve(__dirname, 'resources/js'),
             '@npm': path.resolve(__dirname, 'node_modules'),
             '@public': path.resolve(__dirname, 'public'),

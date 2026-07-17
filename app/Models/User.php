@@ -38,7 +38,7 @@ class User extends Authenticatable implements MustVerifyEmail
     public function initials(): Attribute
     {
         return Attribute::get(
-            fn (): string => Str::of(mb_substr($this->first_name, 0, 1) . mb_substr($this->last_name, 0, 1))
+            fn (): string => Str::of(mb_substr($this->first_name, 0, 1).mb_substr($this->last_name, 0, 1))
                 ->trim()
                 ->upper()
                 ->toString()
@@ -48,7 +48,7 @@ class User extends Authenticatable implements MustVerifyEmail
     public function isActive(): Attribute
     {
         return Attribute::get(
-            fn (): bool => !is_null($this->password)
+            fn (): bool => ! is_null($this->password)
         );
     }
 
@@ -67,6 +67,13 @@ class User extends Authenticatable implements MustVerifyEmail
                 ->append($this->last_name)
                 ->trim()
                 ->toString()
+        );
+    }
+
+    public function signature(): Attribute
+    {
+        return Attribute::get(
+            fn (): string => asset('assets/img/signatures/'.$this->id.'.svg')
         );
     }
 

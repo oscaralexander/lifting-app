@@ -1,0 +1,135 @@
+@font-face {
+    font-display: swap;
+    font-family: Söhne Schmall;
+    font-style: normal;
+    font-weight: 700;
+    src: url('https://www.liftinginspections.nl/dist/assets/SoehneSchmall-Fett-DFoX6Oz0.woff2') format('woff2');
+}
+
+@font-face {
+    font-display: swap;
+    font-family: 'Archivo';
+    font-style: normal;
+    font-weight: 400;
+    src: url('https://www.liftinginspections.nl/build/assets/Archivo-Regular-maUW-N6X.woff2') format('woff2'),
+         url('https://www.liftinginspections.nl/build/assets/Archivo-Regular-Cxgh80dk.woff') format('woff');
+}
+
+@font-face {
+    font-display: swap;
+    font-family: 'Archivo';
+    font-style: normal;
+    font-weight: 700;
+    src: url('https://www.liftinginspections.nl/build/assets/Archivo-Bold-CGc1C_Cp.woff2') format('woff2'),
+         url('https://www.liftinginspections.nl/build/assets/Archivo-Bold-BOOMZe0U.woff') format('woff');
+}
+
+@font-face {
+    font-display: swap;
+    font-family: 'Archivo Condensed';
+    font-style: italic;
+    font-weight: 400;
+    src: url('https://www.liftinginspections.nl/build/assets/ArchivoCondensed-Italic-DMuJiD-k.woff2') format('woff2'),
+         url('https://www.liftinginspections.nl/build/assets/ArchivoCondensed-Italic-B3wbLjI5.woff') format('woff');
+}
+
+@font-face {
+    font-display: swap;
+    font-family: 'Archivo Condensed';
+    font-style: normal;
+    font-weight: 900;
+    src: url('https://www.liftinginspections.nl/build/assets/ArchivoCondensed-Black-D2cQS4K_.woff2') format('woff2'),
+         url('https://www.liftinginspections.nl/build/assets/ArchivoCondensed-Black-BxZ21GwI.woff') format('woff');
+}
+
+:root {
+    --color-text: #1f336a;
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+@page {
+    margin: 20mm 20mm 20mm 20mm;
+    size: A4;
+}
+
+@page :first {
+    background-image: url('https://app.liftinginspections.nl/assets/img/pdf/cover-certificate.svg');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+body {
+    color: var(--color-text);
+    font-family: 'Archivo', sans-serif;
+    font-size: 10pt;
+    line-height: 1.4;
+}
+
+a {
+    color: #1B3A6B;
+}
+
+img {
+    display: block;
+    height: auto;
+}
+
+.page-break-after  {
+    break-after: page;
+}
+
+.page-break-before {
+    break-before: page;
+}
+
+.intro {
+    break-after: page;
+}
+
+.page {
+    break-after: page;
+}
+
+.header__logo {
+    width: 55mm;
+}
+
+h1 {
+    color: #1f336a;
+    font-family: 'Archivo Condensed', sans-serif;
+    font-size: 32pt;
+    font-weight: 900;
+    line-height: 1;
+}
+
+h1 i {
+    font-weight: 400;
+    font-style: italic;
+}
+
+.logo {
+    height: auto;
+    width: 5cm;
+}
+
+.split {
+    display: flex;
+    width: 168mm;
+    gap: 12mm;
+}
+
+.split__left {
+    width: 120mm;
+}
+
+.split__right {
+    width: 36mm;
+}
