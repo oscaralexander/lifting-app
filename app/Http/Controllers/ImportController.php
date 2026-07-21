@@ -12,7 +12,7 @@ class ImportController extends Controller
 {
     public function __invoke()
     {
-        $exports = array_filter(Storage::files(env('APP_PATH_IMPORTS')), fn ($file) => !Str::of(pathinfo($file, PATHINFO_BASENAME))->startsWith('.'));
+        $exports = array_filter(Storage::files(env('APP_PATH_IMPORTS')), fn ($file) => ! Str::of(pathinfo($file, PATHINFO_BASENAME))->startsWith('.'));
         rsort($exports);
 
         // Get last export from filesystem

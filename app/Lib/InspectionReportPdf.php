@@ -4,36 +4,36 @@ namespace App\Lib;
 
 use App\Models\Inspection;
 use App\Services\DocRaptorService;
-use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Storage;
+use Spatie\PdfToImage\Enums\OutputFormat;
+use Spatie\PdfToImage\Pdf;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class InspectionReportPdf
 {
     protected string $logoBase64;
 
-    public function __construct(protected readonly Inspection $inspection)
-    {
-        $this->logoBase64 = base64_encode(file_get_contents(public_path('assets/img/lifting-inspections-fc.svg')));
-    }
+    public function __construct(protected readonly Inspection $inspection) {}
 
     public function html(): string
     {
-        return view('pdf.inspection-report', [
-            'inspection' => $this->inspection,
-        ])->render();
+        return view('pdf.inspection-report', ['inspection' => $this->inspection])->render();
     }
 
-    public function download(): Response
+    public function download(): StreamedResponse
     {
-        return response($this->pdf(), 200, [
+        $bytes = $this->pdf();
+
+        return response()->streamDownload(function () use ($bytes) {
+            echo $bytes;
+        }, basename($this->inspection->inspectionReportPath()), [
             'Content-Type' => 'application/pdf',
-            'Content-Disposition' => 'attachment; filename="'.$this->filename().'"',
         ]);
     }
 
     public function save(string $path): string
     {
-        $fullPath = rtrim($path, '/').'/'.$this->filename();
+        $fullPath = rtrim($path, '/').'/'.basename($this->inspection->inspectionReportPath());
         file_put_contents($fullPath, $this->pdf());
 
         return $fullPath;
@@ -44,13 +44,28 @@ class InspectionReportPdf
         Storage::disk('local')->deleteDirectory('inspections/reports/'.$this->inspection->hash);
     }
 
+    public function thumbnailUrl(): ?string
+    {
+        $path = $this->inspection->inspectionReportThumbPath();
+
+        if (! Storage::disk('public')->exists($path)) {
+            return null;
+        }
+
+        return Storage::disk('public')->url($path);
+    }
+
     protected function pdf(): string
     {
         if (app()->environment('local')) {
-            return $this->generate();
+            $bytes = $this->generate();
+
+            $this->generateThumbnail($bytes);
+
+            return $bytes;
         }
 
-        $storagePath = $this->storagePath();
+        $storagePath = $this->inspection->inspectionReportPath();
 
         // if (Storage::disk('local')->exists($storagePath)) {
         //     return Storage::disk('local')->get($storagePath);
@@ -60,33 +75,37 @@ class InspectionReportPdf
 
         Storage::disk('local')->put($storagePath, $bytes);
 
+        $this->generateThumbnail($bytes);
+
         return $bytes;
     }
 
-    protected function storagePath(): string
+    protected function generateThumbnail(string $bytes): void
     {
-        return 'inspections/reports/'.$this->inspection->hash.'/'.$this->filename();
+        $temporaryPdf = tempnam(sys_get_temp_dir(), 'inspection_report_');
+        rename($temporaryPdf, $temporaryPdf .= '.pdf');
+        file_put_contents($temporaryPdf, $bytes);
+
+        $thumbnailPath = $this->inspection->inspectionReportThumbPath();
+        Storage::disk('public')->makeDirectory(dirname($thumbnailPath));
+
+        try {
+            (new Pdf($temporaryPdf))
+                ->selectPage(1)
+                ->format(OutputFormat::Jpg)
+                ->thumbnailSize(800)
+                ->save(Storage::disk('public')->path($thumbnailPath));
+        } catch (\Throwable $e) {
+            report($e);
+        } finally {
+            @unlink($temporaryPdf);
+        }
     }
 
     protected function generate(): string
     {
-        $html = view('pdf.inspection-report', [
-            'inspection' => $this->inspection,
-            'logoBase64' => $this->logoBase64,
-        ])->render();
+        $html = view('pdf.inspection-report', ['inspection' => $this->inspection])->render();
 
         return app(DocRaptorService::class)->htmlToPdf($html);
-    }
-
-    protected function filename(): string
-    {
-        $object = $this->inspection->inspectionObject;
-
-        return implode('_', array_filter([
-            $this->inspection->created_at->format('Ymd'),
-            $this->inspection->hash,
-            $object?->manufacturer ? strtolower(str_replace(' ', '-', $object->manufacturer)) : null,
-            $object?->model ? strtolower(str_replace([' ', '/'], '-', $object->model)) : null,
-        ])).'.pdf';
     }
 }

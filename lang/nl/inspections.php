@@ -5,7 +5,8 @@ return [
         'title' => 'Nieuwe inspectie',
     ],
     'form' => [
-        'btn_download_report' => 'Download Keuringsrapport (PDF)',
+        'btn_download_report' => 'Keuringsrapport',
+        'btn_download_certificate' => 'Certificaat',
         'btn_fetch_outsmart' => 'Ophalen uit Outsmart',
         'select_photos' => 'Foto\'s selecteren',
         'no_photos_heading' => 'Geen foto\'s beschikbaar',
@@ -27,6 +28,7 @@ return [
             'description' => 'Voer eerst de projectgegevens in voordat je de inspectie kunt starten.',
         ],
         'heading_crane' => 'Kraan',
+        'heading_documents' => 'Documenten',
         'heading_object' => 'Object',
         'heading_operator_lift' => 'Machinistenlift',
         'heading_project' => 'Project',

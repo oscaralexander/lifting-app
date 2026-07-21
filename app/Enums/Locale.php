@@ -12,7 +12,7 @@ enum Locale: string
 
     public function flag(): string
     {
-        return match($this) {
+        return match ($this) {
             self::EN => '/assets/img/flags/gb.svg',
             self::NL => '/assets/img/flags/nl.svg',
             self::FR => '/assets/img/flags/fr.svg',
@@ -21,7 +21,7 @@ enum Locale: string
 
     public static function options(): Collection
     {
-        return collect(self::cases())->mapWithKeys(fn (self $locale) => [$locale->value => __('locale.' . $locale->value)]);
+        return collect(self::cases())->mapWithKeys(fn (self $locale) => [$locale->value => __('locale.'.$locale->value)]);
     }
 
     public static function values(): array

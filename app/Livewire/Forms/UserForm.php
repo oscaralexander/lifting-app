@@ -2,11 +2,8 @@
 
 namespace App\Livewire\Forms;
 
-use App\Constants\CookieKey;
-use App\Enums\Locale;
 use App\Enums\UserRole;
 use App\Models\User;
-use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
@@ -84,6 +81,7 @@ class UserForm extends Form
         }
 
         $this->user->save();
+
         return $this->user;
     }
 

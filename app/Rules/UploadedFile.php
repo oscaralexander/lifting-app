@@ -23,16 +23,16 @@ class UploadedFile implements ValidationRule
     {
         if ($value instanceof TemporaryUploadedFile) {
             if ($this->type === 'image') {
-                if (!str_starts_with($value->getMimeType(), 'image/')) {
+                if (! str_starts_with($value->getMimeType(), 'image/')) {
                     $fail('validation.image')->translate();
                 }
             }
 
             return;
         }
-        
-        if (!Storage::disk($this->disk)->exists($value)) {
+
+        if (! Storage::disk($this->disk)->exists($value)) {
             $fail('validation.file_not_found')->translate();
         }
     }
-} 
+}

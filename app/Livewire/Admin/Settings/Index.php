@@ -3,8 +3,8 @@
 namespace App\Livewire\Admin\Settings;
 
 use App\Models\Settings;
-use Livewire\Component;
 use Illuminate\View\View;
+use Livewire\Component;
 
 class Index extends Component
 {

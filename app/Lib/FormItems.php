@@ -21,10 +21,10 @@ class FormItems
         }
 
         // Add comments not in any group
-        $formComments = $form->formComments->filter(function($formComment) {
+        $formComments = $form->formComments->filter(function ($formComment) {
             return is_null($formComment->field_group_id);
         })->sortBy('position');
-    
+
         foreach ($formComments->sortBy('position') as $formComment) {
             $items->push([
                 'formComment' => $formComment,
@@ -32,14 +32,14 @@ class FormItems
                 'type' => 'formComment',
             ]);
         }
-    
+
         // Add fields not in any group
-        $groupedFieldPivotIds = $form->fieldGroups->flatMap(function($fieldGroup) {
+        $groupedFieldPivotIds = $form->fieldGroups->flatMap(function ($fieldGroup) {
             return $fieldGroup->fields->pluck('pivot.id');
         })->unique();
-    
+
         foreach ($form->fields->sortBy('pivot.position') as $field) {
-            if (!$groupedFieldPivotIds->contains($field->pivot->id)) {
+            if (! $groupedFieldPivotIds->contains($field->pivot->id)) {
                 $items->push([
                     'field' => $field,
                     'position' => $field->pivot->position ?? $field->position ?? 0,
@@ -47,9 +47,10 @@ class FormItems
                 ]);
             }
         }
-    
+
         // Order all items by position
         $items = $items->sortBy('position');
+
         return $items;
     }
 }

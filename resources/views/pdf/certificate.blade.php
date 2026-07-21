@@ -23,7 +23,7 @@
     </head>
     <body>
         <header class="header">
-            <img alt="Lifting Inspections" class="header__logo" src="http://app.liftinginspections.nl/assets/img/pdf/lifting-inspections.svg" />
+            <img alt="Lifting Inspections" class="header__logo" src="https://app.liftinginspections.nl/assets/img/pdf/lifting-inspections.svg" />
         </header>
         <div class="split">
             <div class="split__left">
@@ -32,7 +32,7 @@
                         <i>Certificaat van</i><br>
                         GOEDKEURING
                     </h1>
-                    <div class="intro">
+                    <div class="intro formatted">
                         <p>
                             Lifting Inspections BV verklaart als door de overheid aangewezen Conformiteits Beoordelende Instelling, dat de hieronder beschreven hijskraan is gekeurd overeenkomstig art. 6d van het Warenwetbesluit Machines en op grond van de bevindingen, weergegeven in het bijbehorende keuringsrapport, is goedgekeurd.
                         </p>
@@ -66,20 +66,20 @@
                             </tr>
                         </tbody>
                     </table>
-                    <p>
+                    <p class="onBehalfOf">
                         Namens de Conformiteits Beoordelende Instelling:
                     </p>
                     <div class="signature">
                         <div class="signature__box">
-                            <img alt="" class="signature__image" src="{{ asset('assets/img/signatures/signature.svg') }}" />
+                            <img alt="" class="signature__image" src="https://app.liftinginspections.nl/assets/img/signatures/signature.svg" />
                         </div>
                         <p class="signature__text">
                             {{ $inspection->inspector_name }}<br>
-                            Keurmeester
+                            <i>Keurmeester</i>
                         </p>
                     </div>
                 </div>
-                <footer class="footer">
+                <footer class="footer formatted">
                     <p>
                         Ten hoogste 24 maanden nadat het onderzoek heeft plaatsgevonden dient opnieuw een onderzoek plaats te vinden,
                         dat uitgevoerd wordt door een instelling die daartoe door de Minister van Sociale Zaken en Werkgelegenheid is aangewezen.
@@ -103,7 +103,7 @@
                     <h4>Datum</h4>
                     <p>{{ $inspection->inspection_date?->translatedFormat('j F Y') ?? '—' }}</p>
                     <h4>Accreditatienummer</h4>
-                    <p>I 003, type A</p>
+                    <p>I 385, type A</p>
                     <h4>Aanwijzingsbeschikking</h4>
                     <p>
                         Ministerie SZW<br>
@@ -114,13 +114,15 @@
                 </div>
                 <div>
                     <h4>Lifting Inspections BV</h4>
-                    Nijverheidsweg 1a<br>
-                    3433 NP Nieuwegein<br>
-                    <br>
-                    info@liftinginspections.nl<br>
-                    +31 (0)30 340 00 87<br>
-                    <br>
-                    KVK 2347241
+                    <p>
+                        Nijverheidsweg 1a<br>
+                        3433 NP Nieuwegein<br>
+                        <br>
+                        <a href="mailto:info@liftinginspections.nl">info@liftinginspections.nl</a><br>
+                        +31 (0)30 340 00 87
+                    </p>
+                    <p>KVK 2347241</p>
+                    <img alt="RVA i385" class="rva" src="https://app.liftinginspections.nl/assets/img/pdf/rva-i385.svg" />
                 </div>
             </div>
         </div>

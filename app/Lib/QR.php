@@ -8,17 +8,17 @@ use Endroid\QrCode\Color\Color;
 use Endroid\QrCode\Encoding\Encoding;
 use Endroid\QrCode\ErrorCorrectionLevel;
 use Endroid\QrCode\Writer\PdfWriter;
+use Endroid\QrCode\Writer\PngWriter;
 use Endroid\QrCode\Writer\Result\PdfResult;
 use Endroid\QrCode\Writer\Result\PngResult;
-use Endroid\QrCode\Writer\PngWriter;
-use setasign\Fpdi\Fpdi;
 use Illuminate\Support\Facades\Storage;
+use setasign\Fpdi\Fpdi;
 
 class QR
 {
     public static function generateQrCode(string $data, string $format = 'pdf'): PdfResult|PngResult
     {
-        $writer = $format === 'pdf' ? new PdfWriter() : new PngWriter();
+        $writer = $format === 'pdf' ? new PdfWriter : new PngWriter;
         $builder = new Builder(
             backgroundColor: new Color(255, 255, 255),
             data: $data,
@@ -27,7 +27,7 @@ class QR
             margin: 0,
             size: 1600,
             validateResult: false,
-            writer: $format === 'pdf' ? new PdfWriter() : new PngWriter(),
+            writer: $format === 'pdf' ? new PdfWriter : new PngWriter,
         );
 
         return $builder->build();
@@ -36,7 +36,7 @@ class QR
     public static function makeSticker(Sticker $sticker): string
     {
         // Create sticker PDF
-        $sheet = new Fpdi();
+        $sheet = new Fpdi;
         $sheet->AddPage('L', [91, 86]);
         $sheet->setSourceFile(resource_path('stickers/template.pdf'));
         $template = $sheet->importPage(1);
@@ -44,7 +44,7 @@ class QR
 
         // Generate QR code PDF
         $qr = static::generateQrCode($sticker->url);
-        $qrPath = Storage::disk('public')->path(env('APP_PATH_STICKERS') . '/' . $sticker->hash . '_qr.pdf');
+        $qrPath = Storage::disk('public')->path(env('APP_PATH_STICKERS').'/'.$sticker->hash.'_qr.pdf');
         $qrPdf = $qr->getPdf();
         $qrPdf->Output('F', $qrPath, true);
 
@@ -63,8 +63,9 @@ class QR
         $sheet->Text(66 - $stringWidth * .5, 45, $sticker->hash);
 
         // Save PDF
-        $path = Storage::disk('public')->path(env('APP_PATH_STICKERS') . '/' . $sticker->hash . '.pdf');
+        $path = Storage::disk('public')->path(env('APP_PATH_STICKERS').'/'.$sticker->hash.'.pdf');
         $sheet->Output('F', $path, true);
+
         return $path;
     }
 }

@@ -48,6 +48,10 @@
         stroke-width: 1.75;
     }
 
+    &__spinner {
+        display: none;
+    }
+
     &__uploadLabel {
         &.is-hidden {
             color: transparent !important;
@@ -221,12 +225,21 @@
     &[disabled] {
         cursor: not-allowed;
         opacity: .5;
+        pointer-events: none;
+    }
 
-        &.btn--primary {
-            color: var(--btn-primary-color);
+    &.is-loading {
+        .btn__spinner {
+            animation: btnSpinner 1s linear infinite;
+            display: block;
+        }
+
+        .lucide:not(.btn__spinner) {
+            display: none;
         }
     }
 
+    /*
     &[type=submit] {
         &::after {
             animation: btnSpinner 1s linear infinite;
@@ -252,6 +265,7 @@
             }
         }
     }
+    */
 
     @include screen-min(m) {
         &--mini {

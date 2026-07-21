@@ -9,8 +9,8 @@ use Illuminate\Support\Facades\Storage;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\On;
 use Livewire\Component;
-use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Livewire\WithPagination;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class Index extends Component
 {
@@ -19,6 +19,7 @@ class Index extends Component
     public function download(int $id): BinaryFileResponse
     {
         $import = Import::findOrFail($id);
+
         return response()->download(Storage::path($import->path), $import->filename);
     }
 

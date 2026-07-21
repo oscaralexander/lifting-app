@@ -5,7 +5,6 @@ namespace App\Livewire\Admin\Imports;
 use App\Enums\ImportType;
 use App\Models\Import;
 use Illuminate\View\View;
-use Livewire\Attributes\Validate;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 use Livewire\WithFileUploads;
 use LivewireUI\Modal\ModalComponent;
@@ -45,7 +44,7 @@ class CreateModal extends ModalComponent
         }
 
         $this->closeModalWithEvents([
-            \App\Livewire\Admin\Imports\Index::class => ['created', ['id' => $import->id]],
+            Index::class => ['created', ['id' => $import->id]],
         ]);
     }
 }

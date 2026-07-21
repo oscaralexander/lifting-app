@@ -13,8 +13,9 @@ class Index extends Component
     {
         $sticker = Sticker::where('hash', $this->hash)->first();
 
-        if (!$sticker) {
+        if (! $sticker) {
             $this->addError('hash', __('app.index.hash_invalid'));
+
             return;
         }
 

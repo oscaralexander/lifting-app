@@ -21,7 +21,7 @@ class Form extends Model
             $i = 1;
 
             while (static::where('slug', $slug)->exists()) {
-                $slug = $baseSlug . '-' . $i++;
+                $slug = $baseSlug.'-'.$i++;
             }
 
             $form->slug = $slug;
@@ -61,7 +61,6 @@ class Form extends Model
     /**
      * Relationships
      */
-
     public function fieldGroups(): HasMany
     {
         return $this->hasMany(FieldGroup::class)->orderBy('position');

@@ -95,6 +95,41 @@ class Inspection extends Model
         return $hash;
     }
 
+    public function inspectionReportPath(): string
+    {
+        return $this->documentPath('reports', 'Keuringsrapport', 'pdf');
+    }
+
+    public function inspectionReportThumbPath(): string
+    {
+        return $this->documentPath('reports', 'Keuringsrapport', 'jpg');
+    }
+
+    public function certificatePath(): string
+    {
+        return $this->documentPath('certificates', 'Certificaat', 'pdf');
+    }
+
+    public function certificateThumbPath(): string
+    {
+        return $this->documentPath('certificates', 'Certificaat', 'jpg');
+    }
+
+    protected function documentPath(string $directory, string $prefix, string $extension): string
+    {
+        $object = $this->inspectionObject;
+
+        $filename = implode('_', array_filter([
+            $prefix,
+            $this->created_at->format('Ymd'),
+            $this->hash,
+            $object?->manufacturer ? strtolower(str_replace(' ', '-', $object->manufacturer)) : null,
+            $object?->model ? strtolower(str_replace([' ', '/'], '-', $object->model)) : null,
+        ])).'.'.$extension;
+
+        return 'inspections/'.$directory.'/'.$this->hash.'/'.$filename;
+    }
+
     /**
      * Attributes
      */

@@ -37,6 +37,7 @@ class Link extends Component
         ]);
 
         session()->flash('success', __('qr.link.flash_success'));
+
         return redirect()->route('qr.show', ['hash' => $this->hash]);
     }
 
@@ -61,10 +62,10 @@ class Link extends Component
         return StockItem::with(['machine' => fn ($machine) => $machine->withCount('documents')])
             ->whereDoesntHave('sticker')
             ->when($this->search, function ($query) {
-                return $query->where('frame_no', 'like', '%' . $this->search . '%')
-                    ->orWhere('license_plate_no', 'like', '%' . $this->search . '%')
-                    ->orWhere('stock_id', 'like', '%' . $this->search . '%')
-                    ->orWhere('serial_no', 'like', '%' . $this->search . '%');
+                return $query->where('frame_no', 'like', '%'.$this->search.'%')
+                    ->orWhere('license_plate_no', 'like', '%'.$this->search.'%')
+                    ->orWhere('stock_id', 'like', '%'.$this->search.'%')
+                    ->orWhere('serial_no', 'like', '%'.$this->search.'%');
             })
             ->paginate(25);
     }

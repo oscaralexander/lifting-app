@@ -13,11 +13,11 @@ trait HasRatelimitedEndpoints
      *
      * Allow 2 emails every "passwordless_link_expiration" seconds
      *
-     * @throws \Illuminate\Validation\ValidationException
+     * @throws ValidationException
      */
     private function ensureIsNotRateLimited(int $maxAttempts, string $errorKey, string $errorMessage): void
     {
-        if (!RateLimiter::tooManyAttempts($this->throttleKey(), $maxAttempts)) {
+        if (! RateLimiter::tooManyAttempts($this->throttleKey(), $maxAttempts)) {
             return;
         }
 
@@ -26,7 +26,7 @@ trait HasRatelimitedEndpoints
         $seconds = RateLimiter::availableIn($this->throttleKey());
         $minutes = ceil($seconds / 60);
 
-        $time = $minutes > 0 ? $minutes . ' minutes' : $seconds . 'seconds';
+        $time = $minutes > 0 ? $minutes.' minutes' : $seconds.'seconds';
 
         throw ValidationException::withMessages([
             $errorKey => __($errorMessage, [

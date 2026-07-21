@@ -25,7 +25,7 @@ trait NeedsUniqueSlugs
                 )->withoutGlobalScopes()
                 ->exists()
         ) {
-            $uniqueSlug = $slug . '-' . Str::random(5);
+            $uniqueSlug = $slug.'-'.Str::random(5);
         }
 
         return $uniqueSlug;

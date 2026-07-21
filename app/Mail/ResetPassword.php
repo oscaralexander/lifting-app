@@ -34,7 +34,7 @@ class ResetPassword extends Mailable
     public function content(): Content
     {
         return new Content(
-            html: 'mail.' . app()->getLocale() . '.reset-password',
+            html: 'mail.'.app()->getLocale().'.reset-password',
             with: [
                 'reset_url' => $this->resetUrl,
                 'user' => $this->user,

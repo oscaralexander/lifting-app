@@ -4,12 +4,12 @@ namespace App\Livewire\App\QR;
 
 use App\Enums\ActivityType;
 use App\Models\Activity;
-use App\Models\Submission;
 use App\Models\Settings;
 use App\Models\Sticker;
 use App\Models\StockItem;
-use Livewire\Attributes\Locked;
+use App\Models\Submission;
 use Livewire\Attributes\Computed;
+use Livewire\Attributes\Locked;
 use Livewire\Component;
 
 class Show extends Component
@@ -29,7 +29,7 @@ class Show extends Component
     {
         return Settings::where([
             'key' => 'passcode',
-            'value' => $passcode
+            'value' => $passcode,
         ])->exists();
     }
 
@@ -40,6 +40,7 @@ class Show extends Component
         if ($this->attemptAuth($passcode)) {
             $this->isAuthenticated = true;
             session()->put('passcode', $passcode);
+
             return;
         }
 
@@ -80,7 +81,7 @@ class Show extends Component
             )
             ->firstWhere('hash', $hash);
 
-        if (!$this->sticker || !$this->sticker->stockItem) {
+        if (! $this->sticker || ! $this->sticker->stockItem) {
             return redirect()->route('qr.link', ['hash' => $hash]);
         }
 
@@ -91,12 +92,12 @@ class Show extends Component
 
         // Get service number for stock item's country code
         $countryCode = $this->sticker->stockItem->country_code->value;
-        $this->service_no = Settings::where('key', 'service_no_' . $countryCode)->first()->value;
+        $this->service_no = Settings::where('key', 'service_no_'.$countryCode)->first()->value;
 
         // Authenticate viewer
         $this->isAuthenticated = auth('web')->check();
 
-        if (!$this->isAuthenticated) {
+        if (! $this->isAuthenticated) {
             if ($passcode = session()->get('passcode')) {
                 $this->isAuthenticated = $this->attemptAuth($passcode);
             }

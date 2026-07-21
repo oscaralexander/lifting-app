@@ -28,8 +28,8 @@ class ImportCSV implements ShouldQueue
     {
         $path = Storage::path($this->import->path);
 
-        if (!is_readable($path)) {
-            throw new \Exception('Export is not readable: ' . $path);
+        if (! is_readable($path)) {
+            throw new \Exception('Export is not readable: '.$path);
         }
 
         $contents = file_get_contents($path);
@@ -92,7 +92,7 @@ class ImportCSV implements ShouldQueue
             // Search for machine model
             $machineId = $existingMachineModels->search($cols[$mappings['model']]);
 
-            if (!$machineId) {
+            if (! $machineId) {
                 // Machine does not exist, create
                 $machine = Machine::create([
                     'model' => $model,

@@ -13,11 +13,11 @@ enum Type: string
 
     public function label(): string
     {
-        return __('enums/inspection_object/crane/type.' . $this->value);
+        return __('enums/inspection_object/crane/type.'.$this->value);
     }
 
     public static function options(): array
     {
-        return array_column(array_map(fn(self $type) => [$type->value, $type->label()], self::cases()), 1, 0);
+        return array_column(array_map(fn (self $type) => [$type->value, $type->label()], self::cases()), 1, 0);
     }
 }

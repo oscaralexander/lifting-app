@@ -25,6 +25,6 @@ enum FieldType: string
 
     public function label(): string
     {
-        return __('enums/field_type.' . $this->value);
+        return __('enums/field_type.'.$this->value);
     }
 }

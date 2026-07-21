@@ -37,7 +37,7 @@ class SubmissionCompleted extends Mailable
     public function content(): Content
     {
         return new Content(
-            html: 'mail.' . app()->getLocale() . '.submission-completed',
+            html: 'mail.'.app()->getLocale().'.submission-completed',
             with: [
                 'submission' => $this->submission,
             ],

@@ -3,8 +3,8 @@
 namespace App\Livewire\Inspections;
 
 use App\Constants\Event;
-use App\Enums\InspectionObject\Type;
 use App\Enums\InspectionObject\Crane\Type as CraneType;
+use App\Enums\InspectionObject\Type;
 use App\Models\Inspection;
 use Illuminate\View\View;
 use Livewire\Attributes\Computed;
@@ -23,9 +23,9 @@ class TestMatrix extends Component
     public function inspection(): Inspection
     {
         return Inspection::with([
-                'inspectionObject',
-                'inspectable'
-            ])
+            'inspectionObject',
+            'inspectable',
+        ])
             ->where('hash', $this->inspectionHash)
             ->firstOrFail();
     }

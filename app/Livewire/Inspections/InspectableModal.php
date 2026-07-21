@@ -85,7 +85,7 @@ class InspectableModal extends ModalComponent
         $data = $this->inspectableForm->validate();
 
         // Convert empty strings to null
-        $data = array_map(fn($value) => $value === '' ? null : $value, $data);
+        $data = array_map(fn ($value) => $value === '' ? null : $value, $data);
 
         $inspectable = $this->inspectable;
         $inspectable->fill($data);

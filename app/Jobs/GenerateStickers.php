@@ -29,7 +29,7 @@ class GenerateStickers implements ShouldQueue
 
         for ($i = 0; $i < $this->stickerBatch->count; $i++) {
             // Create new sticker
-            $sticker = new Sticker();
+            $sticker = new Sticker;
             $sticker->sticker_batch_id = $this->stickerBatch->id;
             $sticker->save();
 
@@ -38,7 +38,7 @@ class GenerateStickers implements ShouldQueue
         }
 
         // Zip stickers
-        $zip = new ZipArchive();
+        $zip = new ZipArchive;
         $zip->open(Storage::disk('public')->path($this->stickerBatch->path), ZipArchive::CREATE | ZipArchive::OVERWRITE);
         $zip->addFile(resource_path('stickers/_cutcontour.pdf'), '_cutcontour.pdf');
         $zip->addFile(resource_path('stickers/JetBrainsMono-Bold.ttf'), '_fonts/JetBrainsMono-Bold.ttf');

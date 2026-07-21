@@ -53,6 +53,7 @@
     @endif
     {{ $attributes }}
 >
+    <x-icon class="btn__spinner" icon="loader-circle" />
     @if ($icon)
         <x-icon :$icon />
     @endif

@@ -4,7 +4,6 @@ namespace App\Mail;
 
 use App\Models\User;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
@@ -37,7 +36,7 @@ class UserCreated extends Mailable
     public function content(): Content
     {
         return new Content(
-            markdown: 'mail.' . app()->getLocale() . '.user-created',
+            markdown: 'mail.'.app()->getLocale().'.user-created',
             with: [
                 'creator' => $this->creator,
                 'user' => $this->user,

@@ -3,16 +3,15 @@
 namespace App\Livewire\Admin\Forms;
 
 use App\Constants\Event;
-use Barryvdh\Debugbar\Facades\Debugbar;
 use App\Models\Field;
 use App\Models\FieldForm;
 use App\Models\FieldGroup;
 use App\Models\Form;
 use App\Models\FormComment;
 use Illuminate\Support\Collection;
-use Livewire\Component;
-use Livewire\Attributes\On;
 use Livewire\Attributes\Computed;
+use Livewire\Attributes\On;
+use Livewire\Component;
 
 class Edit extends Component
 {
@@ -23,7 +22,7 @@ class Edit extends Component
     public function addToForm(int $id)
     {
         $maxFieldGroupPosition = $this->form->fieldGroups()->max('position') ?? 0;
-        $maxFieldPosition = $this->form->fields()->get()->max(fn($field) => $field->pivot->position ?? 0) ?? 0;
+        $maxFieldPosition = $this->form->fields()->get()->max(fn ($field) => $field->pivot->position ?? 0) ?? 0;
         $maxFormCommentPosition = $this->form->formComments()->max('position') ?? 0;
         $position = max($maxFieldGroupPosition, $maxFieldPosition, $maxFormCommentPosition) + 1;
 
@@ -48,7 +47,7 @@ class Edit extends Component
         }
 
         return Field::search($this->search)
-            ->orderBy('label_' . app()->getLocale())
+            ->orderBy('label_'.app()->getLocale())
             ->get();
     }
 
@@ -90,8 +89,8 @@ class Edit extends Component
 
         foreach ($positions as $item) {
             if (is_array($item)) {
-                if (!empty($item['fieldId'])) {
-                    if (!empty($item['pivotId'])) {
+                if (! empty($item['fieldId'])) {
+                    if (! empty($item['pivotId'])) {
                         // Update existing Field
                         FieldForm::where('id', $item['pivotId'])->update(['field_group_id' => null, 'position' => $position]);
                     } else {
@@ -102,13 +101,13 @@ class Edit extends Component
                     $position++;
                 }
 
-                if (!empty($item['formCommentId'])) {
+                if (! empty($item['formCommentId'])) {
                     // FormComment (ungrouped)
                     FormComment::where('id', $item['formCommentId'])->update(['field_group_id' => null, 'position' => $position]);
                     $position++;
                 }
 
-                if (!empty($item['fieldGroupId'])) {
+                if (! empty($item['fieldGroupId'])) {
                     // FieldGroup
                     $fieldGroupId = $item['fieldGroupId'];
                     $groupItems = $item['items'];
@@ -118,8 +117,8 @@ class Edit extends Component
                     $position++;
 
                     foreach ($groupItems as $groupItem) {
-                        if (!empty($groupItem['fieldId'])) {
-                            if (!empty($groupItem['pivotId'])) {
+                        if (! empty($groupItem['fieldId'])) {
+                            if (! empty($groupItem['pivotId'])) {
                                 // Update existing Field
                                 FieldForm::where('id', $groupItem['pivotId'])->update(['field_group_id' => $fieldGroupId, 'position' => $position]);
                             } else {
@@ -128,11 +127,11 @@ class Edit extends Component
                             }
                         }
 
-                        if (!empty($groupItem['formCommentId'])) {
+                        if (! empty($groupItem['formCommentId'])) {
                             // FormComment (grouped)
                             FormComment::where('id', $groupItem['formCommentId'])->update([
                                 'field_group_id' => $fieldGroupId,
-                                'position' => $position
+                                'position' => $position,
                             ]);
                         }
 
@@ -173,7 +172,7 @@ class Edit extends Component
     {
         // Delete all field_form records that belong to this field group
         FieldForm::where('field_group_id', $id)->delete();
-        
+
         // Delete the field group itself
         FieldGroup::where('id', $id)->delete();
     }
@@ -186,12 +185,12 @@ class Edit extends Component
     public function toggleRequired(int $pivotId)
     {
         $required = $this->form->fields()->wherePivot('id', $pivotId)->first()->pivot->required ?? false;
-        FieldForm::where('id', $pivotId)->update(['required' => !$required]);
+        FieldForm::where('id', $pivotId)->update(['required' => ! $required]);
     }
 
     public function togglePublic(int $pivotId)
     {
         $public = $this->form->fields()->wherePivot('id', $pivotId)->first()->pivot->public ?? false;
-        FieldForm::where('id', $pivotId)->update(['public' => !$public]);
+        FieldForm::where('id', $pivotId)->update(['public' => ! $public]);
     }
 }

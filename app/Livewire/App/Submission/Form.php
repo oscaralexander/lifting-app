@@ -22,11 +22,11 @@ use Livewire\WithFileUploads;
 class Form extends Component
 {
     use WithFileUploads;
-    
+
     public array $fields = [];
-    
+
     public int $formId;
-    
+
     public bool $is_completed = false;
 
     public $signature;
@@ -42,12 +42,12 @@ class Form extends Component
 
         if ($field->type === FieldType::DOCUMENT || $field->type === FieldType::IMAGE) {
             if (Storage::disk('public')->delete($filename)) {
-                $this->fields['field_' . $field->id] = array_filter($this->fields['field_' . $field->id], function ($file) use ($filename) {
+                $this->fields['field_'.$field->id] = array_filter($this->fields['field_'.$field->id], function ($file) use ($filename) {
                     return $file !== $filename;
                 });
 
-                if (empty($this->fields['field_' . $field->id])) {
-                    $this->fields['field_' . $field->id] = null;
+                if (empty($this->fields['field_'.$field->id])) {
+                    $this->fields['field_'.$field->id] = null;
                 }
             }
         }
@@ -55,7 +55,7 @@ class Form extends Component
 
     public function download(string $path)
     {
-        if (!Storage::disk('public')->exists($path)) {
+        if (! Storage::disk('public')->exists($path)) {
             abort(404);
         }
 
@@ -78,7 +78,7 @@ class Form extends Component
     #[Computed]
     public function submission(): Submission
     {
-        return $this->sticker->stockItem->latestSubmissionForForm($this->formId) ?? new Submission();
+        return $this->sticker->stockItem->latestSubmissionForForm($this->formId) ?? new Submission;
     }
 
     public function mount(string $stickerHash, int $formId)
@@ -90,12 +90,12 @@ class Form extends Component
         $submission = $this->submission;
 
         // Define array type fields
-        $arrayFields = [ FieldType::SELECT_MULTIPLE, FieldType::DOCUMENT, FieldType::IMAGE ];
+        $arrayFields = [FieldType::SELECT_MULTIPLE, FieldType::DOCUMENT, FieldType::IMAGE];
 
         // Initialize answers
         foreach ($this->form->fields as $field) {
             if (in_array($field->type, $arrayFields)) {
-                $this->fields['field_' . $field->pivot->id] = $submission->getAnswerForField($field->pivot->id, []);
+                $this->fields['field_'.$field->pivot->id] = $submission->getAnswerForField($field->pivot->id, []);
             } else {
                 $default = null;
 
@@ -103,7 +103,7 @@ class Form extends Component
                     $default = $field->attrs['default_checked'] ?? false;
                 }
 
-                $this->fields['field_' . $field->pivot->id] = $default;
+                $this->fields['field_'.$field->pivot->id] = $default;
             }
         }
 
@@ -116,18 +116,18 @@ class Form extends Component
         foreach ($this->fields as $key => $value) {
             $pivotId = Str::of($key)->afterLast('_')->toInteger();
             $field = $this->form->fields->firstWhere('pivot.id', $pivotId);
-    
+
             if ($field) {
                 if ($field->type === FieldType::DOCUMENT || $field->type === FieldType::IMAGE) {
                     $basePath = ($field->type === FieldType::IMAGE)
                         ? config('path.submissions.images')
                         : config('path.submissions.documents');
-        
+
                     if (is_array($value) && count($value) > 0) {
                         $files = [];
-    
+
                         foreach ($value as $file) {
-                            if ($file instanceof TemporaryUploadedFile) {   
+                            if ($file instanceof TemporaryUploadedFile) {
                                 $files[] = $file->storeAs(
                                     name: $file->getClientOriginalName(),
                                     options: [
@@ -143,8 +143,8 @@ class Form extends Component
                                 $files[] = $file;
                             }
                         }
-        
-                        $this->fields['field_' . $field->pivot->id] = empty($files) ? null : $files;
+
+                        $this->fields['field_'.$field->pivot->id] = empty($files) ? null : $files;
                     }
                 }
             }
@@ -163,7 +163,7 @@ class Form extends Component
 
         foreach ($this->form->fields as $field) {
             $fieldRules = [];
-            $key = 'fields.field_' . $field->pivot->id;
+            $key = 'fields.field_'.$field->pivot->id;
 
             if ($field->pivot->required === 1) {
                 $fieldRules[] = 'required';
@@ -173,12 +173,12 @@ class Form extends Component
 
             if ($field->type === FieldType::DOCUMENT) {
                 $fieldRules[] = new UploadedFile(disk: 'public', type: 'file');
-                $key = $key . '.*';
+                $key = $key.'.*';
             }
 
             if ($field->type === FieldType::IMAGE) {
                 $fieldRules[] = new UploadedFile(disk: 'public', type: 'image');
-                $key = $key . '.*';
+                $key = $key.'.*';
             }
 
             if ($field->type === FieldType::NUMBER) {
@@ -193,7 +193,7 @@ class Form extends Component
         }
 
         // Make signature and signature name required when form is completed
-        if ($this->is_completed && !$this->submission->signed_at) {
+        if ($this->is_completed && ! $this->submission->signed_at) {
             $rules['signature'] = 'required';
             $rules['signature_name'] = 'required';
         }
@@ -247,7 +247,7 @@ class Form extends Component
         $formData = array_filter($formData, fn ($value) => trim($value) !== '');
 
         // Check for newly completed submission
-        $isNewlyCompleted = ($this->is_completed && !$this->submission->is_completed);
+        $isNewlyCompleted = ($this->is_completed && ! $this->submission->is_completed);
 
         // $submission = new Submission();
         $this->submission->form_id = $this->form->id;
@@ -260,13 +260,13 @@ class Form extends Component
         if ($isNewlyCompleted) {
             // Process signature
             if ($this->signature) {
-                $filename = $this->submission->hash . '.png';
-                Storage::disk('public')->put('signatures/' . $filename, base64_decode(Str::of($this->signature)->after(',')));
+                $filename = $this->submission->hash.'.png';
+                Storage::disk('public')->put('signatures/'.$filename, base64_decode(Str::of($this->signature)->after(',')));
                 $this->submission->signature_name = $this->signature_name;
                 $this->submission->signed_at = now();
                 $this->submission->save();
             }
-            
+
             // Generate internal PDF
             $pdf = new SubmissionPdf($this->submission, $this->sticker, SubmissionPdfType::INTERNAL);
             $pathInternal = $pdf->save(Storage::disk('public')->path('submissions'));

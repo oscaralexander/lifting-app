@@ -18,6 +18,62 @@
         }
     }
 
+    &__documents {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1.25rem;
+        margin-bottom: 2rem;
+    }
+
+    &__document {
+        appearance: none;
+        background: none;
+        border: none;
+        cursor: pointer;
+        display: flex;
+        flex-direction: column;
+        gap: .5rem;
+        padding: 0;
+        text-align: left;
+        width: 8rem;
+
+        &[disabled] {
+            cursor: wait;
+        }
+
+        &-imgBox {
+            border: 1px solid var(--color-border);
+            border-radius: var(--border-radius-s);
+            box-shadow: var(--box-shadow-m);
+            overflow: hidden;
+            transition: transform 250ms;
+        }
+
+        &-img {
+            aspect-ratio: 1 / 1.414;
+            display: block;
+            object-fit: cover;
+            object-position: top center;
+            width: 100%;
+        }
+
+        &-label {
+            align-items: center;
+            color: var(--color-link);
+            display: flex;
+            font-size: var(--font-size-s);
+            gap: .35rem;
+        }
+
+        &:hover &-imgBox {
+            transform: translateY(-2px);
+        }
+
+        &.is-loading &-imgBox {
+            opacity: .5;
+        }
+    }
+
     &__photos {
         display: grid;
         grid-template-columns: repeat(2, 1fr);

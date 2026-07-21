@@ -1,29 +1,30 @@
 <?php
 
 use App\Constants\Event;
-use App\Constants\SessionKey;
 use App\Enums\FieldType;
 use App\Enums\InspectionObject\Type as InspectionObjectType;
 use App\Lib\FormItems;
+use App\Lib\InspectionCertificatePdf;
+use App\Lib\InspectionReportPdf;
 use App\Livewire\Forms\InspectionSubmissionForm;
 use App\Models\Client;
+use App\Models\Form;
 use App\Models\Inspection;
 use App\Models\InspectionObject;
 use App\Models\InspectionObjects\Crane;
 use App\Models\InspectionObjects\OperatorLift;
-use App\Models\Form;
 use App\Services\OutsmartService;
 use Carbon\Exceptions\InvalidFormatException;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
-use Livewire\Component;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Locked;
 use Livewire\Attributes\On;
+use Livewire\Component;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 use Livewire\WithFileUploads;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 new class extends Component
 {
@@ -59,13 +60,35 @@ new class extends Component
         }
     }
 
+    public function downloadCertificate(): StreamedResponse
+    {
+        return (new InspectionCertificatePdf($this->inspection))->download();
+    }
+
     public function downloadInspectionImage(string $image): BinaryFileResponse
     {
-        if (!Storage::disk('public')->exists($image)) {
+        if (! Storage::disk('public')->exists($image)) {
             abort(404);
         }
 
         return response()->download(Storage::disk('public')->path($image));
+    }
+
+    public function downloadReport(): StreamedResponse
+    {
+        return (new InspectionReportPdf($this->inspection))->download();
+    }
+
+    #[Computed]
+    public function reportThumbUrl(): ?string
+    {
+        return (new InspectionReportPdf($this->inspection))->thumbnailUrl();
+    }
+
+    #[Computed]
+    public function certificateThumbUrl(): ?string
+    {
+        return (new InspectionCertificatePdf($this->inspection))->thumbnailUrl();
     }
 
     #[Computed]
@@ -95,7 +118,7 @@ new class extends Component
     #[Computed]
     public function intro(): string
     {
-        return $this->form->name . ' · ' . $this->inspectionObject->name;
+        return $this->form->name.' · '.$this->inspectionObject->name;
     }
 
     public function mount(string $formSlug, int $inspectionObjectId, ?string $inspectionHash = null): void
@@ -118,8 +141,9 @@ new class extends Component
     }
 
     #[On(Event::INSPECTION_SAVED)]
-    public function onInspectionSaved(string $inspectionHash): void {
-        if (!$this->inspectionHash) {
+    public function onInspectionSaved(string $inspectionHash): void
+    {
+        if (! $this->inspectionHash) {
             $this->redirect(route('inspections.form', [
                 'formSlug' => $this->formSlug,
                 'inspectionObjectId' => $this->inspectionObjectId,
@@ -149,7 +173,7 @@ new class extends Component
     {
         $inspection = $this->inspection;
 
-        if (!$inspection->exists || !$inspection->outsmart_work_order_id) {
+        if (! $inspection->exists || ! $inspection->outsmart_work_order_id) {
             return;
         }
 
@@ -164,12 +188,12 @@ new class extends Component
         $employeeNr = $workOrder['EmployeeNr'] ?? null;
         $employee = $employeeNr ? $outsmart->getEmployee((string) $employeeNr) : null;
         $inspectorName = $employee
-            ? (trim(($employee['firstname'] ?? '') . ' ' . ($employee['lastname'] ?? '')) ?: null)
+            ? (trim(($employee['firstname'] ?? '').' '.($employee['lastname'] ?? '')) ?: null)
             : null;
 
         $inspection->update([
             'project_name' => ($workOrder['Reference'] ?? null) ?: ($workOrder['OrderNr'] ?? null),
-            'project_address' => trim(($workOrder['CustomerStreet'] ?? '') . ' ' . ($workOrder['CustomerStreetNo'] ?? '')),
+            'project_address' => trim(($workOrder['CustomerStreet'] ?? '').' '.($workOrder['CustomerStreetNo'] ?? '')),
             'project_postal_code' => $workOrder['CustomerZIP'] ?? null,
             'project_city' => $workOrder['CustomerCity'] ?? null,
             'inspector_name' => $inspectorName,
@@ -277,6 +301,57 @@ new class extends Component
                 </x-slot:actions>
             @endif
         </x-header>
+        @if ($this->inspection->exists && ($this->reportThumbUrl || $this->certificateThumbUrl))
+            <div class="u-stack u-stack-gap-l">
+                <h2>@lang('inspections.form.heading_documents')</h2>
+                <div class="inspection__documents">
+                    @if ($this->reportThumbUrl)
+                        <button
+                            class="inspection__document"
+                            type="button"
+                            wire:click="downloadReport"
+                            wire:loading.attr="disabled"
+                            wire:loading.class="is-loading"
+                            wire:target="downloadReport"
+                        >
+                            <span class="inspection__document-imgBox">
+                                <img
+                                    alt="@lang('inspections.form.btn_download_report')"
+                                    class="inspection__document-img"
+                                    src="{{ $this->reportThumbUrl }}"
+                                />
+                            </span>
+                            <span class="inspection__document-label">
+                                <x-icon icon="download" />
+                                @lang('inspections.form.btn_download_report')
+                            </span>
+                        </button>
+                    @endif
+                    @if ($this->certificateThumbUrl)
+                        <button
+                            class="inspection__document"
+                            type="button"
+                            wire:click="downloadCertificate"
+                            wire:loading.attr="disabled"
+                            wire:loading.class="is-loading"
+                            wire:target="downloadCertificate"
+                        >
+                            <span class="inspection__document-imgBox">
+                                <img
+                                    alt="@lang('inspections.form.btn_download_certificate')"
+                                    class="inspection__document-img"
+                                    src="{{ $this->certificateThumbUrl }}"
+                                />
+                            </span>
+                            <span class="inspection__document-label">
+                                <x-icon icon="download" />
+                                @lang('inspections.form.btn_download_certificate')
+                            </span>
+                        </button>
+                    @endif
+                </div>
+            </div>
+        @endif
         <x-form class="form form--full u-stack u-stack-gap-xl">
             <div class="grid grid--gap-xxl">
                 <div class="grid__col l:grid__col--span-4">
@@ -527,17 +602,26 @@ new class extends Component
                         <div class="actions">
                             <x-btn primary submit>@lang('ui.save')</x-btn>
                             @if ($this->inspection->exists)
-                                <x-btn
-                                    icon="download"
-                                    :href="route('inspection.pdf', $this->inspection->hash)"
-                                    :navigate="false"
-                                    x-cloak
-                                    x-show="allTogglesCompleted"
-                                >@lang('inspections.form.btn_download_report')</x-btn>
-                                <span>
-                                    @lang('ui.or')
-                                    <x-btn text href="{{ route('inspection-objects.show', $this->inspectionObject->id) }}">@lang('ui.cancel')</x-btn>
-                                </span>
+                                @if ($this->inspection->is_completed)
+                                    <x-btn
+                                        icon="download"
+                                        wire:click="downloadReport"
+                                        wire:loading.attr="disabled"
+                                        wire:loading.class="is-loading"
+                                        wire:target="downloadReport"
+                                        x-cloak
+                                    >@lang('inspections.form.btn_download_report')</x-btn>
+                                @endif
+                                @if ($this->inspection->is_approved)
+                                    <x-btn
+                                        icon="download"
+                                        wire:click="downloadCertificate"
+                                        wire:loading.attr="disabled"
+                                        wire:loading.class="is-loading"
+                                        wire:target="downloadCertificate"
+                                        x-cloak
+                                    >@lang('inspections.form.btn_download_certificate')</x-btn>
+                                @endif
                             @endif
                         </div>
                     </div>

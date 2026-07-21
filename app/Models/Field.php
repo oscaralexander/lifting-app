@@ -3,10 +3,10 @@
 namespace App\Models;
 
 use App\Enums\FieldType;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Casts\Attribute;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Field extends Model
 {
@@ -20,7 +20,7 @@ class Field extends Model
     public function numberedLabel(): Attribute
     {
         return new Attribute(
-            get: fn () => '<span>' . $this->number . '</span> · ' . $this->label,
+            get: fn () => '<span>'.$this->number.'</span> · '.$this->label,
         );
     }
 
@@ -35,8 +35,8 @@ class Field extends Model
     {
         return $query
             ->where(function ($query) use ($search) {
-                $query->where('label', 'like', '%' . $search . '%')
-                      ->orWhere('number', 'like', '%' . $search . '%');
+                $query->where('label', 'like', '%'.$search.'%')
+                    ->orWhere('number', 'like', '%'.$search.'%');
             })
             ->orderBy('label');
     }
@@ -44,7 +44,6 @@ class Field extends Model
     /**
      * Relationships
      */
-
     public function fieldGroups(): BelongsToMany
     {
         return $this->belongsToMany(FieldGroup::class, 'field_form')

@@ -11,7 +11,7 @@ enum UserRole: string
 
     public static function options(): Collection
     {
-        return collect(self::cases())->mapWithKeys(fn (self $userRole) => [$userRole->value => __('user_role.' . $userRole->value)]);
+        return collect(self::cases())->mapWithKeys(fn (self $userRole) => [$userRole->value => __('user_role.'.$userRole->value)]);
     }
 
     public static function values(): array

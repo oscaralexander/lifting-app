@@ -2,24 +2,25 @@
 
 namespace App\Livewire\Admin\Videos;
 
+use App\Constants\Event;
 use App\Enums\ActivityType;
+use App\Livewire\Admin\StockItems\Show;
 use App\Models\Activity;
 use App\Models\Machine;
 use App\Models\StockItem;
 use App\Models\Video;
+use Embed\Embed;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
-use LivewireUI\Modal\ModalComponent;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Locked;
-use Embed\Embed;
+use LivewireUI\Modal\ModalComponent;
 
 class CreateModal extends ModalComponent
 {
     /**
      * Component properties
      */
-
     #[Locked]
     public ?int $id = null;
 
@@ -31,7 +32,6 @@ class CreateModal extends ModalComponent
     /**
      * Model properties
      */
-    
     public string $image_url;
 
     public string $title;
@@ -43,13 +43,12 @@ class CreateModal extends ModalComponent
     /**
      * Computed properties
      */
-
     #[Computed]
     public function video(): Video
     {
         return $this->id
             ? Video::findOrFail($this->id)
-            : new Video();
+            : new Video;
     }
 
     #[Computed]
@@ -57,7 +56,7 @@ class CreateModal extends ModalComponent
     {
         return $this->stockItemId
             ? StockItem::findOrFail($this->stockItemId)
-            : new StockItem();
+            : new StockItem;
     }
 
     public function render(): View
@@ -65,7 +64,7 @@ class CreateModal extends ModalComponent
         return view('livewire.admin.videos.create-modal');
     }
 
-    public function rules(): array 
+    public function rules(): array
     {
         return [
             'image_url' => ['required', 'url'],
@@ -83,7 +82,7 @@ class CreateModal extends ModalComponent
             $query = parse_url($this->url, PHP_URL_QUERY);
             parse_str($query, $queryParams);
 
-            if (!empty($queryParams['v'])) {
+            if (! empty($queryParams['v'])) {
                 $video_id = $queryParams['v'];
             }
         }
@@ -92,13 +91,14 @@ class CreateModal extends ModalComponent
             $video_id = Str::of($this->url)->after('youtu.be/')->before('?')->toString();
         }
 
-        if (!$video_id) {
+        if (! $video_id) {
             $this->addError('url', __('videos.modal.error_url'));
+
             return;
         }
 
         // Fetch video data from YouTube
-        $embed = new Embed();
+        $embed = new Embed;
         $info = $embed->get($this->url);
         $this->image_url = $info->image;
         $this->title = $info->title;
@@ -123,7 +123,7 @@ class CreateModal extends ModalComponent
         ]);
 
         $this->closeModalWithEvents([
-            \App\Livewire\Admin\StockItems\Show::class => \App\Constants\Event::REFRESH,
+            Show::class => Event::REFRESH,
         ]);
     }
 }

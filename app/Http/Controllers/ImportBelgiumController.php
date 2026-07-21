@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\CountryCode;
 use App\Models\Machine;
 use App\Models\StockItem;
-use App\Enums\CountryCode;
+use GuzzleHttp\Client;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 
@@ -20,7 +21,7 @@ class ImportBelgiumController extends Controller
         // Only fetch inventory that has been modified since the last import
         $lastModifiedAt = StockItem::where('country_code', CountryCode::BE)->max('modified_at');
 
-        $client = new \GuzzleHttp\Client();
+        $client = new Client;
         $params = [
             'api_key' => 'd8e01451159750ad8cb5f76dd10d3e4b797d3e2d6a92cfa81baba532fc444b11',
             'action' => 'get_inventory',
@@ -29,7 +30,7 @@ class ImportBelgiumController extends Controller
         if ($lastModifiedAt) {
             $params['modified_after'] = $lastModifiedAt;
         }
-        
+
         $response = $client->post('https://portalalex.jangkardang.synology.me/api/', ['json' => $params]);
         $body = $response->getBody()->getContents();
         $inventory = json_decode($body, true)['data']['inventory'] ?? null;
@@ -41,19 +42,24 @@ class ImportBelgiumController extends Controller
             foreach ($inventory as $item) {
                 /**
                  * Item object schema:
-                 * 
+                 *
                  * @machine_type string
+                 *
                  * @machine_brand string
+                 *
                  * @machine_model string
+                 *
                  * @id int
+                 *
                  * @modified_at string
+                 *
                  * @serial_number string
                  */
-                $stockId = 'BE' . $item['id'];
+                $stockId = 'BE'.$item['id'];
                 $stockItem = StockItem::where('stock_id', $stockId)->first();
 
-                if (!$stockItem) {
-                    $stockItem = new StockItem();
+                if (! $stockItem) {
+                    $stockItem = new StockItem;
 
                     // Set defaults
                     $stockItem->barcode = '';
@@ -64,7 +70,7 @@ class ImportBelgiumController extends Controller
                 } else {
                     $num_updated++;
                 }
-                
+
                 $stockItem->country_code = CountryCode::BE;
                 $stockItem->machine_id = $this->getMachineId($item['machine_brand'], $item['machine_model']);
                 $stockItem->md5 = md5($stockId);
@@ -88,7 +94,7 @@ class ImportBelgiumController extends Controller
             return $machine->model === $model && Str::contains($machine->name, $brand, true);
         });
 
-        if (!$machine) {
+        if (! $machine) {
             // Machine does not exist, create
             $machine = Machine::create([
                 'model' => $model,
@@ -97,6 +103,7 @@ class ImportBelgiumController extends Controller
         }
 
         $this->machines->push($machine);
+
         return $machine->id;
     }
 }

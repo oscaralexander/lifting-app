@@ -95,6 +95,10 @@ a {
     color: #1B3A6B;
 }
 
+i {
+    font-style: italic;
+}
+
 img {
     display: block;
     height: auto;
@@ -108,12 +112,12 @@ img {
     break-before: page;
 }
 
-.intro {
+.page {
     break-after: page;
 }
 
-.page {
-    break-after: page;
+.header {
+    margin-bottom: 10mm;
 }
 
 .header__logo {
@@ -126,9 +130,11 @@ h1 {
     font-size: 32pt;
     font-weight: 900;
     line-height: 1;
+    margin-bottom: 10mm;
 }
 
 h1 i {
+    font-size: 28pt;
     font-weight: 400;
     font-style: italic;
 }
@@ -138,18 +144,26 @@ h1 i {
     width: 5cm;
 }
 
+.intro {
+    min-height: 55mm;
+}
+
+.formatted {
+    line-height: 1.4;
+}
+
+.formatted p {
+    margin-bottom: 1em;
+}
+
 .split {
     display: flex;
-    width: 168mm;
-    gap: 12mm;
+    justify-content: space-between;
+    width: 170mm;
 }
 
 .split__left {
     width: 120mm;
-}
-
-.split__right {
-    width: 36mm;
 }
 
 .split__left,
@@ -157,4 +171,72 @@ h1 i {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+}
+
+.split__right {
+    font-family: 'Archivo Condensed', sans-serif;
+    font-weight: 400;
+    width: 36mm;
+}
+
+.split__right h4 {
+    font-family: 'Archivo Condensed', sans-serif;
+    font-size: 10pt;
+    font-weight: 600;
+}
+
+.split__right p {
+    margin-bottom: 1em;
+}
+
+.rva {
+    height: 18mm;
+    width: auto;
+}
+
+.table {
+    border-collapse: separate;
+}
+
+.table th,
+.table td {
+    font-weight: 400;
+    padding: 2mm 0;
+    text-align: left;
+}
+
+.table th {
+    width: 36mm;
+}
+
+.table td {
+    font-weight: 600;
+}
+
+.onBehalfOf {
+    margin: 3mm 0 6mm 0;
+}
+
+.signature {
+    margin-bottom: 10mm;
+}
+
+.signature__box {
+    border-bottom: 1px solid #1f336a;
+    height: 15mm;
+    overflow: visible;
+    margin-bottom: 3mm;
+    position: relative;
+    width: 100%;
+}
+
+.signature__image {
+    height: 18mm;
+    width: auto;
+}
+
+.footer {
+    font-family: 'Archivo Condensed', sans-serif;
+    font-weight: 400;
+    font-size: 7pt;
 }

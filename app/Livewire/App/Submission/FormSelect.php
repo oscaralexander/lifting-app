@@ -2,7 +2,6 @@
 
 namespace App\Livewire\App\Submission;
 
-use Illuminate\Support\Facades\DB;
 use App\Enums\FormType;
 use App\Models\Form;
 use App\Models\Sticker;
@@ -23,7 +22,7 @@ class FormSelect extends Component
     {
         return Form::query()
             ->where('type', $this->formType)
-            ->orderBy('name_' . app()->getLocale())
+            ->orderBy('name_'.app()->getLocale())
             ->get();
     }
 
@@ -63,7 +62,8 @@ class FormSelect extends Component
         return view('livewire.app.submission.form-select');
     }
 
-    public function updatedFormType() {
+    public function updatedFormType()
+    {
         $this->formId = null;
     }
 }

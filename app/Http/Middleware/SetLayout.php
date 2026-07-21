@@ -10,8 +10,8 @@ class SetLayout
 {
     public function handle(Request $request, Closure $next, string $layout): Response
     {
-        config(['livewire.layout' => 'layouts::' . $layout]);
-        config(['livewire.component_layout' => 'layouts::' . $layout]);
+        config(['livewire.layout' => 'layouts::'.$layout]);
+        config(['livewire.component_layout' => 'layouts::'.$layout]);
 
         return $next($request);
     }
