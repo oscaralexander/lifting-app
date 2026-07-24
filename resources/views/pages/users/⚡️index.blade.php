@@ -78,35 +78,31 @@ new class extends Component
                         </td>
                         <td>
                             <div class="table__actions">
-                                <x-popout icon="ellipsis-vertical"
+                                <x-popout
                                     id="popout-user-{{ $user->id }}"
                                     position="tl"
                                     small
                                     transparent
                                 >
-                                    <li>
-                                        <a href="{{ route('users.edit', $user) }}" wire:navigate>
-                                            <x-icon icon="pencil" />
-                                            {{ __('ui.edit') }}
-                                        </a>
-                                    </li>
+                                    <x-popout.item
+                                        :href="route('users.edit', $user)"
+                                        icon="pencil"
+                                        :label="__('ui.edit')"
+                                    />
                                     @if (!$user->is_active)
-                                        <li>
-                                            <a href="#" wire:click.prevent="resendInvite({{ $user->id }})">
-                                                <x-icon icon="mail" />
-                                                {{ __('users.index.popout_resend_invite') }}
-                                            </a>
-                                        </li>
+                                        <x-popout.item
+                                            icon="mail"
+                                            :label="__('users.index.popout_resend_invite')"
+                                            wire:click="resendInvite({{ $user->id }})"
+                                        />
                                     @endif
-                                    <li>
-                                        <a class="danger" href="#"
-                                            wire:click="delete({{ $user->id }})"
-                                            wire:confirm="{{ __('users.index.delete_confirm') }}"
-                                        >
-                                            <x-icon icon="trash" />
-                                            {{ __('ui.delete') }}
-                                        </a>
-                                    </li>
+                                    <x-popout.item
+                                        danger
+                                        icon="trash"
+                                        :label="__('ui.delete')"
+                                        wire:click="delete({{ $user->id }})"
+                                        wire:confirm="{{ __('users.index.delete_confirm') }}"
+                                    />
                                 </x-popout>
                             </div>
                         </td>
@@ -114,20 +110,5 @@ new class extends Component
                 @endforeach
             </tbody>
         </table>
-        <div class="u-stack u-stack-gap-m">
-            <h2>@lang('users.index.employees_title')</h2>
-            @island(lazy: true)
-                @placeholder
-                    <div class="selectLoader">
-                        <x-icon icon="loader-circle" />
-                        @lang('users.index.employees_loading')
-                    </div>
-                @endplaceholder
-
-                @foreach ($this->employees as $employee)
-                    @dump($employee)
-                @endforeach
-            @endisland
-        </div>
     </div>
 </div>

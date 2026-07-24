@@ -145,6 +145,15 @@
             background: var(--color-2-tint);
             color: var(--color-link);
         }
+
+        &--danger {
+            color: var(--color-danger);
+
+            &:hover {
+                background: var(--color-danger-tint);
+                color: var(--color-danger);
+            }
+        }
     }
 
     &[aria-expanded=true] {
