@@ -14,6 +14,7 @@ use App\Models\Inspection;
 use App\Models\InspectionObject;
 use App\Models\InspectionObjects\Crane;
 use App\Models\InspectionObjects\OperatorLift;
+use App\Models\User;
 use App\Services\OutsmartService;
 use Carbon\Exceptions\InvalidFormatException;
 use Illuminate\Support\Carbon;
@@ -224,9 +225,19 @@ new class extends Component
 
         $employeeNr = $workOrder['EmployeeNr'] ?? null;
         $employee = $employeeNr ? $outsmart->getEmployee((string) $employeeNr) : null;
+
         $inspectorName = $employee
             ? (trim(($employee['firstname'] ?? '').' '.($employee['lastname'] ?? '')) ?: null)
             : null;
+
+        $matchedUser = null;
+
+        if ($employee && !empty($employee['firstname']) && !empty($employee['lastname'])) {
+            $matchedUser = User::query()
+                ->where('first_name', $employee['firstname'])
+                ->where('last_name', $employee['lastname'])
+                ->first();
+        }
 
         $inspection->update([
             'project_name' => ($workOrder['Reference'] ?? null) ?: ($workOrder['OrderNr'] ?? null),
@@ -237,6 +248,7 @@ new class extends Component
             'inspection_date' => $this->resolveInspectionDate($workOrder),
             'outsmart_order_number' => $workOrder['OrderNr'] ?? null,
             'outsmart_photos' => $workOrder['Photos'] ?? null,
+            'user_id' => $matchedUser?->id ?? auth('web')->id(),
         ]);
 
         unset($this->inspection);
@@ -363,10 +375,6 @@ new class extends Component
                                                         class="inspection__document-img"
                                                         src="{{ $this->reportThumbUrl }}"
                                                     />
-                                                </span>
-                                                <span class="inspection__document-label">
-                                                    <x-icon icon="download" />
-                                                    @lang('inspections.form.btn_download_report')
                                                 </span>
                                             </button>
                                         </div>
@@ -630,39 +638,7 @@ new class extends Component
                                 <x-form.lightswitch wire:model="submissionForm.requires_written_deregistration" :text="__('models/inspection.requires_written_deregistration.label')" />
                                 <x-form.lightswitch wire:model="submissionForm.has_no_sticker_provided" :text="__('models/inspection.has_no_sticker_provided.label')" />
                             </div>
-                                        {{-- Generate documents --}}
-                            <div class="inspection__generateDocuments">
-                                <div class="u-stack u-stack-gap-xs">
-                                    <h3>@lang('inspections.form.heading_generate_documents')</h3>
-                                    <p class="formatted">@lang('inspections.form.text_generate_documents')</p>
-                                </div>
-                                <div class="actions">
-                                    @if ($this->inspection->exists)
-                                        @if ($this->inspection->is_completed)
-                                            <x-btn
-                                                icon="file-up"
-                                                small
-                                                wire:click="generateReport"
-                                                wire:loading.attr="disabled"
-                                                wire:loading.class="is-loading"
-                                                wire:target="generateReport"
-                                                x-cloak
-                                            >@lang('inspections.form.btn_generate_report')</x-btn>
-                                        @endif
-                                        @if ($this->inspection->is_approved && $this->inspection->isCertifiable())
-                                            <x-btn
-                                                icon="file-up"
-                                                small
-                                                wire:click="generateCertificate"
-                                                wire:loading.attr="disabled"
-                                                wire:loading.class="is-loading"
-                                                wire:target="generateCertificate"
-                                                x-cloak
-                                            >@lang('inspections.form.btn_generate_certificate')</x-btn>
-                                        @endif
-                                    @endif
-                                </div>
-                            </div>
+                            @include('pages.inspections._generate-documents')
                         </div>
                     </div>
                 </div>

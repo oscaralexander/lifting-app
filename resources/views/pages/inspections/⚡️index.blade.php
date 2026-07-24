@@ -30,6 +30,7 @@ new class extends Component
 
 <div>
     <x-header :title="__('inspections.index.title')">
+        {{--
         <x-slot:actions>
             <x-btn
                 icon="plus"
@@ -37,6 +38,7 @@ new class extends Component
                 x-on:click="$dispatch('openModal', { component: 'cranes.crane-modal', arguments: { id: null } })"
             >@lang('inspections.index.btn_create')</x-btn>
         </x-slot:actions>
+        --}}
     </x-header>
     <div class="u-stack u-stack-gap-l">
         <table class="table">

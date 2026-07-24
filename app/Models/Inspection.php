@@ -53,6 +53,7 @@ class Inspection extends Model
 
         static::creating(function ($inspection) {
             $inspection->hash = self::getUniqueHash();
+            $inspection->user_id ??= auth('web')->id();
         });
     }
 

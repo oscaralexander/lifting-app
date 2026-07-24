@@ -73,7 +73,7 @@
                     </p>
                     <div class="signature">
                         <div class="signature__box">
-                            <img alt="" class="signature__image" src="https://app.liftinginspections.nl/assets/img/signatures/signature.svg">
+                            <img alt="" class="signature__image" src="https://app.liftinginspections.nl/assets/img/signatures/signature-{{ $inspection->user->id ?? 'default' }}.svg">
                         </div>
                         <p class="signature__text">
                             {{ $inspection->inspector_name }}<br>

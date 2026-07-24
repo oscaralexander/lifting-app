@@ -7,6 +7,7 @@ use App\Enums\InspectionType;
 use App\Models\Client;
 use App\Models\Form;
 use App\Models\Inspection;
+use App\Models\User;
 use App\Services\OutsmartService;
 use Carbon\Exceptions\InvalidFormatException;
 use Illuminate\Support\Carbon;
@@ -217,18 +218,36 @@ class StartInspectionModal extends ModalComponent
 
         abort_if($workOrder === null, 404);
 
+        // Resolve inspector name and map to User
+        $employeeNr = $workOrder['EmployeeNr'] ?? null;
+        $employee = $employeeNr ? app(OutsmartService::class)->getEmployee((string) $employeeNr) : null;
+
+        $inspectorName = $employee
+            ? (trim(($employee['firstname'] ?? '').' '.($employee['lastname'] ?? '')) ?: null)
+            : null;
+
+        $matchedUser = null;
+
+        if ($employee && !empty($employee['firstname']) && !empty($employee['lastname'])) {
+            $matchedUser = User::query()
+                ->where('first_name', $employee['firstname'])
+                ->where('last_name', $employee['lastname'])
+                ->first();
+        }
+
         $attributes = [
-            'type' => $this->type,
-            'inspection_date' => $this->resolveInspectionDate($workOrder),
             'client_id' => $this->clientId,
+            'inspection_date' => $this->resolveInspectionDate($workOrder),
+            'inspector_name' => $inspectorName,
+            'outsmart_order_number' => $workOrder['OrderNr'] ?? null,
+            'outsmart_photos' => $workOrder['Photos'] ?? null,
+            'outsmart_work_order_id' => $workOrder['id'],
             'project_name' => ($workOrder['Reference'] ?? null) ?: ($workOrder['OrderNr'] ?? null),
             'project_address' => trim(($workOrder['CustomerStreet'] ?? '').' '.($workOrder['CustomerStreetNo'] ?? '')),
             'project_postal_code' => $workOrder['CustomerZIP'] ?? null,
             'project_city' => $workOrder['CustomerCity'] ?? null,
-            'inspector_name' => $this->resolveInspectorName($workOrder),
-            'outsmart_order_number' => $workOrder['OrderNr'] ?? null,
-            'outsmart_photos' => $workOrder['Photos'] ?? null,
-            'outsmart_work_order_id' => $workOrder['id'],
+            'type' => $this->type,
+            'user_id' => $matchedUser?->id ?? auth('web')->id(),
         ];
 
         if ($this->inspectionHash) {

@@ -35,7 +35,6 @@
                             </div>
                         </div>
                     @endplaceholder
-
                     <div class="grid__col">
                         <div wire:loading.remove.block wire:target="clientId">
                             <x-form.select
