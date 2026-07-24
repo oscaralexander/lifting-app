@@ -152,6 +152,35 @@ class OutsmartService
     }
 
     /**
+     * Attach a document to an existing work order, identified by its WBA database row id.
+     *
+     * The Outsmart API has no multipart upload; the file is sent as base64 in the
+     * request body, which is only processed when `ProcessDocuments` is enabled.
+     */
+    public function addWorkOrderDocument(string $id, string $filename, string $contents, bool $clearExisting = false): bool
+    {
+        try {
+            $response = $this->client->post('UpdateWorkorder/', [
+                'query' => array_merge($this->baseQuery(), [
+                    'row_id' => $id,
+                    'ClearDocuments' => $clearExisting ? 'true' : 'false',
+                    'ProcessDocuments' => 'true',
+                ]),
+                'json' => [[
+                    'FileName' => $filename,
+                    'Data' => base64_encode($contents),
+                ]],
+            ]);
+
+            $data = json_decode($response->getBody()->getContents(), true);
+
+            return ($data['code'] ?? null) === 200;
+        } catch (GuzzleException) {
+            return false;
+        }
+    }
+
+    /**
      * @return array<string, string>
      */
     private function baseQuery(): array

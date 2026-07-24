@@ -5,6 +5,7 @@ use App\Enums\FieldType;
 use App\Enums\InspectionObject\Type as InspectionObjectType;
 use App\Lib\FormItems;
 use App\Lib\InspectionCertificatePdf;
+use App\Lib\InspectionPdf;
 use App\Lib\InspectionReportPdf;
 use App\Livewire\Forms\InspectionSubmissionForm;
 use App\Models\Client;
@@ -62,6 +63,8 @@ new class extends Component
 
     public function downloadCertificate(): StreamedResponse
     {
+        abort_unless($this->inspection->isCertifiable(), 403);
+
         return (new InspectionCertificatePdf($this->inspection))->download();
     }
 
@@ -79,6 +82,36 @@ new class extends Component
         return (new InspectionReportPdf($this->inspection))->download();
     }
 
+    public function generateCertificate(): StreamedResponse
+    {
+        abort_unless($this->inspection->isCertifiable(), 403);
+
+        return $this->generateAndSendToOutsmart(new InspectionCertificatePdf($this->inspection));
+    }
+
+    public function generateReport(): StreamedResponse
+    {
+        return $this->generateAndSendToOutsmart(new InspectionReportPdf($this->inspection));
+    }
+
+    /**
+     * Render a fresh PDF, attach it to the OutSmart work order and hand it to
+     * the browser as a download, all from the one button press.
+     */
+    protected function generateAndSendToOutsmart(InspectionPdf $pdf): StreamedResponse
+    {
+        $bytes = $pdf->generate();
+
+        if ($pdf->sendToOutsmart($bytes) === false) {
+            $this->dispatch(Event::TOAST, message: __('inspections.form.outsmart.toast.document_not_added'), type: 'error');
+        }
+
+        unset($this->reportThumbUrl);
+        unset($this->certificateThumbUrl);
+
+        return $pdf->stream($bytes);
+    }
+
     #[Computed]
     public function reportThumbUrl(): ?string
     {
@@ -88,6 +121,10 @@ new class extends Component
     #[Computed]
     public function certificateThumbUrl(): ?string
     {
+        if (! $this->inspection->isCertifiable()) {
+            return null;
+        }
+
         return (new InspectionCertificatePdf($this->inspection))->thumbnailUrl();
     }
 
@@ -301,61 +338,62 @@ new class extends Component
                 </x-slot:actions>
             @endif
         </x-header>
-        @if ($this->inspection->exists && ($this->reportThumbUrl || $this->certificateThumbUrl))
-            <div class="u-stack u-stack-gap-l">
-                <h2>@lang('inspections.form.heading_documents')</h2>
-                <div class="inspection__documents">
-                    @if ($this->reportThumbUrl)
-                        <button
-                            class="inspection__document"
-                            type="button"
-                            wire:click="downloadReport"
-                            wire:loading.attr="disabled"
-                            wire:loading.class="is-loading"
-                            wire:target="downloadReport"
-                        >
-                            <span class="inspection__document-imgBox">
-                                <img
-                                    alt="@lang('inspections.form.btn_download_report')"
-                                    class="inspection__document-img"
-                                    src="{{ $this->reportThumbUrl }}"
-                                />
-                            </span>
-                            <span class="inspection__document-label">
-                                <x-icon icon="download" />
-                                @lang('inspections.form.btn_download_report')
-                            </span>
-                        </button>
-                    @endif
-                    @if ($this->certificateThumbUrl)
-                        <button
-                            class="inspection__document"
-                            type="button"
-                            wire:click="downloadCertificate"
-                            wire:loading.attr="disabled"
-                            wire:loading.class="is-loading"
-                            wire:target="downloadCertificate"
-                        >
-                            <span class="inspection__document-imgBox">
-                                <img
-                                    alt="@lang('inspections.form.btn_download_certificate')"
-                                    class="inspection__document-img"
-                                    src="{{ $this->certificateThumbUrl }}"
-                                />
-                            </span>
-                            <span class="inspection__document-label">
-                                <x-icon icon="download" />
-                                @lang('inspections.form.btn_download_certificate')
-                            </span>
-                        </button>
-                    @endif
-                </div>
-            </div>
-        @endif
         <x-form class="form form--full u-stack u-stack-gap-xl">
             <div class="grid grid--gap-xxl">
                 <div class="grid__col l:grid__col--span-4">
                     <div class="u-stack u-stack-gap-xl">
+                        {{-- Documents --}}
+                        @if ($this->inspection->exists && ($this->reportThumbUrl || $this->certificateThumbUrl))
+                            <div class="u-stack u-stack-gap-m">
+                                <h2>@lang('inspections.form.heading_documents')</h2>
+                                <div class="grid grid--gap-m">
+                                    @if ($this->reportThumbUrl)
+                                        <div class="grid__col grid__col--span-6">
+                                            <button
+                                                class="inspection__document"
+                                                type="button"
+                                                wire:click="downloadReport"
+                                                wire:loading.attr="disabled"
+                                                wire:loading.class="is-loading"
+                                                wire:target="downloadReport"
+                                            >
+                                                <span class="inspection__document-imgBox">
+                                                    <img
+                                                        alt="@lang('inspections.form.btn_download_report')"
+                                                        class="inspection__document-img"
+                                                        src="{{ $this->reportThumbUrl }}"
+                                                    />
+                                                </span>
+                                                <span class="inspection__document-label">
+                                                    <x-icon icon="download" />
+                                                    @lang('inspections.form.btn_download_report')
+                                                </span>
+                                            </button>
+                                        </div>
+                                    @endif
+                                    @if ($this->certificateThumbUrl)
+                                        <div class="grid__col grid__col--span-6">
+                                            <button
+                                                class="inspection__document"
+                                                type="button"
+                                                wire:click="downloadCertificate"
+                                                wire:loading.attr="disabled"
+                                                wire:loading.class="is-loading"
+                                                wire:target="downloadCertificate"
+                                            >
+                                                <span class="inspection__document-imgBox">
+                                                    <img
+                                                        alt="@lang('inspections.form.btn_download_certificate')"
+                                                        class="inspection__document-img"
+                                                        src="{{ $this->certificateThumbUrl }}"
+                                                    />
+                                                </span>
+                                            </button>
+                                        </div>
+                                    @endif
+                                </div>
+                            </div>
+                        @endif
                         {{-- Project --}}
                         <div class="u-stack u-stack-gap-m">
                             <header class="u-flex u-flex-align-center u-flex-justify-between">
@@ -592,6 +630,39 @@ new class extends Component
                                 <x-form.lightswitch wire:model="submissionForm.requires_written_deregistration" :text="__('models/inspection.requires_written_deregistration.label')" />
                                 <x-form.lightswitch wire:model="submissionForm.has_no_sticker_provided" :text="__('models/inspection.has_no_sticker_provided.label')" />
                             </div>
+                                        {{-- Generate documents --}}
+                            <div class="inspection__generateDocuments">
+                                <div class="u-stack u-stack-gap-xs">
+                                    <h3>@lang('inspections.form.heading_generate_documents')</h3>
+                                    <p class="formatted">@lang('inspections.form.text_generate_documents')</p>
+                                </div>
+                                <div class="actions">
+                                    @if ($this->inspection->exists)
+                                        @if ($this->inspection->is_completed)
+                                            <x-btn
+                                                icon="file-up"
+                                                small
+                                                wire:click="generateReport"
+                                                wire:loading.attr="disabled"
+                                                wire:loading.class="is-loading"
+                                                wire:target="generateReport"
+                                                x-cloak
+                                            >@lang('inspections.form.btn_generate_report')</x-btn>
+                                        @endif
+                                        @if ($this->inspection->is_approved && $this->inspection->isCertifiable())
+                                            <x-btn
+                                                icon="file-up"
+                                                small
+                                                wire:click="generateCertificate"
+                                                wire:loading.attr="disabled"
+                                                wire:loading.class="is-loading"
+                                                wire:target="generateCertificate"
+                                                x-cloak
+                                            >@lang('inspections.form.btn_generate_certificate')</x-btn>
+                                        @endif
+                                    @endif
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -601,155 +672,11 @@ new class extends Component
                     <div class="grid__col l:grid__col--span-8">
                         <div class="actions">
                             <x-btn primary submit>@lang('ui.save')</x-btn>
-                            @if ($this->inspection->exists)
-                                @if ($this->inspection->is_completed)
-                                    <x-btn
-                                        icon="download"
-                                        wire:click="downloadReport"
-                                        wire:loading.attr="disabled"
-                                        wire:loading.class="is-loading"
-                                        wire:target="downloadReport"
-                                        x-cloak
-                                    >@lang('inspections.form.btn_download_report')</x-btn>
-                                @endif
-                                @if ($this->inspection->is_approved)
-                                    <x-btn
-                                        icon="download"
-                                        wire:click="downloadCertificate"
-                                        wire:loading.attr="disabled"
-                                        wire:loading.class="is-loading"
-                                        wire:target="downloadCertificate"
-                                        x-cloak
-                                    >@lang('inspections.form.btn_download_certificate')</x-btn>
-                                @endif
-                            @endif
                         </div>
                     </div>
                 </div>
             </footer>
         </x-form>
-        @if ($this->inspection->exists)
-            @php
-                $outsmartPhotos = collect($this->inspection->outsmart_photos ?? [])
-                    ->filter(fn ($photo) => ! empty($photo['image']))
-                    ->values();
-            @endphp
-            <template x-teleport="body">
-                <div
-                    class="photoPicker"
-                    x-cloak
-                    x-data="{
-                        open: false,
-                        fieldKey: null,
-                        title: '',
-                        selected: [],
-                        show(detail) {
-                            this.fieldKey = detail.fieldKey;
-                            this.title = detail.title;
-                            this.selected = detail.selected;
-                            this.open = true;
-                        },
-                        cancel() {
-                            this.open = false;
-                        },
-                        isSelected(url) {
-                            return this.selected.includes(url);
-                        },
-                        toggle(url) {
-                            const index = this.selected.indexOf(url);
-
-                            if (index === -1) {
-                                this.selected.push(url);
-                            } else {
-                                this.selected.splice(index, 1);
-                            }
-                        },
-                        save() {
-                            $wire.saveFieldPhotos(this.fieldKey, this.selected).then(() => {
-                                this.open = false;
-                            });
-                        },
-                    }"
-                    x-on:keydown.escape.window="cancel()"
-                    x-on:photo-picker-open.window="show($event.detail)"
-                    x-show="open"
-                >
-                    <div
-                        class="photoPicker__overlay"
-                        x-on:click="cancel()"
-                        x-show="open"
-                        x-transition:enter.opacity.duration.250ms
-                        x-transition:leave.opacity.duration.200ms
-                    ></div>
-                    <div
-                        class="photoPicker__dialog"
-                        x-show="open"
-                        x-transition:enter.opacity.scale.95.duration.250ms
-                        x-transition:leave.opacity.scale.95.duration.200ms
-                    >
-                        <header class="photoPicker__header">
-                            <h3 class="photoPicker__title" x-text="title"></h3>
-                            <button class="photoPicker__close" type="button" x-on:click="cancel()"><x-icon icon="x" /></button>
-                        </header>
-                        <div class="photoPicker__body">
-                            @if ($outsmartPhotos->isNotEmpty())
-                                <div class="inspection__photos">
-                                    @foreach ($outsmartPhotos as $photo)
-                                        <figure
-                                            class="inspection__photos-item photoPicker__photo"
-                                            wire:key="picker-{{ $loop->index }}"
-                                            x-bind:class="{ 'is-selected': isSelected(@js($photo['image'])) }"
-                                            x-on:click="toggle(@js($photo['image']))"
-                                        >
-                                            <div class="inspection__photos-imgBox">
-                                                <img
-                                                    alt="{{ $photo['title'] ?? '' }}"
-                                                    class="inspection__photos-img"
-                                                    loading="lazy"
-                                                    src="{{ $photo['image'] }}"
-                                                />
-                                                <span class="photoPicker__check"><x-icon icon="check" stroke-width="5" /></span>
-                                                @if (! empty($photo['title']))
-                                                    <figcaption class="photoPicker__caption">{{ $photo['title'] }}</figcaption>
-                                                @endif
-                                            </div>
-                                        </figure>
-                                    @endforeach
-                                </div>
-                            @else
-                                <div class="photoPicker__noPhotos">
-                                    <x-icon icon="image-off" />
-                                    <div class="u-stack u-stack-gap-xs">
-                                        <h2 class="photoPicker__noPhotos-heading">@lang('inspections.form.no_photos_heading')</h2>
-                                        <p class="photoPicker__noPhotos-text">
-                                            @if ($this->inspection->exists && $this->inspection->outsmart_work_order_id)
-                                                @lang('inspections.form.no_photos_text')
-                                            @else
-                                                @lang('inspections.form.no_photos_text_not_linked')
-                                            @endif
-                                        </p>
-                                    </div>
-                                </div>
-                            @endif
-                        </div>
-                        <footer class="photoPicker__footer">
-                            <div class="actions">
-                                <x-btn
-                                    primary
-                                    type="button"
-                                    wire:loading.attr="disabled"
-                                    wire:target="saveFieldPhotos"
-                                    x-on:click="save()"
-                                >@lang('ui.save')</x-btn>
-                                <span>
-                                    @lang('ui.or')
-                                    <x-btn text type="button" x-on:click="cancel()">@lang('ui.cancel')</x-btn>
-                                </span>
-                            </div>
-                        </footer>
-                    </div>
-                </div>
-            </template>
-        @endif
+        @include('pages.inspections._photo-picker')
     </div>
 </div>

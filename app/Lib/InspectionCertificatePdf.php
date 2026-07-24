@@ -2,108 +2,22 @@
 
 namespace App\Lib;
 
-use App\Models\Inspection;
-use App\Services\DocRaptorService;
-use Illuminate\Support\Facades\Storage;
-use Spatie\PdfToImage\Enums\OutputFormat;
-use Spatie\PdfToImage\Pdf;
-use Symfony\Component\HttpFoundation\StreamedResponse;
-
-class InspectionCertificatePdf
+class InspectionCertificatePdf extends InspectionPdf
 {
-    public function __construct(protected readonly Inspection $inspection) {}
+    protected int $thumbnailSize = 600;
 
-    public function html(): string
+    protected function view(): string
     {
-        return view('pdf.certificate', ['inspection' => $this->inspection])->render();
+        return 'pdf.certificate';
     }
 
-    public function download(): StreamedResponse
+    protected function storagePath(): string
     {
-        $bytes = $this->pdf();
-
-        return response()->streamDownload(function () use ($bytes) {
-            echo $bytes;
-        }, basename($this->inspection->certificatePath()), [
-            'Content-Type' => 'application/pdf',
-        ]);
+        return $this->inspection->certificatePath();
     }
 
-    public function save(string $path): string
+    protected function thumbnailPath(): string
     {
-        $fullPath = rtrim($path, '/').'/'.basename($this->inspection->certificatePath());
-        file_put_contents($fullPath, $this->pdf());
-
-        return $fullPath;
-    }
-
-    public function clearCache(): void
-    {
-        Storage::disk('local')->deleteDirectory('inspections/certificates/'.$this->inspection->hash);
-    }
-
-    public function thumbnailUrl(): ?string
-    {
-        $path = $this->inspection->certificateThumbPath();
-
-        if (! Storage::disk('public')->exists($path)) {
-            return null;
-        }
-
-        return Storage::disk('public')->url($path);
-    }
-
-    protected function pdf(): string
-    {
-        if (app()->environment('local')) {
-            $bytes = $this->generate();
-
-            $this->generateThumbnail($bytes);
-
-            return $bytes;
-        }
-
-        $storagePath = $this->inspection->certificatePath();
-
-        // if (Storage::disk('local')->exists($storagePath)) {
-        //     return Storage::disk('local')->get($storagePath);
-        // }
-
-        $bytes = $this->generate();
-
-        Storage::disk('local')->put($storagePath, $bytes);
-
-        $this->generateThumbnail($bytes);
-
-        return $bytes;
-    }
-
-    protected function generateThumbnail(string $bytes): void
-    {
-        $temporaryPdf = tempnam(sys_get_temp_dir(), 'inspection_certificate_');
-        rename($temporaryPdf, $temporaryPdf .= '.pdf');
-        file_put_contents($temporaryPdf, $bytes);
-
-        $thumbnailPath = $this->inspection->certificateThumbPath();
-        Storage::disk('public')->makeDirectory(dirname($thumbnailPath));
-
-        try {
-            (new Pdf($temporaryPdf))
-                ->selectPage(1)
-                ->format(OutputFormat::Jpg)
-                ->thumbnailSize(600)
-                ->save(Storage::disk('public')->path($thumbnailPath));
-        } catch (\Throwable $e) {
-            report($e);
-        } finally {
-            @unlink($temporaryPdf);
-        }
-    }
-
-    protected function generate(): string
-    {
-        $html = view('pdf.certificate', ['inspection' => $this->inspection])->render();
-
-        return app(DocRaptorService::class)->htmlToPdf($html);
+        return $this->inspection->certificateThumbPath();
     }
 }

@@ -34,7 +34,9 @@
                     </h1>
                     <div class="intro formatted">
                         <p>
-                            Lifting Inspections BV verklaart als door de overheid aangewezen Conformiteits Beoordelende Instelling, dat de hieronder beschreven hijskraan is gekeurd overeenkomstig art. 6d van het Warenwetbesluit Machines en op grond van de bevindingen, weergegeven in het bijbehorende keuringsrapport, is goedgekeurd.
+                            Lifting Inspections BV verklaart als door de overheid aangewezen Conformiteits Beoordelende Instelling,
+                            dat de hieronder beschreven hijskraan is gekeurd overeenkomstig art. 6d van het Warenwetbesluit Machines
+                            en op grond van de bevindingen, weergegeven in het bijbehorende keuringsrapport, is goedgekeurd.
                         </p>
                         <p>
                             Het certificaat heeft betrekking op een periodieke keuring op basis
@@ -71,7 +73,7 @@
                     </p>
                     <div class="signature">
                         <div class="signature__box">
-                            <img alt="" class="signature__image" src="https://app.liftinginspections.nl/assets/img/signatures/signature.svg" />
+                            <img alt="" class="signature__image" src="https://app.liftinginspections.nl/assets/img/signatures/signature.svg">
                         </div>
                         <p class="signature__text">
                             {{ $inspection->inspector_name }}<br>
@@ -107,10 +109,10 @@
                     <h4>Aanwijzingsbeschikking</h4>
                     <p>
                         Ministerie SZW<br>
-                        2025-0000109593
+                        2025-0000267580
                     </p>
                     <h4>TCVT-nummer</h4>
-                    <p>00-036.335</p>
+                    <p>00-042.760</p>
                 </div>
                 <div>
                     <h4>Lifting Inspections BV</h4>

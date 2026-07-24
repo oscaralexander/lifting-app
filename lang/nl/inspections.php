@@ -8,12 +8,15 @@ return [
         'btn_download_report' => 'Keuringsrapport',
         'btn_download_certificate' => 'Certificaat',
         'btn_fetch_outsmart' => 'Ophalen uit Outsmart',
+        'btn_generate_report' => 'Keuringsrapport genereren',
+        'btn_generate_certificate' => 'Certificaat genereren',
         'select_photos' => 'Foto\'s selecteren',
         'no_photos_heading' => 'Geen foto\'s beschikbaar',
         'no_photos_text' => 'Upload foto’s via de Outsmart app.',
         'no_photos_text_not_linked' => 'Koppel de Outsmart werkbon aan dit project om foto’s te importeren.',
         'outsmart' => [
             'toast' => [
+                'document_not_added' => 'Document kon niet aan de werkbon in Outsmart worden toegevoegd',
                 'fetched' => 'Gegevens opgehaald uit Outsmart',
                 'not_found' => 'Werkbon niet gevonden in Outsmart',
             ],
@@ -29,6 +32,7 @@ return [
         ],
         'heading_crane' => 'Kraan',
         'heading_documents' => 'Documenten',
+        'heading_generate_documents' => 'Documenten genereren',
         'heading_object' => 'Object',
         'heading_operator_lift' => 'Machinistenlift',
         'heading_project' => 'Project',
@@ -38,6 +42,7 @@ return [
             'passed' => 'Object is goedgekeurd.',
             'failed' => 'Object is afgekeurd.',
         ],
+        'text_generate_documents' => 'Genereer de PDF-documenten voor deze inspectie. Documenten worden automatisch toegevoegd aan de werkbon in OutSmart.',
     ],
     'start' => [
         'modal' => [

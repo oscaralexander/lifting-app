@@ -13,7 +13,7 @@ class DocRaptorService
             ->post(config('services.docraptor.url'), array_merge([
                 'document_content' => $html,
                 'type' => 'pdf',
-                'test' => true, // ! app()->environment('production'),
+                'test' => ! app()->environment('production'),
             ], $options));
 
         return $response->body();

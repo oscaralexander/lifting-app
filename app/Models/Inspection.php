@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Enums\FieldType;
 use App\Enums\InspectionStatus;
 use App\Enums\InspectionType;
+use App\Models\InspectionObjects\Crane;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -105,6 +106,17 @@ class Inspection extends Model
         return $this->documentPath('reports', 'Keuringsrapport', 'jpg');
     }
 
+    /**
+     * A certificate is only issued for TCVT inspections of a crane that were
+     * assigned an approval sticker.
+     */
+    public function isCertifiable(): bool
+    {
+        return $this->inspectable instanceof Crane
+            && $this->type === InspectionType::TCVT
+            && filled($this->sticker_number);
+    }
+
     public function certificatePath(): string
     {
         return $this->documentPath('certificates', 'Certificaat', 'pdf');
@@ -121,10 +133,8 @@ class Inspection extends Model
 
         $filename = implode('_', array_filter([
             $prefix,
-            $this->created_at->format('Ymd'),
-            $this->hash,
-            $object?->manufacturer ? strtolower(str_replace(' ', '-', $object->manufacturer)) : null,
-            $object?->model ? strtolower(str_replace([' ', '/'], '-', $object->model)) : null,
+            $this->outsmart_order_number,
+            $this->sticker_number,
         ])).'.'.$extension;
 
         return 'inspections/'.$directory.'/'.$this->hash.'/'.$filename;

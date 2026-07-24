@@ -3,9 +3,9 @@
 .inspection {
     &__footer {
         background: var(--color-bg);
+        bottom: 0;
         padding: 1rem 0;
         position: sticky;
-        bottom: 0;
 
         &::before {
             background: linear-gradient(to bottom, transparent, var(--color-bg));
@@ -18,10 +18,22 @@
         }
     }
 
-    &__documents {
+    &__generateDocuments {
+        align-items: flex-start;
+        background: var(--color-bg-tint);
+        border: 1px solid var(--color-border-lc);
+        border-radius: var(--border-radius-m);
         display: flex;
-        flex-wrap: wrap;
-        gap: 1.25rem;
+        flex-direction: column;
+        font-size: var(--font-size-s);
+        gap: 1rem;
+        padding: 1rem;
+    }
+
+    &__documents {
+        display: grid;
+        grid-template-columns: repeat(6, 1fr);
+        gap: 1.5rem;
         margin-bottom: 2rem;
     }
 
@@ -32,10 +44,9 @@
         cursor: pointer;
         display: flex;
         flex-direction: column;
-        gap: .5rem;
+        gap: .75rem;
         padding: 0;
         text-align: left;
-        width: 8rem;
 
         &[disabled] {
             cursor: wait;
@@ -125,6 +136,12 @@
     @include screen-min(m) {
         &__photos {
             grid-template-columns: repeat(5, 1fr);
+        }
+
+        &__generateDocuments {
+            font-size: var(--font-size-m);
+            gap: 1.25rem;
+            padding: 1.5rem;
         }
     }
 }

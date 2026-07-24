@@ -114,7 +114,9 @@
                     <x-pdf.row label="Bevindingen" :value="$result" />
                     <x-pdf.row label="Volgende periodieke keuring voor" :value="$nextPeriodical ?? '—'" />
                     <x-pdf.row label="Volgende TCVT keuring voor" :value="$nextTcvt ?? '—'" />
-                    <x-pdf.row label="Stickernummer" :value="$inspection->sticker_number ?? '—'" />
+                    @if ($inspection->sticker_number)
+                        <x-pdf.row label="Stickernummer" :value="$inspection->sticker_number" />
+                    @endif
                 </tbody>
             </table>
             @if ($client)
@@ -147,7 +149,12 @@
             <table class="table">
                 <thead>
                     <tr>
-                        <th colspan="2" scope="col">{{ $inspectable->type->label() }}</th>
+                        @if ($inspectable instanceof Crane)
+                            <th colspan="2" scope="col">{{ $inspectable->type->label() }}</th>
+                        @else
+                            <th colspan="2" scope="col">Machinstenlift</th>
+                        @endif
+                        </th>
                     </tr>
                 </thead>
                 <tbody>
