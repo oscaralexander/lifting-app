@@ -39,6 +39,8 @@ return [
         'col_contact_phone' => 'Telefoonnummer',
         'col_inspections' => 'Inspecties',
         'delete_confirm' => 'Weet je zeker dat je deze klant wilt verwijderen?',
+        'no_results' => 'Geen klanten gevonden voor ":query".',
+        'search_placeholder' => 'Zoek op naam, debiteurnummer of plaats',
         'title' => 'Klanten',
     ],
     'modal' => [

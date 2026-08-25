@@ -14,4 +14,9 @@ enum InspectionStatus: string
     {
         return __('enums/inspection_status.'.$this->value);
     }
+
+    public static function options(): array
+    {
+        return array_column(array_map(fn (self $status) => [$status->value, $status->label()], self::cases()), 1, 0);
+    }
 }

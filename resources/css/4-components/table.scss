@@ -67,6 +67,10 @@
         gap: .5em;
     }
 
+    &__logo {
+        max-width: none
+    }
+
     &__main {
         font-weight: 500;
     }

@@ -12,10 +12,22 @@ new class extends Component
 {
     use WithPagination;
 
+    public string $search = '';
+
+    public function updatedSearch(): void
+    {
+        $this->resetPage();
+    }
+
     #[Computed]
     public function clients(): LengthAwarePaginator
     {
         return Client::withCount('inspections')
+            ->when($this->search, fn ($query) => $query->where(function ($q) {
+                $q->where('name', 'like', '%' . $this->search . '%')
+                    ->orWhere('outsmart_debtor_number', 'like', '%' . $this->search . '%')
+                    ->orWhere('city', 'like', '%' . $this->search . '%');
+            }))
             ->orderBy('name')
             ->paginate(Client::PER_PAGE, pageName: 'p')
             ->setPath(route('clients'));
@@ -76,6 +88,7 @@ new class extends Component
     </x-header>
     <div class="u-stack u-stack-gap-xl">
         <div class="u-stack u-stack-gap-l">
+            <x-form.input-search wire:model.live.debounce.200ms="search" :placeholder="__('clients.index.search_placeholder')" />
             <table class="table">
                 <thead>
                     <tr>
@@ -88,7 +101,7 @@ new class extends Component
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($this->clients as $client)
+                    @forelse ($this->clients as $client)
                         <tr wire:key="client-{{ $client->id }}">
                             <td>
                                 @if ($client->outsmart_debtor_number)
@@ -117,7 +130,11 @@ new class extends Component
                             </td>
                             <td class="table__num">{{ $client->inspections_count }}</td>
                         </tr>
-                    @endforeach
+                    @empty
+                        <tr>
+                            <td colspan="6" class="table__empty">@lang('clients.index.no_results', ['query' => $this->search])</td>
+                        </tr>
+                    @endforelse
                 </tbody>
             </table>
             {{ $this->clients->links('livewire::custom') }}

@@ -6,6 +6,7 @@ use App\Enums\FieldType;
 use App\Enums\InspectionStatus;
 use App\Enums\InspectionType;
 use App\Models\InspectionObjects\Crane;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -205,6 +206,36 @@ class Inspection extends Model
                 default => InspectionStatus::REJECTED,
             },
         );
+    }
+
+    /**
+     * Filter on the derived status attribute, which has no column of its own.
+     * Each arm mirrors the precedence of the match in the status() accessor.
+     *
+     * @param  array<int, string>  $statuses
+     */
+    public function scopeWhereStatusIn(Builder $query, array $statuses): Builder
+    {
+        return $query->where(function (Builder $query) use ($statuses) {
+            foreach ($statuses as $status) {
+                $query->orWhere(fn (Builder $query) => match (InspectionStatus::from($status)) {
+                    InspectionStatus::PENDING => $query->where('is_completed', false),
+                    InspectionStatus::APPROVED => $query->where('is_completed', true)
+                        ->where('is_approved', true),
+                    InspectionStatus::CAT_A_DEFICIENCIES => $query->where('is_completed', true)
+                        ->where('is_approved', false)
+                        ->where('has_cat_a_deficiencies', true),
+                    InspectionStatus::CAT_B_DEFICIENCIES => $query->where('is_completed', true)
+                        ->where('is_approved', false)
+                        ->where('has_cat_a_deficiencies', false)
+                        ->where('has_cat_b_deficiencies', true),
+                    InspectionStatus::REJECTED => $query->where('is_completed', true)
+                        ->where('is_approved', false)
+                        ->where('has_cat_a_deficiencies', false)
+                        ->where('has_cat_b_deficiencies', false),
+                });
+            }
+        });
     }
 
     /**
