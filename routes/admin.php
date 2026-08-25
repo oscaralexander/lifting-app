@@ -33,19 +33,3 @@ Route::prefix('users')
         Route::livewire('/create', 'pages::users.create')->name('users.create');
         Route::livewire('/{user}/edit', 'pages::users.edit')->name('users.edit')->where('user', '[0-9]+');
     });
-
-// Route::prefix('forms')
-//     ->group(function () {
-//         Route::get('/', App\Livewire\Admin\Forms\Index::class)->name('admin.forms');
-//         Route::get('/{formId}/edit', App\Livewire\Admin\Forms\Edit::class)->name('admin.forms.edit');
-//     });
-
-// Settings
-Route::get('settings', App\Livewire\Admin\Settings\Index::class)->name('admin.settings');
-
-// Route::prefix('users')
-//     ->group(function () {
-//         Route::get('/', App\Livewire\Admin\Users\Index::class)->name('admin.users');
-//         Route::get('/create', App\Livewire\Admin\Users\Create::class)->name('admin.users.create');
-//         Route::get('/{user}/edit', App\Livewire\Admin\Users\Edit::class)->name('admin.users.edit');
-//     });

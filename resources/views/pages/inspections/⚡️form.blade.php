@@ -4,6 +4,7 @@ use App\Constants\Event;
 use App\Enums\FieldType;
 use App\Enums\InspectionObject\Type as InspectionObjectType;
 use App\Lib\FormItems;
+use App\Lib\InspectionAppendixPdf;
 use App\Lib\InspectionCertificatePdf;
 use App\Lib\InspectionPdf;
 use App\Lib\InspectionReportPdf;
@@ -62,6 +63,11 @@ new class extends Component
         }
     }
 
+    public function downloadAppendix(): StreamedResponse
+    {
+        return (new InspectionAppendixPdf($this->inspection))->download();
+    }
+
     public function downloadCertificate(): StreamedResponse
     {
         abort_unless($this->inspection->isCertifiable(), 403);
@@ -90,8 +96,14 @@ new class extends Component
         return $this->generateAndSendToOutsmart(new InspectionCertificatePdf($this->inspection));
     }
 
+    /**
+     * The appendix accompanies every report, but only the report itself is
+     * handed back to the browser as the download.
+     */
     public function generateReport(): StreamedResponse
     {
+        $this->generateAndSendToOutsmart(new InspectionAppendixPdf($this->inspection));
+
         return $this->generateAndSendToOutsmart(new InspectionReportPdf($this->inspection));
     }
 
@@ -107,8 +119,9 @@ new class extends Component
             $this->dispatch(Event::TOAST, message: __('inspections.form.outsmart.toast.document_not_added'), type: 'error');
         }
 
-        unset($this->reportThumbUrl);
+        unset($this->appendixThumbUrl);
         unset($this->certificateThumbUrl);
+        unset($this->reportThumbUrl);
 
         return $pdf->stream($bytes);
     }
@@ -117,6 +130,12 @@ new class extends Component
     public function reportThumbUrl(): ?string
     {
         return (new InspectionReportPdf($this->inspection))->thumbnailUrl();
+    }
+
+    #[Computed]
+    public function appendixThumbUrl(): ?string
+    {
+        return (new InspectionAppendixPdf($this->inspection))->thumbnailUrl();
     }
 
     #[Computed]
@@ -355,7 +374,7 @@ new class extends Component
                 <div class="grid__col l:grid__col--span-4">
                     <div class="u-stack u-stack-gap-xl">
                         {{-- Documents --}}
-                        @if ($this->inspection->exists && ($this->reportThumbUrl || $this->certificateThumbUrl))
+                        @if ($this->inspection->exists && ($this->reportThumbUrl || $this->appendixThumbUrl || $this->certificateThumbUrl))
                             <div class="u-stack u-stack-gap-m">
                                 <h2>@lang('inspections.form.heading_documents')</h2>
                                 <div class="grid grid--gap-m">
@@ -374,6 +393,26 @@ new class extends Component
                                                         alt="@lang('inspections.form.btn_download_report')"
                                                         class="inspection__document-img"
                                                         src="{{ $this->reportThumbUrl }}"
+                                                    />
+                                                </span>
+                                            </button>
+                                        </div>
+                                    @endif
+                                    @if ($this->appendixThumbUrl)
+                                        <div class="grid__col grid__col--span-6">
+                                            <button
+                                                class="inspection__document"
+                                                type="button"
+                                                wire:click="downloadAppendix"
+                                                wire:loading.attr="disabled"
+                                                wire:loading.class="is-loading"
+                                                wire:target="downloadAppendix"
+                                            >
+                                                <span class="inspection__document-imgBox">
+                                                    <img
+                                                        alt="@lang('inspections.form.btn_download_appendix')"
+                                                        class="inspection__document-img"
+                                                        src="{{ $this->appendixThumbUrl }}"
                                                     />
                                                 </span>
                                             </button>

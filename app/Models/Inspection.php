@@ -97,6 +97,16 @@ class Inspection extends Model
         return $hash;
     }
 
+    public function appendixPath(): string
+    {
+        return $this->documentPath('appendices', 'Bijlage', 'pdf');
+    }
+
+    public function appendixThumbPath(): string
+    {
+        return $this->documentPath('appendices', 'Bijlage', 'jpg');
+    }
+
     public function inspectionReportPath(): string
     {
         return $this->documentPath('reports', 'Keuringsrapport', 'pdf');

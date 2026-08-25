@@ -3,6 +3,7 @@
 use App\Http\Controllers\DownloadController;
 use App\Http\Controllers\ImportBelgiumController;
 use App\Http\Controllers\ImportController;
+use App\Http\Controllers\InspectionAppendixHtmlController;
 use App\Http\Controllers\InspectionCertificateHtmlController;
 use App\Http\Controllers\InspectionReportHtmlController;
 use App\Http\Controllers\SubmissionDownloadController;
@@ -33,6 +34,7 @@ Route::get('submission/{stickerHash}/form/{formId}', Form::class)->name('submiss
 Route::get('submission/{stickerHash}/{hash}', App\Livewire\App\Submission\Show::class)->name('submission.show');
 Route::get('inspection/{hash}/html', InspectionReportHtmlController::class)->name('inspection.html');
 Route::get('inspection/{hash}/certificate/html', InspectionCertificateHtmlController::class)->name('certificate.html');
+Route::get('inspection/{hash}/appendix/html', InspectionAppendixHtmlController::class)->name('appendix.html');
 
 Route::get('info', function () {
     exit(phpinfo());

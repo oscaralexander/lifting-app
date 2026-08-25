@@ -75,6 +75,10 @@ img {
     break-after: page;
 }
 
+.intro--end {
+    break-after: auto;
+}
+
 .header {
     align-items: center;
     display: flex;
@@ -133,6 +137,7 @@ h1 {
     color: #1f336a;
     font-family: 'Söhne Schmall', sans-serif;
     font-size: 56px;
+    text-transform: uppercase;
 }
 
 .cover {

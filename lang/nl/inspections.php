@@ -5,6 +5,7 @@ return [
         'title' => 'Nieuwe inspectie',
     ],
     'form' => [
+        'btn_download_appendix' => 'Bijlage',
         'btn_download_report' => 'Keuringsrapport',
         'btn_download_certificate' => 'Certificaat',
         'btn_fetch_outsmart' => 'Ophalen uit Outsmart',
