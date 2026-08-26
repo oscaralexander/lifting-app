@@ -1,6 +1,7 @@
 <?php
 
 use App\Constants\Event;
+use App\Enums\InspectionObject\Type as InspectionObjectType;
 use App\Models\InspectionObject;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Livewire\Attributes\Computed;
@@ -14,7 +15,15 @@ new class extends Component
 
     public string $search = '';
 
+    /** @var array<int, string> */
+    public array $types = [];
+
     public function updatedSearch(): void
+    {
+        $this->resetPage();
+    }
+
+    public function updatedTypes(): void
     {
         $this->resetPage();
     }
@@ -28,6 +37,7 @@ new class extends Component
                     ->orWhere('model', 'like', '%' . $this->search . '%')
                     ->orWhere('serial_number', 'like', '%' . $this->search . '%');
             }))
+            ->when($this->types, fn ($query) => $query->whereIn('type', $this->types))
             ->paginate(InspectionObject::PER_PAGE, pageName: 'p')
             ->setPath(route('inspection-objects'));
     }
@@ -51,7 +61,14 @@ new class extends Component
         </x-slot:actions>
     </x-header>
     <div class="u-stack u-stack-gap-l">
-        <x-form.input-search wire:model.live.debounce.200ms="search" placeholder="Zoek op naam of serienummer" />
+        <div class="u-flex u-flex-gap-m">
+            <x-form.input-search wire:model.live.debounce.200ms="search" placeholder="Zoek op naam of serienummer" />
+            <x-form.multi-select
+                :options="InspectionObjectType::options()"
+                :placeholder="__('inspection_objects.index.filter_type_placeholder')"
+                wire:model.live="types"
+            />
+        </div>
         <table class="table">
             <thead>
                 <tr>

@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 
@@ -189,6 +190,19 @@ class Inspection extends Model
 
         return new Attribute(
             get: fn (): Collection => $answers,
+        );
+    }
+
+    /**
+     * The date this inspection's object is due for its next inspection: the
+     * inspection date plus the validity period of the inspection type.
+     */
+    public function nextInspectionDate(): Attribute
+    {
+        return new Attribute(
+            get: fn (): ?Carbon => $this->inspection_date
+                ?->copy()
+                ->addMonths(($this->type ?? InspectionType::PERIODICAL)->intervalMonths()),
         );
     }
 

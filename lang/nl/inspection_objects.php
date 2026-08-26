@@ -31,6 +31,7 @@ return [
         'col_serial_no' => 'Serienummer',
         'col_next_inspection_before' => 'Volgende inspectie voor',
         'col_type' => 'Type',
+        'filter_type_placeholder' => 'Alle types',
         'title' => 'Inspectieobjecten',
         'no_results' => 'Geen inspectieobjecten gevonden voor ":query".',
     ],

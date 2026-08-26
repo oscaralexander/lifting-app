@@ -67,6 +67,12 @@
         gap: .5em;
     }
 
+    &__empty {
+        color: var(--color-text-lc);
+        padding: 1.5rem !important;
+        text-align: center !important;
+    }
+
     &__logo {
         max-width: none
     }
