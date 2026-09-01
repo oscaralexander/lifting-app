@@ -12,6 +12,7 @@
     $meta        = $inspection->meta_data ?? [];
     $isCrane     = $inspectable instanceof Crane;
 @endphp
+
 <!DOCTYPE html>
 <html lang="nl">
     <head>
@@ -40,8 +41,7 @@
                         </p>
                         <p>
                             Het certificaat heeft betrekking op een periodieke keuring op basis
-                            van het vigerende certificatieschema voor de betrokken kraancategorie
-                            (W3-01/18-083(3)) van de Stichting TCVT.
+                            van het certificatieschema met identificatiecode TCVT W3-01: 2025 (24-V11) van de Stichting TCVT.
                         </p>
                     </div>
                     <table class="table">
@@ -59,8 +59,8 @@
                                 <td>{{ $object?->serial_number ?? '—' }}</td>
                             </tr>
                             <tr>
-                                <th scope="row">Parknummer</th>
-                                <td>NVT</td>
+                                <th scope="row">Bouwjaar</th>
+                                <td>{{ $object?->year_manufacture ?? '—' }}</td>
                             </tr>
                             <tr>
                                 <th scope="row">Datum keuring</th>
@@ -83,20 +83,10 @@
                 </div>
                 <footer class="footer formatted">
                     <p>
-                        Ten hoogste 24 maanden nadat het onderzoek heeft plaatsgevonden dient opnieuw een onderzoek plaats te vinden,
-                        dat uitgevoerd wordt door een instelling die daartoe door de Minister van Sociale Zaken en Werkgelegenheid is aangewezen.
-                        Daarnaast bestaat de verplichting de kraan ten minste eenmaal per jaar door een deskundige op de goede staat te
-                        laten onderzoeken en doelmatig te beproeven.
-                    </p>
-                    <p>
-                        De eigenaar c.q. opdrachtgever moet toestaan dat de Conformiteits Beoordelende Instelling op de machine op een voor
-                        derden duidelijk zichtbare plaats de TCVT Goedkeuringssticker conform het Reglement TCVT-Beeldmerk VT-800 aanbrengt.
-                    </p>
-                    <p>
-                        Ingevolge de Algemene Wet Bestuursrecht kan tegen dit certificaat van goedkeuring bezwaar worden ingediend bij Lifting Inspections BV te Nieuwegein.
-                        Binnen zes weken na de datum van verzending van dit certificaat moet dit bezwaarschrift worden ingediend.
-                        In het bezwaarschrift dient aangegeven te worden waarom dit certificaat niet juist bevonden wordt.
-                        Verzocht wordt bij het bezwaarschrift een kopie van dit certificaat en van evt. andere op de zaak betrekking hebbende stukken te voegen.
+                        De volgende TCVT keuring dient uitgevoerd te worden maximaal 24 maanden nadat dit onderzoek heeft plaatsgevonden
+                        door een instelling die daartoe door de Minister van Sociale Zaken en Werkgelegenheid is aangewezen.
+                        De periodieke keuring dient na maximaal 12 maanden nadat dit onderzoek heeft plaatsgevonden te worden uitgevoerd
+                        door een deskundige op de goede staat te laten onderzoeken en doelmatig te beproeven.
                     </p>
                 </footer>
             </div>
@@ -112,7 +102,7 @@
                         2025-0000267580
                     </p>
                     <h4>TCVT-nummer</h4>
-                    <p>00-042.760</p>
+                    <p>{{ $inspection->sticker_number ?? '—' }}</p>
                 </div>
                 <div>
                     <h4>Lifting Inspections BV</h4>
