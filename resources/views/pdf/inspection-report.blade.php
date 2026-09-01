@@ -101,24 +101,29 @@
         @include('pdf._intro-tcvt')
         <!-- Section -->
         {{-- <div class="page-break-after"> --}}
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th colspan="2" scope="col">Type keuring: {{ $tableTypeLabel }}</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <x-pdf.row label="Rapportnummer" :value="$inspection->outsmart_order_number ?? '—'" />
-                    <x-pdf.row label="Inspectiedatum" :value="$inspection->inspection_date?->translatedFormat('j F Y') ?? '—'" />
-                    <x-pdf.row label="Inspecteur" :value="$inspection->inspector_name ?? '—'" />
-                    <x-pdf.row label="Bevindingen" :value="$result" />
-                    <x-pdf.row label="Volgende periodieke keuring voor" :value="$nextPeriodical ?? '—'" />
-                    <x-pdf.row label="Volgende TCVT keuring voor" :value="$nextTcvt ?? '—'" />
-                    @if ($inspection->sticker_number)
-                        <x-pdf.row label="Stickernummer" :value="$inspection->sticker_number" />
-                    @endif
-                </tbody>
-            </table>
+            <div class="signature-box">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th colspan="2" scope="col">Type keuring: {{ $tableTypeLabel }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <x-pdf.row label="Rapportnummer" :value="$inspection->outsmart_order_number ?? '—'" />
+                        <x-pdf.row label="Inspectiedatum" :value="$inspection->inspection_date?->translatedFormat('j F Y') ?? '—'" />
+                        <x-pdf.row label="Inspecteur" :value="$inspection->inspector_name ?? '—'" />
+                        <x-pdf.row label="Bevindingen" :value="$result" />
+                        <x-pdf.row label="Volgende periodieke keuring voor" :value="$nextPeriodical ?? '—'" />
+                        <x-pdf.row label="Volgende TCVT keuring voor" :value="$nextTcvt ?? '—'" />
+                        @if ($inspection->sticker_number)
+                            <x-pdf.row label="Stickernummer" :value="$inspection->sticker_number" />
+                        @endif
+                    </tbody>
+                </table>
+                <div class="signature-box__signature">
+                    <img alt="" src="https://app.liftinginspections.nl/assets/img/signatures/{{ $inspection->user->id ?? 'default' }}.svg">
+                </div>
+            </div>
             @if ($client)
                 <table class="table">
                     <thead>

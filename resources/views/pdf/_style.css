@@ -426,3 +426,22 @@ h1 {
     max-width: 85mm;
     width: auto;
 }
+
+.signature-box {
+    position: relative;
+}
+
+.signature-box__signature {
+    display: flex;
+    height: 50mm;
+    position: absolute;
+    right: 15mm;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 50mm;
+}
+
+.signature-box__signature img {
+    margin: auto;
+    width: 100%;
+}
