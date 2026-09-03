@@ -95,6 +95,7 @@ class StartInspectionModal extends ModalComponent
             ->mapWithKeys(fn (array $order) => [
                 (string) $order['id'] => trim($order['OrderNr'] ?? ''),
             ])
+            ->reverse()
             ->toArray();
     }
 
