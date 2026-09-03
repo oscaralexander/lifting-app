@@ -159,7 +159,6 @@
                         @else
                             <th colspan="2" scope="col">Machinstenlift</th>
                         @endif
-                        </th>
                     </tr>
                 </thead>
                 <tbody>
@@ -167,12 +166,13 @@
                     <x-pdf.row :label="__('models/inspection_object.model.label')" :value="$object->model" />
                     <x-pdf.row :label="__('models/inspection_object.serial_number.label')" :value="$object->serial_number" />
                     <x-pdf.row :label="__('models/inspection_object.year_manufacture.label')" :value="$object->year_manufacture" />
+                    @if ($inspectable instanceof OperatorLift)
+                        <x-pdf.row :label="__('models/operator_lift.base_mount.label')" :value="$inspectable->base_mount->label()" />
+                    @endif
                 </tbody>
             </table>
             @if ($inspectable instanceof Crane)
                 @include('pdf._inspectable-crane', ['crane' => $inspectable])
-            @elseif ($inspectable instanceof OperatorLift)
-                @include('pdf._inspectable-operator-lift', ['operatorLift' => $inspectable])
             @endif
         {{-- </div> --}}
         <!-- Form groups -->
@@ -202,7 +202,7 @@
                     <thead>
                         <tr>
                             <th class="table__fieldNum">{{ $fieldGroup->number }}</th>
-                            <th>{{ $fieldGroup->name }}</th>
+                            <th colspan="2">{{ $fieldGroup->name }}</th>
                             <th class="table__toggleCol"><img alt="" height="16" src="https://app.liftinginspections.nl/assets/img/pdf/check-wh.svg" width="16"></th>
                             <th class="table__toggleCol"><img alt="" height="16" src="https://app.liftinginspections.nl/assets/img/pdf/x-wh.svg" width="16"></th>
                             <th class="table__toggleCol"><img alt="" height="16" src="https://app.liftinginspections.nl/assets/img/pdf/circle-slash-wh.svg" width="16"></th>
@@ -221,7 +221,7 @@
                                 @if ($field->type === FieldType::TOGGLE)
                                     <tr>
                                         <td class="table__fieldNum">{{ $field->number }}</td>
-                                        <td>{!! nl2br($field->label) !!}</td>
+                                        <td colspan="2">{!! nl2br($field->label) !!}</td>
                                         <td class="table__toggleCol table__toggleCol--yes">{!! $isYes ? $svgYes : '' !!}</td>
                                         <td class="table__toggleCol table__toggleCol--no">{!! $isNo ? $svgNo : '' !!}</td>
                                         <td class="table__toggleCol table__toggleCol--na">{!! $isNa ? $svgNa : '' !!}</td>
@@ -229,15 +229,16 @@
                                 @else
                                     <tr>
                                         <td class="table__fieldNum">{{ $field->number }}</td>
-                                        <td colspan="4">
-                                            <span class="table__formQ">{{ nl2br(e($field->label)) }}</span>
-                                            <span class="table__formA">{{ $answer }}</span>
-                                        </td>
+                                        <td>{{ nl2br(e($field->label)) }}</td>
+                                        <td style="text-align: right;">{{ $answer }}</td>
+                                        <td class="table__toggleCol table__toggleCol--yes"></td>
+                                        <td class="table__toggleCol table__toggleCol--no"></td>
+                                        <td class="table__toggleCol table__toggleCol--na"></td>
                                     </tr>
                                 @endif
                             @elseif ($groupItem['type'] === 'formComment')
                                 <tr>
-                                    <td class="table__formComment" colspan="5">{{ $groupItem['formComment']->comment }}</td>
+                                    <td class="table__formComment" colspan="6">{{ $groupItem['formComment']->comment }}</td>
                                 </tr>
                             @endif
                         @endforeach
