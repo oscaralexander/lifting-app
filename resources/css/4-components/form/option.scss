@@ -42,11 +42,11 @@
             border-radius: .25em;
             content: '';
             cursor: pointer;
+            flex: 0 0 1.5em;
             height: 1.5em;
             outline: var(--input-outline);
             outline-offset: 2px;
             transition: var(--duration-s);
-            flex: 0 0 1.5em;
             width: 1.5em;
             z-index: 1;
         }
@@ -58,7 +58,7 @@
             content: '';
             display: none;
             height: 1.5em;
-            mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5" vector-effect="non-scaling-stroke"/></svg>');
+            mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5" vector-effect="non-scaling-stroke"/></svg>');
             mask-position: center;
             mask-repeat: no-repeat;
             mask-size: 1.15em;
