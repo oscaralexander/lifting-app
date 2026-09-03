@@ -178,6 +178,15 @@
         <!-- Form groups -->
         @php
             $formItems = FormItems::get($inspection->form);
+            $selectedOptions = function ($field, $answer) {
+                if ($answer === null || $answer === '') {
+                    return [];
+                }
+
+                $selected = array_map('intval', explode(',', (string) $answer));
+
+                return array_values(array_intersect_key($field->options, array_flip($selected)));
+            };
             $svgYes = '<img alt="" height="16" src="https://app.liftinginspections.nl/assets/img/pdf/check.svg" width="16">';
             $svgNo = '<img alt="" height="16" src="https://app.liftinginspections.nl/assets/img/pdf/x.svg" width="16">';
             $svgNa = '<img alt="" height="16" src="https://app.liftinginspections.nl/assets/img/pdf/circle-slash.svg" width="16">';
@@ -226,6 +235,15 @@
                                         <td class="table__toggleCol table__toggleCol--no">{!! $isNo ? $svgNo : '' !!}</td>
                                         <td class="table__toggleCol table__toggleCol--na">{!! $isNa ? $svgNa : '' !!}</td>
                                     </tr>
+                                @elseif ($field->type === FieldType::SELECT_MULTIPLE)
+                                    @php $options = $selectedOptions($field, $answer); @endphp
+                                    <tr>
+                                        <td class="table__fieldNum">{{ $field->number }}</td>
+                                        <td colspan="2">{!! implode('<hr>', array_map(fn ($option) => nl2br(e($option)), $options)) !!}</td>
+                                        <td class="table__toggleCol table__toggleCol--yes">{!! $options ? $svgYes : '' !!}</td>
+                                        <td class="table__toggleCol table__toggleCol--no"></td>
+                                        <td class="table__toggleCol table__toggleCol--na"></td>
+                                    </tr>
                                 @else
                                     <tr>
                                         <td class="table__fieldNum">{{ $field->number }}</td>
@@ -261,6 +279,15 @@
                                 <td class="table__toggleCol table__toggleCol--yes">{!! $isYes ? $svgYes : '' !!}</td>
                                 <td class="table__toggleCol table__toggleCol--no">{!! $isNo ? $svgNo : '' !!}</td>
                                 <td class="table__toggleCol table__toggleCol--na">{!! $isNa ? $svgNa : '' !!}</td>
+                            </tr>
+                        @elseif ($field->type === FieldType::SELECT_MULTIPLE)
+                            @php $options = $selectedOptions($field, $answer); @endphp
+                            <tr>
+                                <td class="table__fieldNum">{{ $field->number }}</td>
+                                <td>{!! implode('<hr>', array_map(fn ($option) => nl2br(e($option)), $options)) !!}</td>
+                                <td class="table__toggleCol table__toggleCol--yes">{!! $options ? $svgYes : '' !!}</td>
+                                <td class="table__toggleCol table__toggleCol--no"></td>
+                                <td class="table__toggleCol table__toggleCol--na"></td>
                             </tr>
                         @else
                             <tr>

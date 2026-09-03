@@ -273,6 +273,12 @@ h1 {
     vertical-align: top;
 }
 
+.table--form td hr {
+    border: 0;
+    border-top: 1px solid #eee;
+    margin: 1.5mm 0;
+}
+
 .table--form tbody .table__fieldNum {
     font-variant-numeric: tabular-nums;
     font-feature-settings: 'tnum';
