@@ -178,19 +178,6 @@ new class extends Component
         return $this->form->name.' · '.$this->inspectionObject->name;
     }
 
-    /**
-     * @return array<string, mixed>|null
-     */
-    #[Computed]
-    public function outsmartWorkOrder(): ?array
-    {
-        if (! $this->inspection->exists || ! $this->inspection->outsmart_work_order_id) {
-            return null;
-        }
-
-        return app(OutsmartService::class)->getWorkOrder($this->inspection->outsmart_work_order_id);
-    }
-
     public function mount(string $formSlug, int $inspectionObjectId, ?string $inspectionHash = null): void
     {
         $this->formSlug = $formSlug;
@@ -382,7 +369,6 @@ new class extends Component
                 </x-slot:actions>
             @endif
         </x-header>
-        @dump($this->outsmartWorkOrder)
         <x-form class="form form--full u-stack u-stack-gap-xl">
             <div class="grid grid--gap-xxl">
                 <div class="grid__col l:grid__col--span-4">
