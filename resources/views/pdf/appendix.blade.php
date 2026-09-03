@@ -33,6 +33,7 @@
                 {{ $inspection->outsmart_order_number }}/{{ $inspection->created_at->format('Ymd') }}<br>
                 p. <span class="footer__pageNo"></span>
             </div>
+            <div class="footer__right"></div>
         </footer>
         <div class="cover">
             <header class="cover__header">
