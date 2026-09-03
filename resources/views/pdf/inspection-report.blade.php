@@ -82,7 +82,9 @@
                 p. <span class="footer__pageNo"></span>
             </div>
             <div class="footer__right">
-                <a href="https://www.rva.nl/alle-geaccrediteerden/i385/" target="_blank"><img alt="RVA Inspectie I385" class="footer__logo" src="http://app.liftinginspections.nl/assets/img/pdf/rva-i385.svg"></a>
+                @if ($inspection->type === InspectionType::TCVT)
+                    <a href="https://www.rva.nl/alle-geaccrediteerden/i385/" target="_blank"><img alt="RVA Inspectie I385" class="footer__logo" src="http://app.liftinginspections.nl/assets/img/pdf/rva-i385.svg"></a>
+                @endif
             </div>
         </footer>
         <div class="cover">
