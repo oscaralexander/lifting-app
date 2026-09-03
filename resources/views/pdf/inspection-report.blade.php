@@ -146,7 +146,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <x-pdf.row :label="__('models/inspection.project_name.label')" :value="$inspection->project_name" />
+                    <x-pdf.row :label="__('models/inspection.project_name.label')" :value="$inspection->outsmart_external_reference ?? $inspection->project_name" />
                     <x-pdf.row :label="__('models/inspection.project_address.label')" :value="$inspection->project_address . ', ' . $inspection->project_postal_code . ' ' . $inspection->project_city" />
                 </tbody>
             </table>

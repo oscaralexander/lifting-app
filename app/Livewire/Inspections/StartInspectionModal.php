@@ -150,6 +150,7 @@ class StartInspectionModal extends ModalComponent
                     'id' => $order['id'] ?? null,
                     'OrderNr' => $order['OrderNr'] ?? null,
                     'Reference' => $order['Reference'] ?? null,
+                    'ExternalReference' => $order['ExternalReference'] ?? null,
                     'status' => $order['status'] ?? null,
                     'CreationDate' => $order['CreationDate'] ?? null,
                     'CustomerStreet' => $order['CustomerStreet'] ?? null,
@@ -229,7 +230,7 @@ class StartInspectionModal extends ModalComponent
 
         $matchedUser = null;
 
-        if ($employee && !empty($employee['firstname']) && !empty($employee['lastname'])) {
+        if ($employee && ! empty($employee['firstname']) && ! empty($employee['lastname'])) {
             $matchedUser = User::query()
                 ->where('first_name', $employee['firstname'])
                 ->where('last_name', $employee['lastname'])
@@ -240,13 +241,14 @@ class StartInspectionModal extends ModalComponent
             'client_id' => $this->clientId,
             'inspection_date' => $this->resolveInspectionDate($workOrder),
             'inspector_name' => $inspectorName,
+            'outsmart_external_reference' => $workOrder['ExternalReference'] ?? null,
             'outsmart_order_number' => $workOrder['OrderNr'] ?? null,
             'outsmart_photos' => $workOrder['Photos'] ?? null,
             'outsmart_work_order_id' => $workOrder['id'],
-            'project_name' => ($workOrder['Reference'] ?? null) ?: ($workOrder['OrderNr'] ?? null),
             'project_address' => trim(($workOrder['CustomerStreet'] ?? '').' '.($workOrder['CustomerStreetNo'] ?? '')),
-            'project_postal_code' => $workOrder['CustomerZIP'] ?? null,
             'project_city' => $workOrder['CustomerCity'] ?? null,
+            'project_name' => ($workOrder['Reference'] ?? null) ?: ($workOrder['OrderNr'] ?? null),
+            'project_postal_code' => $workOrder['CustomerZIP'] ?? null,
             'type' => $this->type,
             'user_id' => $matchedUser?->id ?? auth('web')->id(),
         ];
