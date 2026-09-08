@@ -120,12 +120,7 @@
             </div>
         </div>
         <footer class="footer">
-            <div class="footer__left">
-                Lifting Inspections B.V.<br />
-                Nijverheidsweg 1A<br />
-                3433NP Nieuwegein<br />
-                KvK 23047245
-            </div>
+            <div class="footer__left"></div>
             <div class="footer__center">
                 {{ $inspection->outsmart_order_number }}/{{ $inspection->created_at->format('Ymd') }}<br>
             </div>
