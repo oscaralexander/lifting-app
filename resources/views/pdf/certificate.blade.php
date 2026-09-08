@@ -129,9 +129,7 @@
             <div class="footer__center">
                 {{ $inspection->outsmart_order_number }}/{{ $inspection->created_at->format('Ymd') }}<br>
             </div>
-            <div class="footer__right">
-                <a href="https://www.rva.nl/alle-geaccrediteerden/i385/" target="_blank"><img alt="RVA Inspectie I385" class="footer__logo" src="http://app.liftinginspections.nl/assets/img/pdf/rva-i385.svg"></a>
-            </div>
+            <div class="footer__right"></div>
         </footer>
     </body>
 </html>
