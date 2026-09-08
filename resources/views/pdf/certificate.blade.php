@@ -81,7 +81,7 @@
                         </p>
                     </div>
                 </div>
-                <footer class="footer formatted">
+                <footer class="legal formatted">
                     <p>
                         De volgende TCVT keuring dient uitgevoerd te worden maximaal 24 maanden nadat dit onderzoek heeft plaatsgevonden
                         door een instelling die daartoe door de Minister van Sociale Zaken en Werkgelegenheid is aangewezen.
@@ -119,5 +119,19 @@
                 </div>
             </div>
         </div>
+        <footer class="footer">
+            <div class="footer__left">
+                Lifting Inspections B.V.<br />
+                Nijverheidsweg 1A<br />
+                3433NP Nieuwegein<br />
+                KvK 23047245
+            </div>
+            <div class="footer__center">
+                {{ $inspection->outsmart_order_number }}/{{ $inspection->created_at->format('Ymd') }}<br>
+            </div>
+            <div class="footer__right">
+                <a href="https://www.rva.nl/alle-geaccrediteerden/i385/" target="_blank"><img alt="RVA Inspectie I385" class="footer__logo" src="http://app.liftinginspections.nl/assets/img/pdf/rva-i385.svg"></a>
+            </div>
+        </footer>
     </body>
 </html>
