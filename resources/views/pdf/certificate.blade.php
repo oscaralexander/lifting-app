@@ -77,7 +77,7 @@
                         </div>
                         <p class="signature__text">
                             {{ $inspection->inspector_name }}<br>
-                            <i>Keurmeester</i>
+                            <i>Inspecteur</i>
                         </p>
                     </div>
                 </div>
@@ -103,6 +103,7 @@
                     </p>
                     <h4>TCVT-nummer</h4>
                     <p>{{ $inspection->sticker_number ?? '—' }}</p>
+                    <img alt="TCVT" class="tcvtLogo" src="https://app.liftinginspections.nl/assets/img/pdf/tcvt.svg" />
                 </div>
                 <div>
                     <h4>Lifting Inspections BV</h4>
