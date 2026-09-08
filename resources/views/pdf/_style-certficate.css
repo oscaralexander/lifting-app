@@ -194,6 +194,10 @@ h1 i {
     width: auto;
 }
 
+.tcvtLogo {
+    width: 75%;
+}
+
 .table {
     border-collapse: separate;
 }
