@@ -35,6 +35,41 @@ class User extends Authenticatable implements MustVerifyEmail
         ];
     }
 
+    /**
+     * Find the user that corresponds to an Outsmart employee, matched on first and
+     * last name (case- and whitespace-insensitive).
+     *
+     * @param  array<string, mixed>|null  $employee
+     */
+    public static function findByOutsmartEmployee(?array $employee): ?self
+    {
+        $firstName = trim((string) ($employee['firstname'] ?? ''));
+        $lastName = trim((string) ($employee['lastname'] ?? ''));
+
+        if ($firstName === '' || $lastName === '') {
+            return null;
+        }
+
+        return self::query()
+            ->whereRaw('LOWER(TRIM(first_name)) = ?', [mb_strtolower($firstName)])
+            ->whereRaw('LOWER(TRIM(last_name)) = ?', [mb_strtolower($lastName)])
+            ->first();
+    }
+
+    /**
+     * The display name of an Outsmart employee, or null when the employee has no name.
+     *
+     * @param  array<string, mixed>|null  $employee
+     */
+    public static function outsmartEmployeeName(?array $employee): ?string
+    {
+        if ($employee === null) {
+            return null;
+        }
+
+        return trim(($employee['firstname'] ?? '').' '.($employee['lastname'] ?? '')) ?: null;
+    }
+
     public function initials(): Attribute
     {
         return Attribute::get(

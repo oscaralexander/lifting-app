@@ -122,6 +122,23 @@ class OutsmartService
     }
 
     /**
+     * Get the employee assigned to a work order, if any.
+     *
+     * @param  array<string, mixed>  $workOrder
+     * @return array<string, mixed>|null
+     */
+    public function getWorkOrderEmployee(array $workOrder): ?array
+    {
+        $employeeNr = $workOrder['EmployeeNr'] ?? null;
+
+        if (! $employeeNr) {
+            return null;
+        }
+
+        return $this->getEmployee((string) $employeeNr);
+    }
+
+    /**
      * Get a single work order by its WBA database row id.
      *
      * @return array<string, mixed>|null

@@ -11,6 +11,17 @@
     $inspectable = $inspection->inspectable;
     $meta        = $inspection->meta_data ?? [];
     $isCrane     = $inspectable instanceof Crane;
+
+    $nextPeriodical = null;
+    $nextTcvt = null;
+
+    if ($inspection->type === InspectionType::TCVT) {
+        $nextPeriodical = \Carbon\Carbon::parse($inspection->inspection_date)->addMonths(12)->translatedFormat('j F Y');
+        $nextTcvt = \Carbon\Carbon::parse($inspection->inspection_date)->addMonths(24)->translatedFormat('j F Y');
+    } else {
+        $nextPeriodical = \Carbon\Carbon::parse($inspection->inspection_date)->addMonths(24)->translatedFormat('j F Y');
+        $nextTcvt = \Carbon\Carbon::parse($inspection->inspection_date)->addMonths(12)->translatedFormat('j F Y');
+    }
 @endphp
 
 <!DOCTYPE html>
@@ -30,7 +41,7 @@
             <div class="split__left">
                 <div>
                     <h1>
-                        <i>Certificaat van</i><br>
+                        <i>TCVT certificaat van</i><br>
                         GOEDKEURING
                     </h1>
                     <div class="intro formatted">
@@ -63,8 +74,20 @@
                                 <td>{{ $object?->year_manufacture ?? '—' }}</td>
                             </tr>
                             <tr>
+                                <th scope="row">Rapportnummer</th>
+                                <td>{{ $inspection->outsmart_order_number ?? '—' }}</td>
+                            </tr>
+                            <tr>
                                 <th scope="row">Datum keuring</th>
                                 <td>{{ $inspection->inspection_date?->translatedFormat('j F Y') ?? '—' }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Volgende periodieke keuring voor</th>
+                                <td>{{ $nextPeriodical ?? '—' }}</td>
+                            </tr>
+                            <tr>
+                                <th scope="row">Volgende TCVT keuring voor</th>
+                                <td>{{ $nextTcvt ?? '—' }}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -92,8 +115,8 @@
             </div>
             <div class="split__right">
                 <div>
-                    <h4>Datum</h4>
-                    <p>{{ $inspection->inspection_date?->translatedFormat('j F Y') ?? '—' }}</p>
+                    <h4>Datum uitgifte</h4>
+                    <p>{{ now()->translatedFormat('j F Y') }}</p>
                     <h4>Accreditatienummer</h4>
                     <p>I 385, type A</p>
                     <h4>Aanwijzingsbeschikking</h4>
@@ -104,6 +127,7 @@
                     <h4>TCVT-nummer</h4>
                     <p>{{ $inspection->sticker_number ?? '—' }}</p>
                     <img alt="TCVT" class="tcvtLogo" src="https://app.liftinginspections.nl/assets/img/pdf/tcvt.svg" />
+               
                 </div>
                 <div>
                     <h4>Lifting Inspections BV</h4>

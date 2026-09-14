@@ -164,28 +164,6 @@ class StartInspectionModal extends ModalComponent
     }
 
     /**
-     * Resolve the inspector's full name from the work order's assigned employee.
-     *
-     * @param  array<string, mixed>  $workOrder
-     */
-    private function resolveInspectorName(array $workOrder): ?string
-    {
-        $employeeNr = $workOrder['EmployeeNr'] ?? null;
-
-        if (! $employeeNr) {
-            return null;
-        }
-
-        $employee = app(OutsmartService::class)->getEmployee((string) $employeeNr);
-
-        if ($employee === null) {
-            return null;
-        }
-
-        return trim(($employee['firstname'] ?? '').' '.($employee['lastname'] ?? '')) ?: null;
-    }
-
-    /**
      * Resolve the inspection date from the work order's `WorkDate` (in Dutch d-m-Y format),
      * falling back to today when no usable date is available.
      *
@@ -216,31 +194,19 @@ class StartInspectionModal extends ModalComponent
 
         $form = Form::findOrFail($this->formId);
 
-        $workOrder = app(OutsmartService::class)->getWorkOrder((string) $this->workOrderId);
+        $outsmart = app(OutsmartService::class);
+
+        $workOrder = $outsmart->getWorkOrder((string) $this->workOrderId);
 
         abort_if($workOrder === null, 404);
 
-        // Resolve inspector name and map to User
-        $employeeNr = $workOrder['EmployeeNr'] ?? null;
-        $employee = $employeeNr ? app(OutsmartService::class)->getEmployee((string) $employeeNr) : null;
-
-        $inspectorName = $employee
-            ? (trim(($employee['firstname'] ?? '').' '.($employee['lastname'] ?? '')) ?: null)
-            : null;
-
-        $matchedUser = null;
-
-        if ($employee && ! empty($employee['firstname']) && ! empty($employee['lastname'])) {
-            $matchedUser = User::query()
-                ->where('first_name', $employee['firstname'])
-                ->where('last_name', $employee['lastname'])
-                ->first();
-        }
+        $employee = $outsmart->getWorkOrderEmployee($workOrder);
+        $matchedUser = User::findByOutsmartEmployee($employee);
 
         $attributes = [
             'client_id' => $this->clientId,
             'inspection_date' => $this->resolveInspectionDate($workOrder),
-            'inspector_name' => $inspectorName,
+            'inspector_name' => User::outsmartEmployeeName($employee),
             'outsmart_external_reference' => $workOrder['ExternalReference'] ?? null,
             'outsmart_order_number' => $workOrder['OrderNr'] ?? null,
             'outsmart_photos' => $workOrder['Photos'] ?? null,
@@ -250,12 +216,14 @@ class StartInspectionModal extends ModalComponent
             'project_name' => ($workOrder['Reference'] ?? null) ?: ($workOrder['OrderNr'] ?? null),
             'project_postal_code' => $workOrder['CustomerZIP'] ?? null,
             'type' => $this->type,
-            'user_id' => $matchedUser?->id ?? auth('web')->id(),
         ];
 
         if ($this->inspectionHash) {
             $inspection = Inspection::where('hash', $this->inspectionHash)->firstOrFail();
-            $inspection->update($attributes);
+            $inspection->update([
+                ...$attributes,
+                'user_id' => $matchedUser?->id ?? $inspection->user_id ?? auth('web')->id(),
+            ]);
 
             $this->dispatch(Event::INSPECTION_SAVED, inspectionHash: $inspection->hash);
             $this->dispatch(Event::TOAST, message: __('inspections.start.toast.relinked'), type: 'success');
@@ -269,6 +237,7 @@ class StartInspectionModal extends ModalComponent
             ...$attributes,
             'form_id' => $form->id,
             'inspection_object_id' => $this->inspectionObjectId,
+            'user_id' => $matchedUser?->id ?? auth('web')->id(),
         ]);
 
         $this->redirectRoute('inspections.form', [

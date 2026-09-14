@@ -242,32 +242,19 @@ new class extends Component
             return;
         }
 
-        $employeeNr = $workOrder['EmployeeNr'] ?? null;
-        $employee = $employeeNr ? $outsmart->getEmployee((string) $employeeNr) : null;
-
-        $inspectorName = $employee
-            ? (trim(($employee['firstname'] ?? '').' '.($employee['lastname'] ?? '')) ?: null)
-            : null;
-
-        $matchedUser = null;
-
-        if ($employee && !empty($employee['firstname']) && !empty($employee['lastname'])) {
-            $matchedUser = User::query()
-                ->where('first_name', $employee['firstname'])
-                ->where('last_name', $employee['lastname'])
-                ->first();
-        }
+        $employee = $outsmart->getWorkOrderEmployee($workOrder);
+        $matchedUser = User::findByOutsmartEmployee($employee);
 
         $inspection->update([
             'project_name' => ($workOrder['Reference'] ?? null) ?: ($workOrder['OrderNr'] ?? null),
             'project_address' => trim(($workOrder['CustomerStreet'] ?? '').' '.($workOrder['CustomerStreetNo'] ?? '')),
             'project_postal_code' => $workOrder['CustomerZIP'] ?? null,
             'project_city' => $workOrder['CustomerCity'] ?? null,
-            'inspector_name' => $inspectorName,
+            'inspector_name' => User::outsmartEmployeeName($employee),
             'inspection_date' => $this->resolveInspectionDate($workOrder),
             'outsmart_order_number' => $workOrder['OrderNr'] ?? null,
             'outsmart_photos' => $workOrder['Photos'] ?? null,
-            'user_id' => $matchedUser?->id ?? auth('web')->id(),
+            'user_id' => $matchedUser?->id ?? $inspection->user_id ?? auth('web')->id(),
         ]);
 
         unset($this->inspection);

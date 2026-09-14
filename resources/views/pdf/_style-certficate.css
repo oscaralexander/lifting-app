@@ -207,17 +207,18 @@ h1 i {
 
 .table {
     border-collapse: separate;
+    width: 100%;
 }
 
 .table th,
 .table td {
     font-weight: 400;
-    padding: 2mm 0;
+    padding: 1mm 0;
     text-align: left;
 }
 
 .table th {
-    width: 36mm;
+    width: 50%;
 }
 
 .table td {
