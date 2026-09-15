@@ -44,6 +44,11 @@ new class extends Component
     #[Locked]
     public string $formSlug;
 
+    /**
+     * Single photo uploaded from the photo picker; cleared as soon as it is stored.
+     */
+    public ?TemporaryUploadedFile $pickerPhoto = null;
+
     #[Computed]
     public function client(): ?Client
     {
@@ -296,6 +301,22 @@ new class extends Component
     public function removeFieldPhoto(string $fieldKey, int $index): void
     {
         $this->submissionForm->removeFieldPhoto($fieldKey, $index);
+    }
+
+    /**
+     * Store a photo uploaded from the photo picker and let the picker add it to its selection.
+     */
+    public function updatedPickerPhoto(): void
+    {
+        $this->validate(['pickerPhoto' => ['required', 'image']]);
+
+        $url = $this->submissionForm->storeUploadedPhoto($this->pickerPhoto);
+
+        $this->reset('pickerPhoto');
+
+        unset($this->inspection);
+
+        $this->dispatch('photo-picker-photo-uploaded', url: $url);
     }
 
     public function submit(): void

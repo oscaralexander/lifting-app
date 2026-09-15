@@ -1,6 +1,7 @@
 @if ($this->inspection->exists)
 @php
-    $outsmartPhotos = collect($this->inspection->outsmart_photos ?? [])
+    $photos = collect($this->inspection->outsmart_photos ?? [])
+        ->merge($this->inspection->uploaded_photos ?? [])
         ->filter(fn ($photo) => ! empty($photo['image']))
         ->values();
 @endphp
@@ -34,6 +35,11 @@
                     this.selected.splice(index, 1);
                 }
             },
+            select(url) {
+                if (! this.selected.includes(url)) {
+                    this.selected.push(url);
+                }
+            },
             save() {
                 $wire.saveFieldPhotos(this.fieldKey, this.selected).then(() => {
                     this.open = false;
@@ -42,6 +48,7 @@
         }"
         x-on:keydown.escape.window="cancel()"
         x-on:photo-picker-open.window="show($event.detail)"
+        x-on:photo-picker-photo-uploaded.window="select($event.detail.url)"
         x-show="open"
     >
         <div
@@ -62,12 +69,12 @@
                 <button class="photoPicker__close" type="button" x-on:click="cancel()"><x-icon icon="x" /></button>
             </header>
             <div class="photoPicker__body">
-                @if ($outsmartPhotos->isNotEmpty())
+                @if ($photos->isNotEmpty())
                     <div class="inspection__photos">
-                        @foreach ($outsmartPhotos as $photo)
+                        @foreach ($photos as $photo)
                             <figure
                                 class="inspection__photos-item photoPicker__photo"
-                                wire:key="picker-{{ $loop->index }}"
+                                wire:key="picker-{{ md5($photo['image']) }}"
                                 x-bind:class="{ 'is-selected': isSelected(@js($photo['image'])) }"
                                 x-on:click="toggle(@js($photo['image']))"
                             >
@@ -115,6 +122,27 @@
                         @lang('ui.or')
                         <x-btn text type="button" x-on:click="cancel()">@lang('ui.cancel')</x-btn>
                     </span>
+                </div>
+                <div class="photoPicker__upload">
+                    @error('pickerPhoto')
+                        <span class="photoPicker__uploadError">{{ $message }}</span>
+                    @enderror
+                    <x-btn
+                        icon="image"
+                        type="button"
+                        wire:loading.attr="disabled"
+                        wire:loading.class="is-loading"
+                        wire:target="pickerPhoto"
+                    >
+                        @lang('inspections.form.upload_photo')
+                        <input
+                            accept="image/*"
+                            type="file"
+                            wire:loading.attr="disabled"
+                            wire:model="pickerPhoto"
+                            wire:target="pickerPhoto"
+                        />
+                    </x-btn>
                 </div>
             </footer>
         </div>

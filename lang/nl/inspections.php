@@ -12,6 +12,7 @@ return [
         'btn_generate_report' => 'Keuringsrapport genereren',
         'btn_generate_certificate' => 'Certificaat genereren',
         'select_photos' => 'Foto\'s selecteren',
+        'upload_photo' => 'Foto uploaden',
         'no_photos_heading' => 'Geen foto\'s beschikbaar',
         'no_photos_text' => 'Upload foto’s via de Outsmart app.',
         'no_photos_text_not_linked' => 'Koppel de Outsmart werkbon aan dit project om foto’s te importeren.',

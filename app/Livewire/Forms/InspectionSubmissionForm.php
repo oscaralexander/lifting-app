@@ -5,6 +5,7 @@ namespace App\Livewire\Forms;
 use App\Enums\FieldType;
 use App\Models\Form;
 use App\Models\Inspection;
+use Illuminate\Support\Facades\Storage;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 use Livewire\Form as LivewireForm;
 
@@ -60,6 +61,30 @@ class InspectionSubmissionForm extends LivewireForm
         unset($photos[$index]);
 
         $this->images[$key] = array_values($photos);
+    }
+
+    /**
+     * Store a photo uploaded from the photo picker alongside the other inspection
+     * images and register it so it shows up in the picker on subsequent visits.
+     *
+     * @return string The public URL of the stored photo.
+     */
+    public function storeUploadedPhoto(TemporaryUploadedFile $file): string
+    {
+        $path = $file->store(
+            path: config('path.inspections.images').'/'.$this->inspection->hash,
+            options: ['disk' => 'public'],
+        );
+
+        $url = Storage::disk('public')->url($path);
+
+        $this->inspection->uploaded_photos = [
+            ...($this->inspection->uploaded_photos ?? []),
+            ['image' => $url, 'title' => $file->getClientOriginalName()],
+        ];
+        $this->inspection->save();
+
+        return $url;
     }
 
     public function init(Inspection $inspection, Form $form): void

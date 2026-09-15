@@ -38,6 +38,7 @@ class Inspection extends Model
         'requires_reinspection' => 'boolean',
         'requires_written_deregistration' => 'boolean',
         'type' => InspectionType::class,
+        'uploaded_photos' => 'json:unicode',
     ];
 
     protected $with = [
