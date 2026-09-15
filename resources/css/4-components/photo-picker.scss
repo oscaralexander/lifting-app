@@ -180,7 +180,14 @@
     gap: .75rem;
 }
 
+.submission__photoRow {
+    align-items: center;
+    display: flex;
+    gap: .75rem;
+}
+
 .submission__photoThumb {
+    flex: 0 0 auto;
     position: relative;
 
     img {

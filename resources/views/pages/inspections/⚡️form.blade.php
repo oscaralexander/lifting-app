@@ -19,14 +19,12 @@ use App\Models\User;
 use App\Services\OutsmartService;
 use Carbon\Exceptions\InvalidFormatException;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Storage;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Locked;
 use Livewire\Attributes\On;
 use Livewire\Component;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 use Livewire\WithFileUploads;
-use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 new class extends Component
@@ -59,15 +57,6 @@ new class extends Component
         return null;
     }
 
-    public function deleteInspectionImage(string $image): void
-    {
-        $this->submissionForm->deleteInspectionImage($image);
-
-        if (Storage::disk('public')->exists($image)) {
-            Storage::disk('public')->delete($image);
-        }
-    }
-
     public function downloadAppendix(): StreamedResponse
     {
         return (new InspectionAppendixPdf($this->inspection))->download();
@@ -78,15 +67,6 @@ new class extends Component
         abort_unless($this->inspection->isCertifiable(), 403);
 
         return (new InspectionCertificatePdf($this->inspection))->download();
-    }
-
-    public function downloadInspectionImage(string $image): BinaryFileResponse
-    {
-        if (! Storage::disk('public')->exists($image)) {
-            abort(404);
-        }
-
-        return response()->download(Storage::disk('public')->path($image));
     }
 
     public function downloadReport(): StreamedResponse
@@ -289,18 +269,30 @@ new class extends Component
     }
 
     /**
-     * Persist the Outsmart photos selected for a toggle field from the photo picker overlay.
+     * Stage the photos selected in the photo picker overlay, either for a toggle
+     * field or for the inspection itself.
      *
      * @param  array<int, string>  $urls
      */
     public function saveFieldPhotos(string $fieldKey, array $urls): void
     {
+        if ($fieldKey === InspectionSubmissionForm::PHOTOS_KEY) {
+            $this->submissionForm->setInspectionPhotos($urls);
+
+            return;
+        }
+
         $this->submissionForm->setFieldPhotos($fieldKey, $urls);
     }
 
     public function removeFieldPhoto(string $fieldKey, int $index): void
     {
         $this->submissionForm->removeFieldPhoto($fieldKey, $index);
+    }
+
+    public function removeInspectionPhoto(int $index): void
+    {
+        $this->submissionForm->removeInspectionPhoto($index);
     }
 
     /**
@@ -631,44 +623,41 @@ new class extends Component
                                     :label="__('models/inspection.comment.label')"
                                     model="submissionForm.inspectionComment"
                                 />
-                                <div class="u-stack u-stack-gap-s">
-                                    @if (count($this->submissionForm->inspectionImages))
-                                        <div class="u-stack u-stack-gap-xs">
-                                            @foreach ($this->submissionForm->inspectionImages as $image)
-                                                <div class="upload__file">
-                                                    <x-icon icon="image" />
-                                                    @if ($image instanceof TemporaryUploadedFile)
-                                                        <div class="upload__fileName">{{ $image->getClientOriginalName() }}</div>
-                                                        <a
-                                                            class="upload__fileAction"
-                                                            href="{{ $image->temporaryUrl() }}"
-                                                            download="{{ $image->getClientOriginalName() }}"
-                                                        ><x-icon icon="download" /></a>
-                                                        <button
-                                                            class="upload__fileAction"
-                                                            wire:click="deleteInspectionImage('{{ $image->getClientOriginalName() }}')"
-                                                            wire:confirm="@lang('ui.delete_confirm')"
-                                                            type="button"
-                                                        ><x-icon icon="trash" /></button>
-                                                    @else
-                                                        <div class="upload__fileName">{{ basename($image) }}</div>
-                                                        <a
-                                                            class="upload__fileAction"
-                                                            wire:click="downloadInspectionImage('{{ $image }}')"
-                                                        ><x-icon icon="download" /></a>
-                                                        <button
-                                                            class="upload__fileAction"
-                                                            wire:click="deleteInspectionImage('{{ $image }}')"
-                                                            wire:confirm="@lang('ui.delete_confirm')"
-                                                            type="button"
-                                                        ><x-icon icon="trash" /></button>
-                                                    @endif
-                                                </div>
-                                            @endforeach
+                                <div
+                                    class="submission__photos u-stack u-stack-gap-m"
+                                    x-data="{
+                                        fieldKey: @js(InspectionSubmissionForm::PHOTOS_KEY),
+                                        title: @js(__('models/inspection.photos.label')),
+                                        selected: @js(array_column($this->submissionForm->photos, 'image')),
+                                    }"
+                                >
+                                    <div class="field__label">@lang('models/inspection.photos.label')</div>
+                                    @foreach ($this->submissionForm->photos as $index => $photo)
+                                        <div class="submission__photoRow" wire:key="inspection-photo-{{ md5($photo['image']) }}">
+                                            <div class="submission__photoThumb">
+                                                <img alt="" loading="lazy" src="{{ $photo['image'] }}" x-on:click="$dispatch('photo-picker-open', { fieldKey, title, selected })" />
+                                                <button
+                                                    class="submission__photoThumb-remove"
+                                                    type="button"
+                                                    wire:click="removeInspectionPhoto({{ $index }})"
+                                                    wire:loading.attr="disabled"
+                                                ><x-icon icon="x" /></button>
+                                            </div>
+                                            <div class="u-flex-flex">
+                                                <x-form.input
+                                                    model="submissionForm.photos.{{ $index }}.comment"
+                                                    :placeholder="__('inspection.form.comment')"
+                                                    type="text"
+                                                />
+                                            </div>
                                         </div>
-                                    @endif
-                                    <div class="u-flex u-flex-gap-s">
-                                        <x-submission.image-upload-button model="submissionForm.inspectionImages" />
+                                    @endforeach
+                                    <div>
+                                        <x-btn
+                                            icon="image"
+                                            type="button"
+                                            x-on:click="$dispatch('photo-picker-open', { fieldKey, title, selected })"
+                                        >@lang('inspections.form.select_photos')</x-btn>
                                     </div>
                                 </div>
                             </div>

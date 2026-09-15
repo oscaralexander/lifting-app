@@ -1,10 +1,7 @@
-@use('Illuminate\Support\Facades\Storage')
-
 @php
-    $images = array_values(array_filter(
-        (array) ($inspection->images ?? []),
-        fn ($image) => is_string($image) && $image !== '',
-    ));
+    $photos = collect($inspection->photos ?? [])
+        ->filter(fn ($photo) => ! empty($photo['image']))
+        ->values();
 @endphp
 <!DOCTYPE html>
 <html lang="nl">
@@ -53,13 +50,14 @@
             @if ($inspection->comment)
                 <p>{!! nl2br(e($inspection->comment)) !!}</p>
             @endif
-            @if (count($images))
-                <div class="deficiency__photos">
-                    @foreach ($images as $image)
-                        <img alt="" class="deficiency__photo" src="{{ Str::startsWith($image, ['http://', 'https://']) ? $image : Storage::disk('public')->url($image) }}">
-                    @endforeach
-                </div>
-            @endif
+            @foreach ($photos as $photo)
+                <figure class="photo">
+                    <img alt="" class="photo__img" src="{{ $photo['image'] }}">
+                    @if (! empty($photo['comment']))
+                        <figcaption class="photo__comment">{!! nl2br(e($photo['comment'])) !!}</figcaption>
+                    @endif
+                </figure>
+            @endforeach
         </div>
     </body>
 </html>

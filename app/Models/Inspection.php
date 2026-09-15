@@ -35,6 +35,7 @@ class Inspection extends Model
         'matrix' => 'json',
         'meta_data' => 'json:unicode',
         'outsmart_photos' => 'json:unicode',
+        'photos' => 'json:unicode',
         'requires_reinspection' => 'boolean',
         'requires_written_deregistration' => 'boolean',
         'type' => InspectionType::class,

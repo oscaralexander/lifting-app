@@ -56,6 +56,9 @@ return [
         'label' => 'Opmerkingen',
     ],
     'images' => [
-        'label' => 'Foto\’s',
+        'label' => 'Foto’s',
+    ],
+    'photos' => [
+        'label' => 'Foto’s',
     ],
 ];

@@ -433,6 +433,27 @@ h1 {
     width: auto;
 }
 
+/**
+ * Appendix photos
+ */
+
+.photo {
+    break-inside: avoid;
+    margin: 0 0 4mm;
+}
+
+.photo__img {
+    max-height: 60mm;
+    max-width: 85mm;
+    width: auto;
+}
+
+.photo__comment {
+    font-size: 9pt;
+    margin-top: 1.5mm;
+    max-width: 85mm;
+}
+
 .signature-box {
     position: relative;
 }
