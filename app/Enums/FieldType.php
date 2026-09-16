@@ -4,6 +4,7 @@ namespace App\Enums;
 
 enum FieldType: string
 {
+    case IMAGE = 'image';
     case TEXT = 'text';
     case TEXTAREA = 'textarea';
     case NUMBER = 'number';
@@ -14,6 +15,7 @@ enum FieldType: string
     public function icon(): string
     {
         return match ($this) {
+            self::IMAGE => 'image',
             self::NUMBER => 'hash',
             self::SELECT => 'circle-check-big',
             self::SELECT_MULTIPLE => 'square-check-big',

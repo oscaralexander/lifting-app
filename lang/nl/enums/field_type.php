@@ -1,6 +1,7 @@
 <?php
 
 return [
+    'image' => 'Foto',
     'number' => 'Getal',
     'select' => 'Keuze (enkel)',
     'select_multiple' => 'Keuze (meerdere)',

@@ -7,19 +7,53 @@
 
 <div class="submission__field">
     @switch($field->type)
-        {{--
         @case (FieldType::IMAGE)
-            <x-form.upload
-                accept="image/*"
-                :description="$field->description"
-                :files="$this->fields['field_' . $field->pivot->id]"
-                :label="$field->label"
-                :multiple="($field->attrs['allow_multiple'] ?? false) === true"
-                :required="$field->pivot->required == 1"
-                wire:model.live="submissionForm.fields.field_{{ $field->pivot->id }}"
-            />
+            @php
+                $fieldKey = 'field_'.$field->pivot->id;
+                $selectedPhoto = $form->fields[$fieldKey] ?? null;
+            @endphp
+            <div
+                class="field"
+                x-data="{
+                    fieldKey: '{{ $fieldKey }}',
+                    title: @js(strip_tags($field->label)),
+                    openPicker() {
+                        $dispatch('photo-picker-open', {
+                            fieldKey: this.fieldKey,
+                            title: this.title,
+                            multiple: false,
+                            selected: $refs.thumb ? [$refs.thumb.getAttribute('src')] : [],
+                        });
+                    },
+                }"
+            >
+                <div @class(['field__label', 'field__label--required' => $field->pivot->required == 1])>{{ $field->label }}</div>
+                @if ($field->description)
+                    <div class="field__description">{{ $field->description }}</div>
+                @endif
+                @if ($selectedPhoto)
+                    <div class="submission__photoThumbs">
+                        <div class="submission__photoThumb" wire:key="thumb-{{ $fieldKey }}">
+                            <img alt="" loading="lazy" src="{{ $selectedPhoto }}" x-on:click="openPicker()" x-ref="thumb" />
+                            <button
+                                class="submission__photoThumb-remove"
+                                type="button"
+                                wire:click="removeFieldPhoto('{{ $fieldKey }}', 0)"
+                                wire:loading.attr="disabled"
+                            ><x-icon icon="x" /></button>
+                        </div>
+                    </div>
+                @endif
+                <div>
+                    <x-btn icon="image" type="button" x-on:click="openPicker()">
+                        @lang('inspections.form.select_photo')
+                    </x-btn>
+                </div>
+                @error ('submissionForm.fields.'.$fieldKey)
+                    <div class="field__error">{{ $message }}</div>
+                @enderror
+            </div>
             @break;
-        --}}
 
         @case (FieldType::TOGGLE)
             @php

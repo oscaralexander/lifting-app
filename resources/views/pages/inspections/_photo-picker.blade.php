@@ -1,7 +1,7 @@
 @if ($this->inspection->exists)
 @php
     $photos = collect($this->inspection->outsmart_photos ?? [])
-        ->merge($this->inspection->uploaded_photos ?? [])
+        ->merge(collect($this->inspection->uploaded_photos ?? [])->map(fn ($photo) => ['image' => $photo['image'] ?? null]))
         ->filter(fn ($photo) => ! empty($photo['image']))
         ->values();
 @endphp
@@ -12,10 +12,12 @@
         x-data="{
             open: false,
             fieldKey: null,
+            multiple: true,
             title: '',
             selected: [],
             show(detail) {
                 this.fieldKey = detail.fieldKey;
+                this.multiple = detail.multiple ?? true;
                 this.title = detail.title;
                 this.selected = detail.selected;
                 this.open = true;
@@ -27,6 +29,12 @@
                 return this.selected.includes(url);
             },
             toggle(url) {
+                if (! this.multiple) {
+                    this.selected = this.isSelected(url) ? [] : [url];
+
+                    return;
+                }
+
                 const index = this.selected.indexOf(url);
 
                 if (index === -1) {
@@ -36,7 +44,9 @@
                 }
             },
             select(url) {
-                if (! this.selected.includes(url)) {
+                if (! this.multiple) {
+                    this.selected = [url];
+                } else if (! this.selected.includes(url)) {
                     this.selected.push(url);
                 }
             },

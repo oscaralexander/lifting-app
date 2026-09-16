@@ -50,27 +50,47 @@ class InspectionSubmissionForm extends LivewireForm
     public ?string $stickerNumber = null;
 
     /**
-     * Stage the Outsmart photo URLs selected for a given toggle field.
+     * Stage the photo URLs selected for a given field.
      *
-     * Held in form state only; persisted to the database when the inspection is saved.
+     * Toggle fields hold their photos in `$images`; an image field holds its single
+     * photo as the field's answer. Persisted to the database when the inspection is saved.
      *
      * @param  array<int, string>  $urls
      */
     public function setFieldPhotos(string $key, array $urls): void
     {
+        if ($this->fieldType($key) === FieldType::IMAGE) {
+            $this->fields[$key] = $urls[0] ?? null;
+
+            return;
+        }
+
         $this->images[$key] = array_values(array_unique($urls));
     }
 
     /**
-     * Remove a single staged photo from a toggle field by its position.
+     * Remove a single staged photo from a field by its position.
      */
     public function removeFieldPhoto(string $key, int $index): void
     {
+        if ($this->fieldType($key) === FieldType::IMAGE) {
+            $this->fields[$key] = null;
+
+            return;
+        }
+
         $photos = array_values($this->images[$key] ?? []);
 
         unset($photos[$index]);
 
         $this->images[$key] = array_values($photos);
+    }
+
+    protected function fieldType(string $key): ?FieldType
+    {
+        return $this->form->fields
+            ->first(fn ($field) => 'field_'.$field->pivot->id === $key)
+            ?->type;
     }
 
     /**

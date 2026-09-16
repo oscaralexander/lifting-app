@@ -243,6 +243,21 @@
                                         <td class="table__toggleCol table__toggleCol--yes">{!! $options ? $svgYes : '' !!}</td>
                                         <td colspan="2"></td>
                                     </tr>
+                                @elseif ($field->type === FieldType::IMAGE)
+                                    <tr>
+                                        <td class="table__fieldNum">{{ $field->number }}</td>
+                                        <td>
+                                            <div class="answer">
+                                                <div class="answer__label">{{ nl2br(e($field->label)) }}</div>
+                                                <div class="answer__answer">
+                                                    @if ($answer)
+                                                        <img alt="" src="{{ $answer }}">
+                                                    @endif
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td colspan="3"></td>
+                                    </tr>
                                 @else
                                     <tr>
                                         <td class="table__fieldNum">{{ $field->number }}</td>
@@ -288,6 +303,21 @@
                                 <td>{!! implode('<hr>', array_map(fn ($option) => nl2br(e($option)), $options)) !!}</td>
                                 <td class="table__toggleCol table__toggleCol--yes">{!! $options ? $svgYes : '' !!}</td>
                                 <td colspan="2"></td>
+                            </tr>
+                        @elseif ($field->type === FieldType::IMAGE)
+                            <tr>
+                                <td class="table__fieldNum">{{ $field->number }}</td>
+                                <td>
+                                    <div class="answer">
+                                        <div class="answer__label">{{ nl2br(e($field->label)) }}</div>
+                                        <div class="answer__answer">
+                                            @if ($answer)
+                                                <img alt="" src="{{ $answer }}">
+                                            @endif
+                                        </div>
+                                    </div>
+                                </td>
+                                <td colspan="3"></td>
                             </tr>
                         @else
                             <tr>

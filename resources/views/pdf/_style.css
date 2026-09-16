@@ -293,6 +293,14 @@ h1 {
     font-style: italic;
 }
 
+.table__formImg {
+    display: inline-block;
+    margin-top: 1mm;
+    max-height: 60mm;
+    max-width: 60mm;
+    width: auto;
+}
+
 /**
  * Answers
  */
@@ -304,6 +312,13 @@ h1 {
 
 .answer__label {
     flex: 1;
+}
+
+.answer__answer img {
+    display: block;
+    max-height: 60mm;
+    max-width: 60mm;
+    width: 100%;
 }
 
 /**

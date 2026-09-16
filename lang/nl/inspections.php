@@ -11,6 +11,7 @@ return [
         'btn_fetch_outsmart' => 'Ophalen uit Outsmart',
         'btn_generate_report' => 'Keuringsrapport genereren',
         'btn_generate_certificate' => 'Certificaat genereren',
+        'select_photo' => 'Foto selecteren',
         'select_photos' => 'Foto\'s selecteren',
         'upload_photo' => 'Foto uploaden',
         'no_photos_heading' => 'Geen foto\'s beschikbaar',
