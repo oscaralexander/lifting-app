@@ -294,11 +294,25 @@ h1 {
 }
 
 /**
+ * Answers
+ */
+
+.answer {
+    display: flex;
+    gap: 2mm;
+}
+
+.answer__label {
+    flex: 1;
+}
+
+/**
  * Test matrix
  */
 
 .matrix {
     break-inside: avoid;
+    margin-top: 5mm;
 }
 
 .matrix h2 {
