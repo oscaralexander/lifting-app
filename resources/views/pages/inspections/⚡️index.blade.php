@@ -51,6 +51,7 @@ new class extends Component
                 fn ($inspectionObject) => $inspectionObject->whereIn('type', $this->types)
             ))
             ->when($this->statuses, fn ($query) => $query->whereStatusIn($this->statuses))
+            ->latest()
             ->paginate(Inspection::PER_PAGE, pageName: 'p')
             ->setPath(route('inspections'));
     }
