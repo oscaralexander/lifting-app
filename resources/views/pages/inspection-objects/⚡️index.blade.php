@@ -38,6 +38,7 @@ new class extends Component
                     ->orWhere('serial_number', 'like', '%' . $this->search . '%');
             }))
             ->when($this->types, fn ($query) => $query->whereIn('type', $this->types))
+            ->latest()
             ->paginate(InspectionObject::PER_PAGE, pageName: 'p')
             ->setPath(route('inspection-objects'));
     }
