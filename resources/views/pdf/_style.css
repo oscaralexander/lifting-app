@@ -279,10 +279,13 @@ h1 {
     margin: 1.5mm 0;
 }
 
+.table--form .table__fieldNum {
+    width: 12mm;
+}
+
 .table--form tbody .table__fieldNum {
     font-variant-numeric: tabular-nums;
     font-feature-settings: 'tnum';
-    width: 12mm;
 }
 
 .table__formQ {

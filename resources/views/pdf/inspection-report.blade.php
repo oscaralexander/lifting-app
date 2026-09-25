@@ -206,77 +206,89 @@
                     }
 
                     $groupItems = $groupItems->sortBy('position');
+
+                    $isNotApplicable = $groupItems->isNotEmpty() && $groupItems->every(
+                        fn ($groupItem) => $groupItem['type'] === 'field'
+                            && $groupItem['field']->type === FieldType::TOGGLE
+                            && (string) data_get($inspection->form_data, 'field_' . $groupItem['field']->pivot->id) === '0'
+                    );
                 @endphp
                 <table class="table table--form">
                     <thead>
                         <tr>
                             <th class="table__fieldNum">{{ $fieldGroup->number }}</th>
-                            <th>{{ $fieldGroup->name }}</th>
-                            <th class="table__toggleCol"><img alt="" height="16" src="https://app.liftinginspections.nl/assets/img/pdf/check-wh.svg" width="16"></th>
-                            <th class="table__toggleCol"><img alt="" height="16" src="https://app.liftinginspections.nl/assets/img/pdf/x-wh.svg" width="16"></th>
+                            @if ($isNotApplicable)
+                                <th colspan="3">{{ $fieldGroup->name }}</th>
+                            @else
+                                <th>{{ $fieldGroup->name }}</th>
+                                <th class="table__toggleCol"><img alt="" height="16" src="https://app.liftinginspections.nl/assets/img/pdf/check-wh.svg" width="16"></th>
+                                <th class="table__toggleCol"><img alt="" height="16" src="https://app.liftinginspections.nl/assets/img/pdf/x-wh.svg" width="16"></th>
+                            @endif
                             <th class="table__toggleCol"><img alt="" height="16" src="https://app.liftinginspections.nl/assets/img/pdf/circle-slash-wh.svg" width="16"></th>
                         </tr>
                     </thead>
-                    <tbody>
-                        @foreach ($groupItems as $groupItem)
-                            @if ($groupItem['type'] === 'field')
-                                @php
-                                    $field  = $groupItem['field'];
-                                    $answer = data_get($inspection->form_data, 'field_' . $field->pivot->id);
-                                    $isYes  = $answer !== null && (string) $answer === '1';
-                                    $isNo   = $answer !== null && (string) $answer === '-1';
-                                    $isNa   = $answer !== null && (string) $answer === '0';
-                                @endphp
-                                @if ($field->type === FieldType::TOGGLE)
-                                    <tr>
-                                        <td class="table__fieldNum">{{ $field->number }}</td>
-                                        <td>{!! nl2br($field->label) !!}</td>
-                                        <td class="table__toggleCol table__toggleCol--yes">{!! $isYes ? $svgYes : '' !!}</td>
-                                        <td class="table__toggleCol table__toggleCol--no">{!! $isNo ? $svgNo : '' !!}</td>
-                                        <td class="table__toggleCol table__toggleCol--na">{!! $isNa ? $svgNa : '' !!}</td>
-                                    </tr>
-                                @elseif ($field->type === FieldType::SELECT_MULTIPLE)
-                                    @php $options = $selectedOptions($field, $answer); @endphp
-                                    <tr>
-                                        <td class="table__fieldNum">{{ $field->number }}</td>
-                                        <td>{!! implode('<hr>', array_map(fn ($option) => nl2br(e($option)), $options)) !!}</td>
-                                        <td class="table__toggleCol table__toggleCol--yes">{!! $options ? $svgYes : '' !!}</td>
-                                        <td colspan="2"></td>
-                                    </tr>
-                                @elseif ($field->type === FieldType::IMAGE)
-                                    <tr>
-                                        <td class="table__fieldNum">{{ $field->number }}</td>
-                                        <td>
-                                            <div class="answer">
-                                                <div class="answer__label">{{ nl2br(e($field->label)) }}</div>
-                                                <div class="answer__answer">
-                                                    @if ($answer)
-                                                        <img alt="" src="{{ $answer }}">
-                                                    @endif
+                    @unless ($isNotApplicable)
+                        <tbody>
+                            @foreach ($groupItems as $groupItem)
+                                @if ($groupItem['type'] === 'field')
+                                    @php
+                                        $field  = $groupItem['field'];
+                                        $answer = data_get($inspection->form_data, 'field_' . $field->pivot->id);
+                                        $isYes  = $answer !== null && (string) $answer === '1';
+                                        $isNo   = $answer !== null && (string) $answer === '-1';
+                                        $isNa   = $answer !== null && (string) $answer === '0';
+                                    @endphp
+                                    @if ($field->type === FieldType::TOGGLE)
+                                        <tr>
+                                            <td class="table__fieldNum">{{ $field->number }}</td>
+                                            <td>{!! nl2br($field->label) !!}</td>
+                                            <td class="table__toggleCol table__toggleCol--yes">{!! $isYes ? $svgYes : '' !!}</td>
+                                            <td class="table__toggleCol table__toggleCol--no">{!! $isNo ? $svgNo : '' !!}</td>
+                                            <td class="table__toggleCol table__toggleCol--na">{!! $isNa ? $svgNa : '' !!}</td>
+                                        </tr>
+                                    @elseif ($field->type === FieldType::SELECT_MULTIPLE)
+                                        @php $options = $selectedOptions($field, $answer); @endphp
+                                        <tr>
+                                            <td class="table__fieldNum">{{ $field->number }}</td>
+                                            <td>{!! implode('<hr>', array_map(fn ($option) => nl2br(e($option)), $options)) !!}</td>
+                                            <td class="table__toggleCol table__toggleCol--yes">{!! $options ? $svgYes : '' !!}</td>
+                                            <td colspan="2"></td>
+                                        </tr>
+                                    @elseif ($field->type === FieldType::IMAGE)
+                                        <tr>
+                                            <td class="table__fieldNum">{{ $field->number }}</td>
+                                            <td>
+                                                <div class="answer">
+                                                    <div class="answer__label">{{ nl2br(e($field->label)) }}</div>
+                                                    <div class="answer__answer">
+                                                        @if ($answer)
+                                                            <img alt="" src="{{ $answer }}">
+                                                        @endif
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        </td>
-                                        <td colspan="3"></td>
-                                    </tr>
-                                @else
+                                            </td>
+                                            <td colspan="3"></td>
+                                        </tr>
+                                    @else
+                                        <tr>
+                                            <td class="table__fieldNum">{{ $field->number }}</td>
+                                            <td>
+                                                <div class="answer">
+                                                    <div class="answer__label">{{ nl2br(e($field->label)) }}</div>
+                                                    <div class="answer__answer">{{ $answer }}</div>
+                                                </div>
+                                            </td>
+                                            <td colspan="3"></td>
+                                        </tr>
+                                    @endif
+                                @elseif ($groupItem['type'] === 'formComment')
                                     <tr>
-                                        <td class="table__fieldNum">{{ $field->number }}</td>
-                                        <td>
-                                            <div class="answer">
-                                                <div class="answer__label">{{ nl2br(e($field->label)) }}</div>
-                                                <div class="answer__answer">{{ $answer }}</div>
-                                            </div>
-                                        </td>
-                                        <td colspan="3"></td>
+                                        <td class="table__formComment" colspan="5">{{ $groupItem['formComment']->comment }}</td>
                                     </tr>
                                 @endif
-                            @elseif ($groupItem['type'] === 'formComment')
-                                <tr>
-                                    <td class="table__formComment" colspan="5">{{ $groupItem['formComment']->comment }}</td>
-                                </tr>
-                            @endif
-                        @endforeach
-                    </tbody>
+                            @endforeach
+                        </tbody>
+                    @endunless
                 </table>
             @elseif ($item['type'] === 'field')
                 @php

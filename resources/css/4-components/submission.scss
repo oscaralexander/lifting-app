@@ -68,12 +68,33 @@
         padding: .75rem .25rem .75rem .5rem;
         font-weight: 500;
         width: 100%;
+        cursor: pointer;
 
         &::before,
         &::after {
             background: var(--color-text-lc);
             content: '';
             position: absolute;
+        }
+    }
+
+    &__fieldGroupToggleButton {
+        align-items: center;
+        color: inherit;
+        display: flex;
+        flex: 1;
+        font: inherit;
+        gap: .5rem;
+        min-width: 0;
+    }
+
+    &__fieldGroupNotApplicable {
+        color: var(--color-text-lc);
+        display: flex;
+        transition: color var(--duration-m);
+
+        &.is-active {
+            color: var(--color-success);
         }
     }
 
@@ -123,7 +144,7 @@
             width: 2px;
         }
 
-        button[aria-expanded=true] & {
+        .submission__fieldGroup.is-expanded & {
             &::after {
                 transform: scaleY(0);
             }

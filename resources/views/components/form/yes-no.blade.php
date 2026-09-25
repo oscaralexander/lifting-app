@@ -50,7 +50,10 @@
         @endif
         <div class="yesNo__switch"
              x-data="{ index: {{ $highlightIndex }} }"
-             x-on:change="const v = parseInt($event.target.value); index = v === 0 ? 0 : (v === 1 ? 1 : 2)">
+             x-init="$watch(() => $wire.$get(@js($model)), (value) => {
+                 const v = parseInt(value);
+                 index = Number.isNaN(v) ? null : (v === 0 ? 0 : (v === 1 ? 1 : 2));
+             })">
             <div class="yesNo__highlight"
                  x-show="index !== null"
                  x-bind:style="'transform: translateX(calc(' + index + ' * 2rem))'">

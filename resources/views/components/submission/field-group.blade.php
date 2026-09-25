@@ -80,23 +80,47 @@
                 const val = $wire.submissionForm.fields[key];
                 return val === -1 || val === '-1';
             });
+        },
+        get isNotApplicable() {
+            if (this.keys.length === 0) return false;
+
+            return this.keys.every(key => {
+                const val = $wire.submissionForm.fields[key];
+                return val === 0 || val === '0';
+            });
+        },
+        toggleNotApplicable() {
+            const value = this.isNotApplicable ? null : 0;
+
+            this.keys.forEach(key => $wire.$set('submissionForm.fields.' + key, value, false));
         }
     }"
 >
-    <button
-        aria-controls="fieldGroup-{{ $fieldGroup->id }}"
-        aria-expanded="false"
-        class="submission__fieldGroupToggle"
-        type="button"
-        x-bind:aria-expanded="isExpanded"
-        x-on:click="isExpanded = !isExpanded"
-    >
-        <span class="submission__fieldGroupToggleName">{!! $fieldGroup->numberedName !!}</span>
-        <span class="submission__fieldGroupToggleError"><x-icon icon="triangle-alert" /></span>
-        <span class="submission__fieldGroupToggleCheck" x-cloak x-show="allFieldsPassed"><x-icon icon="check" /></span>
-        <span class="submission__fieldGroupToggleError" x-cloak x-show="hasFailures"><x-icon icon="x" /></span>
+    <div class="submission__fieldGroupToggle" x-on:click="isExpanded = !isExpanded">
+        <button
+            aria-controls="fieldGroup-{{ $fieldGroup->id }}"
+            aria-expanded="false"
+            class="submission__fieldGroupToggleButton"
+            type="button"
+            x-bind:aria-expanded="isExpanded"
+        >
+            <span class="submission__fieldGroupToggleName">{!! $fieldGroup->numberedName !!}</span>
+            <span class="submission__fieldGroupToggleError"><x-icon icon="triangle-alert" /></span>
+            <span class="submission__fieldGroupToggleCheck" x-cloak x-show="allFieldsPassed"><x-icon icon="check" /></span>
+            <span class="submission__fieldGroupToggleError" x-cloak x-show="hasFailures"><x-icon icon="x" /></span>
+        </button>
+        @if (count($toggleFieldKeys))
+            <button
+                aria-pressed="false"
+                class="submission__fieldGroupNotApplicable"
+                type="button"
+                x-bind:aria-pressed="isNotApplicable"
+                x-bind:class="{ 'is-active': isNotApplicable }"
+                x-on:click.stop="toggleNotApplicable()"
+            ><x-icon icon="circle-slash" /></button>
+        @endif
         <span class="submission__fieldGroupToggleIcon"></span>
-    </button>
+    </div>
     <div
         class="submission__fieldGroupFields"
         id="fieldGroup-{{ $fieldGroup->id }}"
