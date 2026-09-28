@@ -72,6 +72,7 @@
         @foreach ($rows as $i => $row)
             @php
                 $deviations = $this->testMatrix->deviations($row);
+                $approvals = $this->testMatrix->approvals($row);
                 $isApproved = $this->testMatrix->isApproved($row);
             @endphp
             <tr wire:key="matrix-row-{{ $i }}">
@@ -95,10 +96,10 @@
                 <td><input type="text" wire:model="rows.{{ $i }}.lmb_trolley_out_at" /></td>{{-- 10 --}}
                 <td><input type="text" wire:model="rows.{{ $i }}.lmb_hoist_up_at" /></td>{{-- 11 --}}
                 <td><input type="text" wire:model.live.blur="rows.{{ $i }}.lmb_permissible_load" /></td>{{-- 12 --}}
-                <td class="border-right {{ $this->testMatrix->deviationStatus($deviations['lmb']) }}">{{ $this->testMatrix->formatDeviation($deviations['lmb']) }}</td>{{-- 13 --}}
+                <td class="border-right {{ $this->testMatrix->status($approvals['lmb']) }}">{{ $this->testMatrix->formatDeviation($deviations['lmb']) }}</td>{{-- 13 --}}
                 <td><input type="text" wire:model.live.blur="rows.{{ $i }}.lb_triggered_at" /></td>{{-- 14 --}}
                 <td><input type="text" wire:model.live.blur="rows.{{ $i }}.lb_permissible_load" /></td>{{-- 15 --}}
-                <td class="border-right {{ $this->testMatrix->deviationStatus($deviations['lb']) }}">{{ $this->testMatrix->formatDeviation($deviations['lb']) }}</td>{{-- 16 --}}
+                <td class="border-right {{ $this->testMatrix->status($approvals['lb']) }}">{{ $this->testMatrix->formatDeviation($deviations['lb']) }}</td>{{-- 16 --}}
                 <td class="result {{ $this->testMatrix->status($isApproved) }}">{{ $this->testMatrix->formatApproval($isApproved) }}</td>{{-- 17 --}}
             </tr>
         @endforeach

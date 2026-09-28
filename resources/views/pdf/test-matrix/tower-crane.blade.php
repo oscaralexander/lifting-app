@@ -54,6 +54,7 @@
             @foreach ($rows as $i => $row)
                 @php
                     $deviations = $testMatrix->deviations($row);
+                    $approvals = $testMatrix->approvals($row);
                     $isApproved = $testMatrix->isApproved($row);
                 @endphp
                 <tr>
@@ -65,10 +66,10 @@
                     <td>{{ $row['lmb_trolley_out_at'] }}</td>{{-- 5 --}}
                     <td>{{ $row['lmb_hoist_up_at'] }}</td>{{-- 6 --}}
                     <td>{{ $row['lmb_permissible_load'] }}</td>{{-- 7 --}}
-                    <td class="border-right {{ $testMatrix->deviationStatus($deviations['lmb']) }}">{{ $testMatrix->formatDeviation($deviations['lmb']) }}</td>{{-- 8 --}}
+                    <td class="border-right {{ $testMatrix->status($approvals['lmb']) }}">{{ $testMatrix->formatDeviation($deviations['lmb']) }}</td>{{-- 8 --}}
                     <td>{{ $row['lb_triggered_at'] }}</td>{{-- 9 --}}
                     <td>{{ $row['lb_permissible_load'] }}</td>{{-- 10 --}}
-                    <td class="border-right {{ $testMatrix->deviationStatus($deviations['lb']) }}">{{ $testMatrix->formatDeviation($deviations['lb']) }}</td>{{-- 11 --}}
+                    <td class="border-right {{ $testMatrix->status($approvals['lb']) }}">{{ $testMatrix->formatDeviation($deviations['lb']) }}</td>{{-- 11 --}}
                     <td class="result {{ $testMatrix->status($isApproved) }}">{{ $testMatrix->formatApproval($isApproved) }}</td>{{-- 12 --}}
                 </tr>
             @endforeach

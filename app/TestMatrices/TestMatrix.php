@@ -117,36 +117,61 @@ abstract class TestMatrix
     }
 
     /**
-     * Whether a row passes: null when no deviation can be calculated yet,
-     * false when any deviation reaches the maximum.
+     * The maximum permissible deviation (%) for each deviation of a row, keyed
+     * like the deviations. A limit is null when it depends on an input that
+     * hasn't been filled in yet.
+     *
+     * @param  array<string, string|null>  $row
+     * @return array<string, float|null>
+     */
+    public function maxDeviations(array $row): array
+    {
+        return array_fill_keys(array_keys($this->deviations($row)), static::MAX_DEVIATION);
+    }
+
+    /**
+     * Whether each deviation of a row is within its limit, keyed like the
+     * deviations. Null when the deviation or its limit can't be determined.
+     *
+     * @param  array<string, string|null>  $row
+     * @return array<string, bool|null>
+     */
+    public function approvals(array $row): array
+    {
+        $maxDeviations = $this->maxDeviations($row);
+        $approvals = [];
+
+        foreach ($this->deviations($row) as $key => $deviation) {
+            $maxDeviation = $maxDeviations[$key] ?? null;
+
+            $approvals[$key] = $deviation === null || $maxDeviation === null
+                ? null
+                : $this->isWithinLimit($key, $deviation, $maxDeviation);
+        }
+
+        return $approvals;
+    }
+
+    /**
+     * Whether a row passes: null when no deviation can be judged yet, false
+     * when any deviation exceeds its limit.
      *
      * @param  array<string, string|null>  $row
      */
     public function isApproved(array $row): ?bool
     {
-        $deviations = array_filter($this->deviations($row), fn (?float $deviation): bool => $deviation !== null);
+        $approvals = array_filter($this->approvals($row), fn (?bool $isApproved): bool => $isApproved !== null);
 
-        if ($deviations === []) {
+        if ($approvals === []) {
             return null;
         }
 
-        foreach ($deviations as $deviation) {
-            if ($deviation >= static::MAX_DEVIATION) {
-                return false;
-            }
-        }
-
-        return true;
+        return ! in_array(false, $approvals, true);
     }
 
     public function formatDeviation(?float $deviation): string
     {
         return $deviation === null ? '—' : number_format($deviation, 2, ',', '').'%';
-    }
-
-    public function deviationStatus(?float $deviation): string
-    {
-        return $this->status($deviation === null ? null : $deviation < static::MAX_DEVIATION);
     }
 
     public function formatApproval(?bool $isApproved): string
@@ -190,6 +215,14 @@ abstract class TestMatrix
         $value = str_replace(',', '.', trim((string) $value));
 
         return is_numeric($value) ? (float) $value : null;
+    }
+
+    /**
+     * Whether a deviation (%) is within its maximum. Reaching the maximum fails.
+     */
+    protected function isWithinLimit(string $key, float $deviation, float $maxDeviation): bool
+    {
+        return $deviation < $maxDeviation;
     }
 
     protected function slug(): string

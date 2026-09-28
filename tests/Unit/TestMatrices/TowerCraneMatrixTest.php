@@ -63,14 +63,26 @@ it('approves a row based on its deviations', function (array $row, ?bool $expect
     'negative deviation' => [['test_load' => '8', 'lmb_permissible_load' => '10'], true],
 ]);
 
+it('judges each deviation against the fixed maximum', function () {
+    $approvals = (new TowerCraneMatrix)->approvals([
+        'test_load' => '10.999',
+        'lmb_permissible_load' => '10',
+        'lb_triggered_at' => '11',
+        'lb_permissible_load' => '10',
+    ]);
+
+    expect($approvals)->toBe(['lmb' => true, 'lb' => false])
+        ->and((new TowerCraneMatrix)->approvals([]))->toBe(['lmb' => null, 'lb' => null]);
+});
+
 it('formats deviations and approvals', function () {
     $matrix = new TowerCraneMatrix;
 
     expect($matrix->formatDeviation(3.8674))->toBe('3,87%')
         ->and($matrix->formatDeviation(null))->toBe('—')
-        ->and($matrix->deviationStatus(9.99))->toBe('passed')
-        ->and($matrix->deviationStatus(10.0))->toBe('failed')
-        ->and($matrix->deviationStatus(null))->toBe('neutral')
+        ->and($matrix->status(true))->toBe('passed')
+        ->and($matrix->status(false))->toBe('failed')
+        ->and($matrix->status(null))->toBe('neutral')
         ->and($matrix->formatApproval(true))->toBe('JA')
         ->and($matrix->formatApproval(false))->toBe('NEE')
         ->and($matrix->formatApproval(null))->toBe('—');
@@ -128,17 +140,18 @@ it('maps crane types to a test matrix type', function (CraneType $craneType, ?Te
     'tower crane' => [CraneType::TOWER_CRANE, TestMatrixType::TOWER_CRANE],
     'mobile tower crane' => [CraneType::MOBILE_TOWER_CRANE, TestMatrixType::MOBILE_TOWER_CRANE],
     'mobile crane' => [CraneType::MOBILE_CRANE, TestMatrixType::MOBILE_CRANE],
-    'loader crane' => [CraneType::LOADER_CRANE, null],
+    'loader crane' => [CraneType::LOADER_CRANE, TestMatrixType::LOADER_CRANE],
+    'earthmover' => [CraneType::EARTHMOVER, null],
 ]);
 
 it('resolves an inspection\'s test matrix from its crane type', function () {
     expect(inspectionWithCrane(CraneType::TOWER_CRANE)->testMatrix())->toBeInstanceOf(TowerCraneMatrix::class)
-        ->and(inspectionWithCrane(CraneType::LOADER_CRANE)->testMatrix())->toBeNull()
+        ->and(inspectionWithCrane(CraneType::EARTHMOVER)->testMatrix())->toBeNull()
         ->and(inspectionWithCrane(null)->testMatrix())->toBeNull();
 });
 
 it('prefers the stored matrix type over the crane type', function () {
-    $inspection = inspectionWithCrane(CraneType::LOADER_CRANE, [
+    $inspection = inspectionWithCrane(CraneType::EARTHMOVER, [
         'type' => 'tower_crane',
         'rows' => [['lmb_code' => 'LM1']],
     ]);
