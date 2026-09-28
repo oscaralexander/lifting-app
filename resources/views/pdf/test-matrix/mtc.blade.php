@@ -11,7 +11,7 @@
                 <th class="border-right subheading" scope="col" colspan="5">Opstelling</th>
                 <th class="border-right subheading" scope="col" colspan="8">LMB</th>
                 <th class="border-right subheading" scope="col" colspan="3">LB</th>
-                <th class="rotate" scope="col" rowspan="2"><div>Akkoord</div></th>
+                <th class="border-left rotate" scope="col" rowspan="2"><div>Akkoord</div></th>
             </tr>
             <tr>
                 <th class="rotate" scope="col"><div>Opstelling</div></th>

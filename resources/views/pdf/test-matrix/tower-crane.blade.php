@@ -6,7 +6,7 @@
                 <th class="border-bottom border-right rotate" scope="col" rowspan="4"><div>Volgnummer</div></th>
                 <th class="border-right heading" scope="col" colspan="8">LMB</th>
                 <th class="border-right heading" scope="col" colspan="3">LB</th>
-                <th class="rotate" scope="col" rowspan="2"><div>Akkoord</div></th>
+                <th class="border-left rotate" scope="col" rowspan="2"><div>Akkoord</div></th>
             </tr>
             <tr>
                 <th class="rotate" scope="col"><div>Aantal parten hijskabel</div></th>

@@ -9,7 +9,7 @@
             <th class="border-right subheading" scope="col" colspan="8">Opstelling</th>
             <th class="border-right subheading" scope="col" colspan="7">LMB</th>
             <th class="border-right subheading" scope="col" colspan="3">LB</th>
-            <th class="rotate" scope="col" rowspan="2">Akkoord</th>
+            <th class="border-left rotate" scope="col" rowspan="2">Akkoord</th>
         </tr>
         <tr>
             <th class="rotate" scope="col">Opstelling</th>
