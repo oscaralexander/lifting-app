@@ -2,6 +2,8 @@
 
 namespace App\Enums\InspectionObject\Crane;
 
+use App\Enums\TestMatrixType;
+
 enum Type: string
 {
     case MOBILE_CRANE = 'mobile_crane';
@@ -14,6 +16,14 @@ enum Type: string
     public function label(): string
     {
         return __('enums/inspection_object/crane/type.'.$this->value);
+    }
+
+    public function testMatrixType(): ?TestMatrixType
+    {
+        return match ($this) {
+            self::TOWER_CRANE, self::MOBILE_TOWER_CRANE => TestMatrixType::TOWER_CRANE,
+            default => null,
+        };
     }
 
     public static function options(): array

@@ -5,7 +5,9 @@ namespace App\Models;
 use App\Enums\FieldType;
 use App\Enums\InspectionStatus;
 use App\Enums\InspectionType;
+use App\Enums\TestMatrixType;
 use App\Models\InspectionObjects\Crane;
+use App\TestMatrices\TestMatrix;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
@@ -133,6 +135,26 @@ class Inspection extends Model
         return $this->inspectable instanceof Crane
             && $this->type === InspectionType::TCVT
             && filled($this->sticker_number);
+    }
+
+    /**
+     * The test matrix this inspection was filled in with, or otherwise the one
+     * that applies to its inspection object.
+     */
+    public function testMatrix(): ?TestMatrix
+    {
+        $type = TestMatrixType::tryFrom($this->matrix['type'] ?? '')
+            ?? ($this->inspectable instanceof Crane ? $this->inspectable->type?->testMatrixType() : null);
+
+        return $type?->matrix();
+    }
+
+    /**
+     * @return list<array<string, string|null>>
+     */
+    public function testMatrixRows(): array
+    {
+        return $this->testMatrix()?->normalize($this->matrix['rows'] ?? []) ?? [];
     }
 
     public function certificatePath(): string

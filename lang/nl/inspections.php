@@ -40,6 +40,7 @@ return [
         'heading_operator_lift' => 'Machinistenlift',
         'heading_project' => 'Project',
         'heading_test_matrix' => 'Beproevingstabel',
+        'matrix_add_row' => 'Regel toevoegen',
         'meta_prompt' => 'Vul een waarde in',
         'status' => [
             'passed' => 'Object is goedgekeurd.',

@@ -3,9 +3,8 @@
 namespace App\Livewire\Inspections;
 
 use App\Constants\Event;
-use App\Enums\InspectionObject\Crane\Type as CraneType;
-use App\Enums\InspectionObject\Type;
 use App\Models\Inspection;
+use App\TestMatrices\TestMatrix as TestMatrixDefinition;
 use Illuminate\View\View;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Locked;
@@ -17,7 +16,10 @@ class TestMatrix extends Component
     #[Locked]
     public string $inspectionHash;
 
-    public array $matrix = [];
+    /**
+     * @var list<array<string, string|null>>
+     */
+    public array $rows = [];
 
     #[Computed]
     public function inspection(): Inspection
@@ -30,57 +32,56 @@ class TestMatrix extends Component
             ->firstOrFail();
     }
 
+    #[Computed]
+    public function testMatrix(): ?TestMatrixDefinition
+    {
+        return $this->inspection->testMatrix();
+    }
+
     public function mount(string $inspectionHash): void
     {
         $this->inspectionHash = $inspectionHash;
-
-        $stored = $this->inspection->matrix ?? [];
-
-        $this->matrix = array_map(
-            fn (int $i) => array_merge($this->blankRow(), (array) ($stored[$i] ?? [])),
-            range(0, 9),
-        );
+        $this->rows = $this->inspection->testMatrixRows();
     }
 
     public function render(): View
     {
-        $type = $this->inspection->inspectionObject?->type;
-        $craneType = $this->inspection->inspectable?->type;
+        return view($this->testMatrix ? 'livewire.inspections.test-matrix.index' : 'livewire.inspections.test-matrix.none');
+    }
 
-        if ($type === Type::CRANE) {
-            if ($craneType === CraneType::TOWER_CRANE || $craneType === CraneType::MOBILE_TOWER_CRANE) {
-                return view('livewire.inspections.test-matrix.tc-mtc');
-            }
+    public function addRow(): void
+    {
+        $testMatrix = $this->testMatrix;
+
+        if (! $testMatrix || count($this->rows) >= $testMatrix->maxRows()) {
+            return;
         }
 
-        return view('livewire.inspections.test-matrix.none');
+        $this->rows[] = $testMatrix->blankRow();
     }
 
     #[On(Event::SAVE_MATRIX)]
     public function save(): void
     {
+        $testMatrix = $this->testMatrix;
+
+        if (! $testMatrix) {
+            return;
+        }
+
+        $this->validate([
+            'rows' => ['array'],
+            'rows.*.*' => ['nullable', 'string', 'max:255'],
+        ]);
+
+        $rows = $testMatrix->filledRows($this->rows);
+
         $inspection = $this->inspection;
-        $inspection->matrix = $this->matrix;
+        $inspection->matrix = $rows === [] ? null : ['type' => $testMatrix->type()->value, 'rows' => $rows];
         $inspection->save();
 
-        unset($this->inspection);
-    }
+        $this->rows = $testMatrix->normalize($rows);
 
-    private function blankRow(): array
-    {
-        return [
-            'col_8' => null, // Aantal parten hijskabel
-            'col_9' => null, // Zwenkhoek
-            'col_10' => null, // LMB code
-            'col_11' => null, // Gang (snelheid)
-            'col_12' => null, // Toelaatbare bedrijfslast kolom 17
-            'col_13' => null, // Toelaatbare bedrijfslast kolom 15 (max. vlucht)
-            'col_14' => null, // LMB
-            'col_15_1' => null, // LB
-            'col_15_2' => null, // Afwijking LB
-            'col_16' => null, // Afwijking LMB (%)
-            'col_17' => null, // LB treedt in werking bij (t/kg)
-            'col_18' => null, // Afwijking LB (%)
-        ];
+        unset($this->inspection, $this->testMatrix);
     }
 }

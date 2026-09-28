@@ -10,7 +10,6 @@
     $form        = $inspection->form;
     $inspectable = $inspection->inspectable;
     $meta        = $inspection->meta_data ?? [];
-    $isCrane     = $inspectable instanceof Crane;
 
     $nextPeriodical = null;
     $nextTcvt = null;
@@ -350,8 +349,8 @@
             @endif
         @endforeach
         <!-- Test matrix -->
-        @if ($isCrane && ! empty($inspection->matrix))
-            @include('pdf._test-matrix')
+        @if (! empty($inspection->matrix) && ($testMatrix = $inspection->testMatrix()))
+            @include($testMatrix->pdfView(), ['testMatrix' => $testMatrix, 'rows' => $inspection->testMatrixRows()])
         @endif
         <!-- Deficiencies -->
         @include('pdf._deficiencies')
