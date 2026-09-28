@@ -38,8 +38,8 @@
                 <th scope="col">m</th>
                 <th scope="col">m</th>
                 <th scope="col">m</th>
-                <th scope="col">gr</th>
-                <th scope="col">gr</th>
+                <th scope="col">°</th>
+                <th scope="col">°</th>
                 <th class="border-right" scope="col">#</th>
                 <th scope="col"></th>
                 <th scope="col"></th>
