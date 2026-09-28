@@ -132,6 +132,7 @@ abstract class TestMatrix
     /**
      * Whether each deviation of a row is within its limit, keyed like the
      * deviations. Null when the deviation or its limit can't be determined.
+     * Deviations are judged as displayed, rounded to two decimals.
      *
      * @param  array<string, string|null>  $row
      * @return array<string, bool|null>
@@ -146,7 +147,7 @@ abstract class TestMatrix
 
             $approvals[$key] = $deviation === null || $maxDeviation === null
                 ? null
-                : $this->isWithinLimit($key, $deviation, $maxDeviation);
+                : $this->isWithinLimit($key, round($deviation, 2), $maxDeviation);
         }
 
         return $approvals;
