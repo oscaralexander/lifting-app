@@ -22,7 +22,8 @@ enum Type: string
     {
         return match ($this) {
             self::MOBILE_CRANE => TestMatrixType::MOBILE_CRANE,
-            self::TOWER_CRANE, self::MOBILE_TOWER_CRANE => TestMatrixType::TOWER_CRANE,
+            self::MOBILE_TOWER_CRANE => TestMatrixType::MOBILE_TOWER_CRANE,
+            self::TOWER_CRANE => TestMatrixType::TOWER_CRANE,
             default => null,
         };
     }

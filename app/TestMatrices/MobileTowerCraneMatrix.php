@@ -5,11 +5,11 @@ namespace App\TestMatrices;
 use App\Enums\TestMatrixType;
 use Illuminate\Validation\Rule;
 
-class MobileCraneMatrix extends TestMatrix
+class MobileTowerCraneMatrix extends TestMatrix
 {
     public function type(): TestMatrixType
     {
-        return TestMatrixType::MOBILE_CRANE;
+        return TestMatrixType::MOBILE_TOWER_CRANE;
     }
 
     /**
@@ -19,21 +19,19 @@ class MobileCraneMatrix extends TestMatrix
     {
         return [
             'setup', // 1. Opstelling
-            'main_boom_length', // 2. Hoofdgiek
-            'jib_length', // 3. Hulpgiek
-            'total_length', // 4. Totaal
-            'main_boom_angle', // 5. Giekhoek hoofdgiek
-            'jib_angle', // 6. Giekhoek hulpgiek
-            'hoist_rope_falls', // 7. Aantal parten hijskabel
-            'slewing_angle', // 8. Zwenkhoek
-            'lmb_code', // 9. LMB code
-            'counterweight', // 10. Massa contraballast
-            'test_load', // 11. Proeflast
-            'permissible_radius', // 12. Toelaatbare vlucht bij proeflast
-            'lmb_triggered_at', // 13. LMB treedt in werking bij
-            'lmb_permissible_load', // 14. Toelaatbare bedrijfslast bij kolom 13
-            'lb_triggered_at', // 16. LB treedt in werking
-            'lb_permissible_load', // 17. Toelaatbare bedrijfslast bij kolom 16
+            'boom_length', // 2. Gieklengte
+            'hook_height', // 3. Haakhoogte
+            'counterweight', // 4. Eigen gewicht contraballast
+            'hoist_rope_falls', // 5. Aantal parten hijskabel
+            'slewing_angle', // 6. Zwenkhoek
+            'lmb_code', // 7. LMB code / gang
+            'test_load', // 8. Proeflast
+            'permissible_radius', // 9. Toelaatbare vlucht bij proeflast
+            'lmb_trolley_out_at', // 10. Katten uit treedt in werking bij
+            'lmb_hoist_up_at', // 11. Hijsen uit treedt in werking bij
+            'lmb_permissible_load', // 12. Toelaatbare bedrijfslast bij kolom 11
+            'lb_triggered_at', // 14. LB treedt in werking
+            'lb_permissible_load', // 15. Toelaatbare bedrijfslast bij kolom 14
         ];
     }
 
@@ -69,6 +67,6 @@ class MobileCraneMatrix extends TestMatrix
 
     protected function slug(): string
     {
-        return 'mc';
+        return 'mtc';
     }
 }

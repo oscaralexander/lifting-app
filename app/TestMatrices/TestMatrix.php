@@ -16,6 +16,13 @@ abstract class TestMatrix
      */
     public const MAX_DEVIATION = 10.0;
 
+    /**
+     * The options for the setup (opstelling) column of matrices that have one.
+     *
+     * @var list<string>
+     */
+    public const SETUP_OPTIONS = ['B', 'R', '0/1', '1/2', '3/4', '1/1', 'var'];
+
     abstract public function type(): TestMatrixType;
 
     /**

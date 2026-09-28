@@ -126,7 +126,7 @@ it('maps crane types to a test matrix type', function (CraneType $craneType, ?Te
     expect($craneType->testMatrixType())->toBe($expected);
 })->with([
     'tower crane' => [CraneType::TOWER_CRANE, TestMatrixType::TOWER_CRANE],
-    'mobile tower crane' => [CraneType::MOBILE_TOWER_CRANE, TestMatrixType::TOWER_CRANE],
+    'mobile tower crane' => [CraneType::MOBILE_TOWER_CRANE, TestMatrixType::MOBILE_TOWER_CRANE],
     'mobile crane' => [CraneType::MOBILE_CRANE, TestMatrixType::MOBILE_CRANE],
     'loader crane' => [CraneType::LOADER_CRANE, null],
 ]);
