@@ -69,10 +69,7 @@ class TestMatrix extends Component
             return;
         }
 
-        $this->validate([
-            'rows' => ['array'],
-            'rows.*.*' => ['nullable', 'string', 'max:255'],
-        ]);
+        $this->validate($testMatrix->rules());
 
         $rows = $testMatrix->filledRows($this->rows);
 

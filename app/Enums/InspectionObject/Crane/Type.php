@@ -21,6 +21,7 @@ enum Type: string
     public function testMatrixType(): ?TestMatrixType
     {
         return match ($this) {
+            self::MOBILE_CRANE => TestMatrixType::MOBILE_CRANE,
             self::TOWER_CRANE, self::MOBILE_TOWER_CRANE => TestMatrixType::TOWER_CRANE,
             default => null,
         };

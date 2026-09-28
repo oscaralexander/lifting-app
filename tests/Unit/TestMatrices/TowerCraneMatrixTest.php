@@ -127,18 +127,18 @@ it('maps crane types to a test matrix type', function (CraneType $craneType, ?Te
 })->with([
     'tower crane' => [CraneType::TOWER_CRANE, TestMatrixType::TOWER_CRANE],
     'mobile tower crane' => [CraneType::MOBILE_TOWER_CRANE, TestMatrixType::TOWER_CRANE],
-    'mobile crane' => [CraneType::MOBILE_CRANE, null],
+    'mobile crane' => [CraneType::MOBILE_CRANE, TestMatrixType::MOBILE_CRANE],
     'loader crane' => [CraneType::LOADER_CRANE, null],
 ]);
 
 it('resolves an inspection\'s test matrix from its crane type', function () {
     expect(inspectionWithCrane(CraneType::TOWER_CRANE)->testMatrix())->toBeInstanceOf(TowerCraneMatrix::class)
-        ->and(inspectionWithCrane(CraneType::MOBILE_CRANE)->testMatrix())->toBeNull()
+        ->and(inspectionWithCrane(CraneType::LOADER_CRANE)->testMatrix())->toBeNull()
         ->and(inspectionWithCrane(null)->testMatrix())->toBeNull();
 });
 
 it('prefers the stored matrix type over the crane type', function () {
-    $inspection = inspectionWithCrane(CraneType::MOBILE_CRANE, [
+    $inspection = inspectionWithCrane(CraneType::LOADER_CRANE, [
         'type' => 'tower_crane',
         'rows' => [['lmb_code' => 'LM1']],
     ]);

@@ -48,11 +48,26 @@ abstract class TestMatrix
     }
 
     /**
-     * @return array<string, null>
+     * A new row, with each field set to its default value.
+     *
+     * @return array<string, string|null>
      */
     public function blankRow(): array
     {
         return array_fill_keys($this->fields(), null);
+    }
+
+    /**
+     * The validation rules for the rows, keyed by the component's `rows` property.
+     *
+     * @return array<string, array<int, mixed>>
+     */
+    public function rules(): array
+    {
+        return [
+            'rows' => ['array', 'max:'.$this->maxRows()],
+            'rows.*.*' => ['nullable', 'string', 'max:255'],
+        ];
     }
 
     /**
@@ -74,16 +89,23 @@ abstract class TestMatrix
     }
 
     /**
-     * The normalized rows that have at least one value filled in.
+     * The normalized rows that have at least one value filled in other than
+     * its default.
      *
      * @param  array<int, array<string, string|null>>  $rows
      * @return list<array<string, string|null>>
      */
     public function filledRows(array $rows): array
     {
+        $blankRow = $this->blankRow();
+
         return array_values(array_filter(
             $this->normalize($rows),
-            fn (array $row): bool => array_filter($row, fn (mixed $value): bool => filled($value)) !== [],
+            fn (array $row): bool => array_filter(
+                $row,
+                fn (mixed $value, string $field): bool => filled($value) && $value !== $blankRow[$field],
+                ARRAY_FILTER_USE_BOTH,
+            ) !== [],
         ));
     }
 

@@ -602,7 +602,10 @@ new class extends Component
                 </div>
             </div>
             @if ($this->inspection->exists)
-                <livewire:inspections.test-matrix :inspection-hash="$this->inspectionHash" />
+                <livewire:inspections.test-matrix
+                    :inspection-hash="$this->inspectionHash"
+                    :key="'test-matrix-'.$this->inspection->testMatrix()?->type()->value"
+                />
             @endif
             <div class="grid grid--end grid--gap-xxl">
                 <div class="grid__col l:grid__col--span-8">
