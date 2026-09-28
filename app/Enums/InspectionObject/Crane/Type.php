@@ -18,15 +18,15 @@ enum Type: string
         return __('enums/inspection_object/crane/type.'.$this->value);
     }
 
-    public function testMatrixType(): ?TestMatrixType
+    public function testMatrixType(): TestMatrixType
     {
         return match ($this) {
             self::EARTHMOVER => TestMatrixType::EARTHMOVER,
             self::LOADER_CRANE => TestMatrixType::LOADER_CRANE,
             self::MOBILE_CRANE => TestMatrixType::MOBILE_CRANE,
             self::MOBILE_TOWER_CRANE => TestMatrixType::MOBILE_TOWER_CRANE,
+            self::TELEHANDLER => TestMatrixType::TELEHANDLER,
             self::TOWER_CRANE => TestMatrixType::TOWER_CRANE,
-            default => null,
         };
     }
 

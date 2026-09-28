@@ -4,6 +4,7 @@ use App\Enums\InspectionObject\Crane\Type as CraneType;
 use App\Enums\TestMatrixType;
 use App\Models\Inspection;
 use App\Models\InspectionObjects\Crane;
+use App\Models\InspectionObjects\OperatorLift;
 use App\TestMatrices\TestMatrix;
 use App\TestMatrices\TowerCraneMatrix;
 
@@ -142,17 +143,23 @@ it('maps crane types to a test matrix type', function (CraneType $craneType, ?Te
     'mobile crane' => [CraneType::MOBILE_CRANE, TestMatrixType::MOBILE_CRANE],
     'loader crane' => [CraneType::LOADER_CRANE, TestMatrixType::LOADER_CRANE],
     'earthmover' => [CraneType::EARTHMOVER, TestMatrixType::EARTHMOVER],
-    'telehandler' => [CraneType::TELEHANDLER, null],
+    'telehandler' => [CraneType::TELEHANDLER, TestMatrixType::TELEHANDLER],
 ]);
 
 it('resolves an inspection\'s test matrix from its crane type', function () {
     expect(inspectionWithCrane(CraneType::TOWER_CRANE)->testMatrix())->toBeInstanceOf(TowerCraneMatrix::class)
-        ->and(inspectionWithCrane(CraneType::TELEHANDLER)->testMatrix())->toBeNull()
         ->and(inspectionWithCrane(null)->testMatrix())->toBeNull();
 });
 
+it('has no test matrix for operator lifts', function () {
+    $inspection = new Inspection;
+    $inspection->setRelation('inspectable', new OperatorLift);
+
+    expect($inspection->testMatrix())->toBeNull();
+});
+
 it('prefers the stored matrix type over the crane type', function () {
-    $inspection = inspectionWithCrane(CraneType::TELEHANDLER, [
+    $inspection = inspectionWithCrane(CraneType::MOBILE_CRANE, [
         'type' => 'tower_crane',
         'rows' => [['lmb_code' => 'LM1']],
     ]);
