@@ -111,6 +111,10 @@
         font-variant-numeric: tabular-nums;
         text-align: left;
 
+        .submission__fieldGroup.has-errors & {
+            color: var(--color-danger);
+        }
+
         b {
             display: inline-block;
             opacity: .5;

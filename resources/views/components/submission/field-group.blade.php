@@ -1,3 +1,4 @@
+@use('App\Constants\Event')
 @use('App\Enums\FieldType')
 
 @props([
@@ -43,11 +44,16 @@
 
     // Order all items by position
     $items = $items->sortBy('position');
+
+    $hasErrors = $fieldGroup->fields->contains(
+        fn ($field) => $errors->has('submissionForm.fields.field_' . $field->pivot->id)
+    );
 @endphp
 
 <div
-    class="submission__fieldGroup"
+    @class(['submission__fieldGroup', 'has-errors' => $hasErrors])
     x-bind:class="{ 'is-expanded': isExpanded }"
+    x-on:{{ Event::INSPECTION_VALIDATION_FAILED }}.window="onValidationFailed()"
     x-data="{
         isExpanded: false,
         keys: @js($toggleFieldKeys),
@@ -89,6 +95,15 @@
                 return val === 0 || val === '0';
             });
         },
+        onValidationFailed() {
+            if (!$el.classList.contains('has-errors')) return;
+
+            this.isExpanded = true;
+
+            if (document.querySelector('.submission__fieldGroup.has-errors') === $el) {
+                $nextTick(() => $el.scrollIntoView({ behavior: 'smooth', block: 'start' }));
+            }
+        },
         toggleNotApplicable() {
             const value = this.isNotApplicable ? null : 0;
 
@@ -105,7 +120,9 @@
             x-bind:aria-expanded="isExpanded"
         >
             <span class="submission__fieldGroupToggleName">{!! $fieldGroup->numberedName !!}</span>
-            <span class="submission__fieldGroupToggleError"><x-icon icon="triangle-alert" /></span>
+            @if ($hasErrors)
+                <span class="submission__fieldGroupToggleError"><x-icon icon="triangle-alert" /></span>
+            @endif
             <span class="submission__fieldGroupToggleCheck" x-cloak x-show="allFieldsPassed"><x-icon icon="check" /></span>
             <span class="submission__fieldGroupToggleError" x-cloak x-show="hasFailures"><x-icon icon="x" /></span>
         </button>

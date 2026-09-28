@@ -22,6 +22,8 @@ final readonly class Event
 
     public const INSPECTION_SAVED = 'inspection-saved';
 
+    public const INSPECTION_VALIDATION_FAILED = 'inspection-validation-failed';
+
     public const SAVE_MATRIX = 'save-matrix';
 
     public const REFRESH = 'refresh';

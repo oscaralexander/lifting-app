@@ -19,6 +19,7 @@ use App\Models\User;
 use App\Services\OutsmartService;
 use Carbon\Exceptions\InvalidFormatException;
 use Illuminate\Support\Carbon;
+use Illuminate\Validation\ValidationException;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Locked;
 use Livewire\Attributes\On;
@@ -313,7 +314,14 @@ new class extends Component
 
     public function submit(): void
     {
-        $this->submissionForm->save();
+        try {
+            $this->submissionForm->save();
+        } catch (ValidationException $exception) {
+            $this->dispatch(Event::INSPECTION_VALIDATION_FAILED);
+
+            throw $exception;
+        }
+
         $this->dispatch(Event::SAVE_MATRIX);
     }
 }
