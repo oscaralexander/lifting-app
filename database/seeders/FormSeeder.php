@@ -13,6 +13,7 @@ class FormSeeder extends Seeder
             [
                 'id' => 1,
                 'type' => 'crane',
+                'crane_type' => 'tower_crane',
                 'name' => 'W3-01 Torenkraan',
                 'description' => 'TCVT W3-01: 2025 (24-V11)',
                 'slug' => 'w3-01-torenkraan',
@@ -22,13 +23,14 @@ class FormSeeder extends Seeder
             [
                 'id' => 2,
                 'type' => 'operator_lift',
+                'crane_type' => null,
                 'name' => 'W3-08 Machinstenlift',
                 'description' => 'W3-08/16-138 v6',
                 'slug' => 'w3-0816-138-v6',
                 'created_at' => '2026-04-09 10:32:44',
                 'updated_at' => '2026-04-09 10:34:40',
             ],
-        ], ['id'], ['type', 'name', 'description', 'slug']);
+        ], ['id'], ['type', 'crane_type', 'name', 'description', 'slug']);
 
         DB::table('field_groups')->upsert([
             // Form 1: W3-01 Torenkraan

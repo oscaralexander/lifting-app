@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\InspectionObject\Crane\Type as CraneType;
 use App\Enums\InspectionObject\Type;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -33,6 +34,7 @@ class Form extends Model
     protected function casts(): array
     {
         return [
+            'crane_type' => CraneType::class,
             'type' => Type::class,
         ];
     }

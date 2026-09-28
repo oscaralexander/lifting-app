@@ -7,10 +7,13 @@ use App\Enums\InspectionType;
 use App\Models\Client;
 use App\Models\Form;
 use App\Models\Inspection;
+use App\Models\InspectionObjects\Crane;
 use App\Models\User;
 use App\Services\OutsmartService;
 use Carbon\Exceptions\InvalidFormatException;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rules\Enum;
 use Illuminate\View\View;
 use Livewire\Attributes\Computed;
@@ -233,18 +236,54 @@ class StartInspectionModal extends ModalComponent
             return;
         }
 
-        $inspection = Inspection::create([
-            ...$attributes,
-            'form_id' => $form->id,
-            'inspection_object_id' => $this->inspectionObjectId,
-            'user_id' => $matchedUser?->id ?? auth('web')->id(),
-        ]);
+        $inspection = DB::transaction(function () use ($attributes, $form, $matchedUser): Inspection {
+            $inspectable = $this->createInspectable($form);
+
+            return Inspection::create([
+                ...$attributes,
+                'form_id' => $form->id,
+                'inspectable_id' => $inspectable?->getKey(),
+                'inspectable_type' => $inspectable?->getMorphClass(),
+                'inspection_object_id' => $this->inspectionObjectId,
+                'user_id' => $matchedUser?->id ?? auth('web')->id(),
+            ]);
+        });
 
         $this->redirectRoute('inspections.form', [
             'formSlug' => $form->slug,
             'inspectionObjectId' => $this->inspectionObjectId,
             'inspectionHash' => $inspection->hash,
         ], navigate: true);
+    }
+
+    /**
+     * Create the inspectable (e.g. crane details) for a new inspection: a copy of
+     * the one from the object's previous inspection, with the form's crane type
+     * applied. Without either, the inspection starts without an inspectable.
+     */
+    private function createInspectable(Form $form): ?Model
+    {
+        $previousInspectable = Inspection::query()
+            ->without(['form', 'form.fields', 'form.fieldGroups.fields', 'form.fieldGroups.formComments', 'form.formComments', 'user'])
+            ->where('inspection_object_id', $this->inspectionObjectId)
+            ->whereNotNull('inspectable_id')
+            ->latest('id')
+            ->first()
+            ?->inspectable;
+
+        if (! $previousInspectable && ! $form->crane_type) {
+            return null;
+        }
+
+        $inspectable = $previousInspectable?->replicate() ?? new Crane;
+
+        if ($inspectable instanceof Crane && $form->crane_type) {
+            $inspectable->type = $form->crane_type;
+        }
+
+        $inspectable->save();
+
+        return $inspectable;
     }
 
     public function render(): View

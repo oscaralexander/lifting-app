@@ -3,6 +3,7 @@
 namespace App\Livewire\Schemas;
 
 use App\Constants\Event;
+use App\Enums\InspectionObject\Crane\Type as CraneType;
 use App\Enums\InspectionObject\Type;
 use App\Models\Form;
 use Illuminate\View\View;
@@ -12,6 +13,8 @@ use LivewireUI\Modal\ModalComponent;
 
 class SchemaModal extends ModalComponent
 {
+    public ?string $craneType = null;
+
     public $description;
 
     #[Locked]
@@ -29,6 +32,7 @@ class SchemaModal extends ModalComponent
             $this->name = $this->schema->name;
             $this->description = $this->schema->description;
             $this->type = $this->schema->type?->value;
+            $this->craneType = $this->schema->crane_type?->value;
         }
     }
 
@@ -41,6 +45,7 @@ class SchemaModal extends ModalComponent
     public function render(): View
     {
         return view('livewire.schemas.schema-modal', [
+            'craneTypeOptions' => CraneType::options(),
             'typeOptions' => Type::options(),
         ]);
     }
@@ -48,6 +53,7 @@ class SchemaModal extends ModalComponent
     public function rules(): array
     {
         return [
+            'craneType' => ['nullable', 'string', 'in:'.implode(',', array_column(CraneType::cases(), 'value'))],
             'description' => ['nullable', 'string'],
             'name' => ['required', 'string', 'max:255'],
             'type' => ['nullable', 'string', 'in:'.implode(',', array_column(Type::cases(), 'value'))],
@@ -62,6 +68,7 @@ class SchemaModal extends ModalComponent
         $schema->name = $this->name;
         $schema->description = $this->description;
         $schema->type = $this->type ? Type::from($this->type) : null;
+        $schema->crane_type = $schema->type === Type::CRANE && $this->craneType ? CraneType::from($this->craneType) : null;
         $schema->save();
 
         $this->dispatch('toast', message: __('schemas.toast.saved'), type: 'success');
