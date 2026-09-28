@@ -685,7 +685,9 @@ new class extends Component
                                 <x-form.lightswitch wire:model="submissionForm.requires_written_deregistration" :text="__('models/inspection.requires_written_deregistration.label')" />
                                 <x-form.lightswitch wire:model="submissionForm.has_no_sticker_provided" :text="__('models/inspection.has_no_sticker_provided.label')" />
                             </div>
-                            @include('pages.inspections._generate-documents')
+                            @if ($this->inspection->exists && $this->inspection->is_completed)
+                                @include('pages.inspections._generate-documents')
+                            @endif
                         </div>
                     </div>
                 </div>
