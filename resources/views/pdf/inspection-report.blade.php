@@ -30,11 +30,15 @@
         $object?->model         ? strtolower(str_replace([' ', '/'], '-', $object->model))  : null,
     ]));
 
-    $result = match (true) {
-        $inspection->has_cat_a_deficiencies => 'Categorie A tekortkoming',
-        $inspection->has_cat_b_deficiencies => 'Categorie B tekortkoming',
-        default => 'Goedgekeurd',
-    };
+    $result = $inspection->is_approved
+        ? __('enums/inspection_status.approved')
+        : collect([
+            __('enums/inspection_status.rejected'),
+            $inspection->has_cat_a_deficiencies ? __('models/inspection.has_cat_a_deficiencies.label') : null,
+            $inspection->has_cat_b_deficiencies ? __('models/inspection.has_cat_b_deficiencies.label') : null,
+            $inspection->requires_reinspection ? __('models/inspection.requires_reinspection.label') : null,
+            $inspection->requires_written_deregistration ? __('models/inspection.requires_written_deregistration.label') : null,
+        ])->filter()->map(fn (string $line): string => e($line))->implode('<br>');
 
     $typeLabel   = $inspection->type->label();
     $objectLabel = $object ? strtoupper($object->type->label()) : '';
@@ -115,9 +119,7 @@
                     <x-pdf.row label="Bevindingen" :value="$result" />
                     <x-pdf.row label="Volgende periodieke keuring voor" :value="$nextPeriodical ?? '—'" />
                     <x-pdf.row label="Volgende TCVT keuring voor" :value="$nextTcvt ?? '—'" />
-                    @if ($inspection->sticker_number)
-                        <x-pdf.row label="Stickernummer" :value="$inspection->sticker_number" />
-                    @endif
+                    <x-pdf.row label="Stickernummer" :value="$inspection->sticker_number ?: __('models/inspection.has_no_sticker_provided.label')" />
                 </tbody>
             </table>
             <div class="signature-box__signature">
