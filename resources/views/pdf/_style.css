@@ -492,12 +492,12 @@ h1 {
 
 .signature-box__signature {
     display: flex;
-    height: 50mm;
+    height: 40mm;
     position: absolute;
     right: 15mm;
     top: 50%;
     transform: translateY(-50%);
-    width: 50mm;
+    width: 40mm;
 }
 
 .signature-box__signature img {
