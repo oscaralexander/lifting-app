@@ -312,6 +312,17 @@ new class extends Component
         $this->dispatch('photo-picker-photo-uploaded', url: $url);
     }
 
+    public function saveWrittenDeregistration(): void
+    {
+        abort_unless($this->inspection->exists && $this->inspection->is_completed, 403);
+
+        $this->submissionForm->saveWrittenDeregistration();
+
+        unset($this->inspection);
+
+        $this->dispatch(Event::TOAST, message: __('inspections.form.written_deregistration.toast.saved'), type: 'success');
+    }
+
     public function submit(): void
     {
         try {
@@ -356,6 +367,14 @@ new class extends Component
                 const val = $wire.submissionForm.fields[key];
                 return val === 0 || val === 1 || val === '0' || val === '1';
             });
+        },
+        get isApprovedAfterWrittenDeregistration() {
+            return !this.allTogglesPassed
+                && !!$wire.submissionForm.approved_after_written_deregistration
+                && !!$wire.submissionForm.writtenDeregisteredAt;
+        },
+        get isApproved() {
+            return this.allTogglesPassed || this.isApprovedAfterWrittenDeregistration;
         },
     }">
         <x-header
@@ -615,7 +634,7 @@ new class extends Component
                                 <x-icon icon="hourglass" />
                                 Keuringsschema nog niet voltooid.
                             </div>
-                            <div class="status status--danger" x-cloak x-show="allTogglesCompleted && !allTogglesPassed">
+                            <div class="status status--danger" x-cloak x-show="allTogglesCompleted && !isApproved">
                                 <x-icon icon="octagon-x" />
                                 Object afgekeurd.
                             </div>
@@ -623,8 +642,12 @@ new class extends Component
                                 <x-icon icon="check" />
                                 Object goedgekeurd.
                             </div>
+                            <div class="status status--success" x-cloak x-show="allTogglesCompleted && isApprovedAfterWrittenDeregistration">
+                                <x-icon icon="check" />
+                                Object goedgekeurd na schriftelijke afmelding.
+                            </div>
                             <div class="u-stack u-stack-gap-m" x-cloak x-show="allTogglesCompleted">
-                                <div x-cloak x-show="allTogglesPassed">
+                                <div x-cloak x-show="isApproved">
                                     <x-form.input
                                         :label="__('models/inspection.sticker_number.label')"
                                         model="submissionForm.stickerNumber"
@@ -685,6 +708,29 @@ new class extends Component
                                 <x-form.lightswitch wire:model="submissionForm.requires_written_deregistration" :text="__('models/inspection.requires_written_deregistration.label')" />
                                 <x-form.lightswitch wire:model="submissionForm.has_no_sticker_provided" :text="__('models/inspection.has_no_sticker_provided.label')" />
                             </div>
+                            @if ($this->inspection->exists && $this->inspection->is_completed)
+                                <div class="inspection__writtenDeregistration" x-cloak x-show="allTogglesCompleted && !allTogglesPassed">
+                                    <x-form.lightswitch
+                                        :text="__('models/inspection.is_approved_after_written_deregistration.label')"
+                                        wire:model="submissionForm.approved_after_written_deregistration"
+                                    />
+                                    <div class="u-stack u-stack-gap-m" x-cloak x-show="$wire.submissionForm.approved_after_written_deregistration">
+                                        <x-form.textarea
+                                            :label="__('models/inspection.written_deregistration_description.label')"
+                                            model="submissionForm.writtenDeregistrationDescription"
+                                        />
+                                        <div class="actions">
+                                            <x-btn
+                                                small
+                                                wire:click="saveWrittenDeregistration"
+                                                wire:loading.attr="disabled"
+                                                wire:loading.class="is-loading"
+                                                wire:target="saveWrittenDeregistration"
+                                            >@lang('ui.save')</x-btn>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endif
                             @if ($this->inspection->exists && $this->inspection->is_completed)
                                 @include('pages.inspections._generate-documents')
                             @endif

@@ -14,7 +14,9 @@
     $nextPeriodical = null;
     $nextTcvt = null;
 
-    if ($inspection->type === InspectionType::TCVT) {
+    if ($inspectable instanceof OperatorLift) {
+        $nextPeriodical = \Carbon\Carbon::parse($inspection->inspection_date)->addMonths(12)->translatedFormat('j F Y');
+    } elseif ($inspection->type === InspectionType::TCVT) {
         $nextPeriodical = \Carbon\Carbon::parse($inspection->inspection_date)->addMonths(12)->translatedFormat('j F Y');
         $nextTcvt = \Carbon\Carbon::parse($inspection->inspection_date)->addMonths(24)->translatedFormat('j F Y');
     } else {
@@ -30,15 +32,18 @@
         $object?->model         ? strtolower(str_replace([' ', '/'], '-', $object->model))  : null,
     ]));
 
-    $result = $inspection->is_approved
-        ? __('enums/inspection_status.approved')
-        : collect([
+    $result = match (true) {
+        $inspection->is_approved && $inspection->is_approved_after_written_deregistration => '<strong>'.e(__('models/inspection.is_approved_after_written_deregistration.label')).'</strong><br>'
+            .e(__('models/inspection.written_deregistered_at.label')).': '.e($inspection->written_deregistered_at?->translatedFormat('j F Y') ?? '—'),
+        $inspection->is_approved => __('enums/inspection_status.approved'),
+        default => collect([
             __('enums/inspection_status.rejected'),
             $inspection->has_cat_a_deficiencies ? __('models/inspection.has_cat_a_deficiencies.label') : null,
             $inspection->has_cat_b_deficiencies ? __('models/inspection.has_cat_b_deficiencies.label') : null,
             $inspection->requires_reinspection ? __('models/inspection.requires_reinspection.label') : null,
             $inspection->requires_written_deregistration ? __('models/inspection.requires_written_deregistration.label') : null,
-        ])->filter()->map(fn (string $line): string => e($line))->implode('<br>');
+        ])->filter()->map(fn (string $line): string => e($line))->implode('<br>'),
+    };
 
     $typeLabel   = $inspection->type->label();
     $objectLabel = $object ? strtoupper($object->type->label()) : '';
@@ -118,7 +123,9 @@
                     <x-pdf.row label="Inspecteur" :value="$inspection->inspector_name ?? '—'" />
                     <x-pdf.row label="Bevindingen" :value="$result" />
                     <x-pdf.row label="Volgende periodieke keuring voor" :value="$nextPeriodical ?? '—'" />
-                    <x-pdf.row label="Volgende TCVT keuring voor" :value="$nextTcvt ?? '—'" />
+                    @unless ($inspectable instanceof OperatorLift)
+                        <x-pdf.row label="Volgende TCVT keuring voor" :value="$nextTcvt ?? '—'" />
+                    @endunless
                     <x-pdf.row label="Stickernummer" :value="$inspection->sticker_number ?: __('models/inspection.has_no_sticker_provided.label')" />
                 </tbody>
             </table>

@@ -33,8 +33,12 @@
     }
 
     $deficiencies = $deficiencies->sortBy(fn ($deficiency) => $deficiency['field']->number)->values();
+
+    $writtenDeregistrationDescription = $inspection->is_approved_after_written_deregistration
+        ? $inspection->written_deregistration_description
+        : null;
 @endphp
-@if ($deficiencies->isNotEmpty())
+@if ($deficiencies->isNotEmpty() || filled($writtenDeregistrationDescription))
     <section class="deficiencies">
         <h2 class="deficiencies__heading">Tekortkomingen</h2>
         @foreach ($deficiencies as $deficiency)
@@ -52,5 +56,11 @@
                 @endif
             </div>
         @endforeach
+        @if (filled($writtenDeregistrationDescription))
+            <div class="deficiency">
+                <h3 class="deficiency__title">@lang('models/inspection.is_approved_after_written_deregistration.label')</h3>
+                <p class="deficiency__comment">{!! nl2br(e($writtenDeregistrationDescription)) !!}</p>
+            </div>
+        @endif
     </section>
 @endif

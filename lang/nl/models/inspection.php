@@ -47,10 +47,19 @@ return [
         'label' => 'Stickernummer',
     ],
     'requires_reinspection' => [
-        'label' => 'Nacontrole door Lifting Inspections noodzakelijk',
+        'label' => 'Nacontrole door Lifting Inspections vereist',
     ],
     'requires_written_deregistration' => [
-        'label' => 'Schriftelijk afmelden aan Lifting Inspections noodzakelijk',
+        'label' => 'Schriftelijk afmelden aan Lifting Inspections vereist',
+    ],
+    'is_approved_after_written_deregistration' => [
+        'label' => 'Goedgekeurd na schriftelijke afmelding',
+    ],
+    'written_deregistration_description' => [
+        'label' => 'Omschrijving schriftelijke afmelding',
+    ],
+    'written_deregistered_at' => [
+        'label' => 'Datum afgemeld',
     ],
     'comment' => [
         'label' => 'Opmerkingen',

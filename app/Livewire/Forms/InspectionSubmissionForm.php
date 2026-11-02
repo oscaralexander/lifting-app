@@ -11,6 +11,12 @@ use Livewire\Form as LivewireForm;
 
 class InspectionSubmissionForm extends LivewireForm
 {
+    /**
+     * Toggle for overriding a rejection with an approval after written deregistration.
+     * Only takes effect once confirmed through saveWrittenDeregistration().
+     */
+    public bool $approved_after_written_deregistration = false;
+
     public array $comments = [];
 
     public array $fields = [];
@@ -48,6 +54,13 @@ class InspectionSubmissionForm extends LivewireForm
     public bool $requires_written_deregistration = false;
 
     public ?string $stickerNumber = null;
+
+    public ?string $writtenDeregistrationDescription = null;
+
+    /**
+     * When the written deregistration was confirmed, as an ISO 8601 string; null while unconfirmed.
+     */
+    public ?string $writtenDeregisteredAt = null;
 
     /**
      * Stage the photo URLs selected for a given field.
@@ -144,6 +157,7 @@ class InspectionSubmissionForm extends LivewireForm
     {
         $this->form = $form;
         $this->inspection = $inspection;
+        $this->approved_after_written_deregistration = $inspection->is_approved_after_written_deregistration ?? false;
         $this->has_cat_a_deficiencies = $inspection->has_cat_a_deficiencies ?? false;
         $this->has_cat_b_deficiencies = $inspection->has_cat_b_deficiencies ?? false;
         $this->has_no_sticker_provided = $inspection->has_no_sticker_provided ?? false;
@@ -157,6 +171,8 @@ class InspectionSubmissionForm extends LivewireForm
         $this->requires_reinspection = $inspection->requires_reinspection ?? false;
         $this->requires_written_deregistration = $inspection->requires_written_deregistration ?? false;
         $this->stickerNumber = $inspection->sticker_number;
+        $this->writtenDeregistrationDescription = $inspection->written_deregistration_description;
+        $this->writtenDeregisteredAt = $inspection->written_deregistered_at?->toIso8601String();
 
         foreach ($form->fields as $field) {
             $key = 'field_'.$field->pivot->id;
@@ -205,6 +221,28 @@ class InspectionSubmissionForm extends LivewireForm
         return $rules;
     }
 
+    /**
+     * Approve a rejected inspection after all the same, on the strength of a
+     * written deregistration of the deficiencies.
+     */
+    public function saveWrittenDeregistration(): void
+    {
+        $this->validate(
+            ['writtenDeregistrationDescription' => ['required', 'string', 'max:10000']],
+            ['writtenDeregistrationDescription.required' => __('validation.required', ['attribute' => __('models/inspection.written_deregistration_description.label')])],
+        );
+
+        $this->approved_after_written_deregistration = true;
+
+        $this->inspection->is_approved = true;
+        $this->inspection->is_approved_after_written_deregistration = true;
+        $this->inspection->written_deregistration_description = trim($this->writtenDeregistrationDescription);
+        $this->inspection->written_deregistered_at = now();
+        $this->inspection->save();
+
+        $this->writtenDeregisteredAt = $this->inspection->written_deregistered_at->toIso8601String();
+    }
+
     public function save(): void
     {
         $this->validate();
@@ -250,7 +288,20 @@ class InspectionSubmissionForm extends LivewireForm
         $this->inspection->form_data = $formData;
         $this->inspection->image_data = array_filter($this->images);
         $this->inspection->is_completed = $toggleValues->every(fn ($value) => ! is_null($value)) && $requiredFieldsFilled;
-        $this->inspection->is_approved = $toggleValues->every(fn ($value) => in_array((string) $value, ['0', '1'], true));
+        $allTogglesPassed = $toggleValues->every(fn ($value) => in_array((string) $value, ['0', '1'], true));
+        $isApprovedAfterWrittenDeregistration = ! $allTogglesPassed
+            && $this->approved_after_written_deregistration
+            && $this->inspection->written_deregistered_at !== null;
+
+        if (! $isApprovedAfterWrittenDeregistration) {
+            $this->approved_after_written_deregistration = false;
+            $this->writtenDeregisteredAt = null;
+            $this->inspection->is_approved_after_written_deregistration = false;
+            $this->inspection->written_deregistration_description = null;
+            $this->inspection->written_deregistered_at = null;
+        }
+
+        $this->inspection->is_approved = $allTogglesPassed || $isApprovedAfterWrittenDeregistration;
         $this->inspection->sticker_number = $this->inspection->is_approved ? ($this->stickerNumber ?: null) : null;
         $this->inspection->has_cat_a_deficiencies = $this->has_cat_a_deficiencies;
         $this->inspection->has_cat_b_deficiencies = $this->has_cat_b_deficiencies;

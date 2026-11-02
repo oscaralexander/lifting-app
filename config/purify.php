@@ -78,7 +78,7 @@ return [
         'value' => [
             'Core.Encoding' => 'utf-8',
             'HTML.Doctype' => 'HTML 4.01 Transitional',
-            'HTML.Allowed' => 'a[href|target],br',
+            'HTML.Allowed' => 'a[href|target],br,strong',
             'HTML.ForbiddenElements' => '',
             'CSS.AllowedProperties' => '',
             'AutoFormat.AutoParagraph' => false,

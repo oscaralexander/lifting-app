@@ -24,6 +24,11 @@ return [
                 'not_found' => 'Werkbon niet gevonden in Outsmart',
             ],
         ],
+        'written_deregistration' => [
+            'toast' => [
+                'saved' => 'Inspectie goedgekeurd na schriftelijke afmelding',
+            ],
+        ],
         'crane' => [
             'heading_crane' => 'Kraan',
             'heading_base' => 'Onderstel',

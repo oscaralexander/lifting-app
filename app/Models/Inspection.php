@@ -33,6 +33,7 @@ class Inspection extends Model
         'images' => 'json:unicode',
         'inspection_date' => 'date',
         'is_approved' => 'boolean',
+        'is_approved_after_written_deregistration' => 'boolean',
         'is_completed' => 'boolean',
         'matrix' => 'json',
         'meta_data' => 'json:unicode',
@@ -42,6 +43,7 @@ class Inspection extends Model
         'requires_written_deregistration' => 'boolean',
         'type' => InspectionType::class,
         'uploaded_photos' => 'json:unicode',
+        'written_deregistered_at' => 'datetime',
     ];
 
     protected $with = [
