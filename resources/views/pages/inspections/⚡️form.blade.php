@@ -563,6 +563,7 @@ new class extends Component
                                 @if ($parentInspection = $this->inspection->parentInspection)
                                     <div class="u-text-lh-l">
                                         <a
+                                            class="u-text-semibold"
                                             href="{{ route('inspections.form', [
                                                 'formSlug' => $parentInspection->form->slug,
                                                 'inspectionObjectId' => $parentInspection->inspection_object_id,
