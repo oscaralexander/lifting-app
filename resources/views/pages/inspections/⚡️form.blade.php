@@ -561,7 +561,7 @@ new class extends Component
                             <div class="u-stack u-stack-gap-m">
                                 <h2>@lang('inspections.form.heading_parent_inspection')</h2>
                                 @if ($parentInspection = $this->inspection->parentInspection)
-                                    <div>
+                                    <div class="u-text-lh-l">
                                         <a
                                             href="{{ route('inspections.form', [
                                                 'formSlug' => $parentInspection->form->slug,
@@ -570,11 +570,11 @@ new class extends Component
                                             ]) }}"
                                             wire:navigate
                                         >{{ $parentInspection->inspectionObject?->name ?: __('inspection_objects.show.unnamed') }}</a>
-                                        <p class="u-muted">{{ collect([$parentInspection->outsmart_order_number, $parentInspection->project_name])->filter()->implode(' · ') }}</p>
+                                        <p>{{ collect([$parentInspection->outsmart_order_number, $parentInspection->project_name])->filter()->implode(' · ') }}</p>
                                     </div>
-                                    <p class="u-muted">@lang('inspections.form.text_parent_inspection')</p>
+                                    <p class="u-text-lc u-text-lh-l u-text-s"><i>@lang('inspections.form.text_parent_inspection')</i></p>
                                 @else
-                                    <p class="u-muted">—</p>
+                                    <p class="u-text-lh-l">—</p>
                                 @endif
                             </div>
                         @else
@@ -619,7 +619,7 @@ new class extends Component
                                                     ]) }}"
                                                     wire:navigate
                                                 >{{ collect([$attachmentInspection->inspectionObject?->type_label, $attachmentInspection->inspectionObject?->name])->filter()->implode(' · ') }}</a>
-                                                <span class="u-muted">({{ $attachmentInspection->status->label() }})</span>
+                                                <span class="u-text-lc">({{ $attachmentInspection->status->label() }})</span>
                                             </div>
                                         @endforeach
                                     </div>
