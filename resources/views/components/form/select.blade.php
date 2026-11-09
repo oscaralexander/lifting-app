@@ -1,6 +1,7 @@
 @props([
     'default' => null,
     'description' => null,
+    'disabledOptions' => [],
     'label' => null,
     'model' => null,
     'name' => null,
@@ -44,7 +45,11 @@
             <option value="">{{ $default }}</option>
         @endif
         @foreach ($options as $value => $label)
-            <option value="{{ $value }}" @selected($selected !== null && (string) $value === (string) $selected)>{{ $label }}</option>
+            <option
+                value="{{ $value }}"
+                @disabled(in_array((string) $value, array_map('strval', $disabledOptions), true))
+                @selected($selected !== null && (string) $value === (string) $selected)
+            >{{ $label }}</option>
         @endforeach
     </select>
     @if ($model)

@@ -139,6 +139,35 @@ class Inspection extends Model
     }
 
     /**
+     * The attributes of an attachment inspection linked to this (main)
+     * inspection: a periodical inspection that takes its client, work order
+     * and project details from this inspection.
+     *
+     * @return array<string, mixed>
+     */
+    public function attachmentInspectionAttributes(): array
+    {
+        return [
+            ...$this->only([
+                'client_id',
+                'inspection_date',
+                'inspector_name',
+                'outsmart_external_reference',
+                'outsmart_order_number',
+                'outsmart_photos',
+                'outsmart_work_order_id',
+                'project_address',
+                'project_city',
+                'project_name',
+                'project_postal_code',
+                'user_id',
+            ]),
+            'parent_inspection_id' => $this->id,
+            'type' => InspectionType::PERIODICAL,
+        ];
+    }
+
+    /**
      * A certificate is only issued for TCVT inspections of a crane that were
      * assigned an approval sticker.
      */

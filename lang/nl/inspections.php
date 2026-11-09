@@ -82,6 +82,17 @@ return [
             'parent_relinked' => 'Hoofdinspectie gekoppeld',
         ],
     ],
+    'attachment' => [
+        'modal' => [
+            'already_linked' => 'Dit hulpstuk is al aan deze inspectie gekoppeld.',
+            'attachment' => 'Verwisselbaar hulpstuk',
+            'btn_add' => 'Hulpstuk toevoegen',
+            'form' => 'Keuringsschema',
+            'no_attachments' => 'Er zijn nog geen verwisselbare hulpstukken. Maak deze eerst aan bij Inspectieobjecten.',
+            'no_forms' => 'Er is nog geen keuringsschema voor verwisselbare hulpstukken. Maak deze eerst aan bij Keuringsschema’s.',
+            'title' => 'Verwisselbaar hulpstuk toevoegen',
+        ],
+    ],
     'project' => [
         'modal' => [
             'title' => 'Projectgegevens',

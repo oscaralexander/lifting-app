@@ -605,25 +605,41 @@ new class extends Component
                                     @include('pages.inspections._inspectable-operator-lift', ['operatorLift' => $this->inspection->inspectable])
                                 @endif
                             </div>
-                            @if ($this->inspection->attachmentInspections->isNotEmpty())
+                            @if ($this->inspection->exists)
                                 {{-- Attachments --}}
                                 <div class="u-stack u-stack-gap-m">
-                                    <h2>@lang('inspections.form.heading_attachments')</h2>
-                                    <div class="u-stack u-stack-gap-xs">
-                                        @foreach ($this->inspection->attachmentInspections as $attachmentInspection)
-                                            <div class="u-flex u-flex-align-center u-flex-justify-between u-flex-gap-m" wire:key="attachment-inspection-{{ $attachmentInspection->id }}">
-                                                <a
-                                                    href="{{ route('inspections.form', [
-                                                        'formSlug' => $attachmentInspection->form->slug,
-                                                        'inspectionObjectId' => $attachmentInspection->inspection_object_id,
-                                                        'inspectionHash' => $attachmentInspection->hash,
-                                                    ]) }}"
-                                                    wire:navigate
-                                                >{{ collect([$attachmentInspection->inspectionObject?->type_label, $attachmentInspection->inspectionObject?->name])->filter()->implode(' · ') }}</a>
-                                                <x-status-label :status="$attachmentInspection->status" />
-                                            </div>
-                                        @endforeach
-                                    </div>
+                                    <header class="u-flex u-flex-align-center u-flex-justify-between">
+                                        <h2>@lang('inspections.form.heading_attachments')</h2>
+                                        <x-btn
+                                            icon="plus"
+                                            small
+                                            wire:click.prevent="$dispatch('openModal', {
+                                                component: 'inspections.add-attachment-modal',
+                                                arguments: {
+                                                    parentInspectionHash: '{{ $this->inspection->hash }}'
+                                                }
+                                            })"
+                                        />
+                                    </header>
+                                    @if ($this->inspection->attachmentInspections->isEmpty())
+                                        <p class="u-text-lh-l">—</p>
+                                    @else
+                                        <div class="u-stack u-stack-gap-xs">
+                                            @foreach ($this->inspection->attachmentInspections as $attachmentInspection)
+                                                <div class="u-flex u-flex-align-center u-flex-justify-between u-flex-gap-m" wire:key="attachment-inspection-{{ $attachmentInspection->id }}">
+                                                    <a
+                                                        href="{{ route('inspections.form', [
+                                                            'formSlug' => $attachmentInspection->form->slug,
+                                                            'inspectionObjectId' => $attachmentInspection->inspection_object_id,
+                                                            'inspectionHash' => $attachmentInspection->hash,
+                                                        ]) }}"
+                                                        wire:navigate
+                                                    >{{ collect([$attachmentInspection->inspectionObject?->type_label, $attachmentInspection->inspectionObject?->name])->filter()->implode(' · ') }}</a>
+                                                    <x-status-label :status="$attachmentInspection->status" />
+                                                </div>
+                                            @endforeach
+                                        </div>
+                                    @endif
                                 </div>
                             @endif
                         @endif

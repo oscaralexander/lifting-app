@@ -341,24 +341,7 @@ class StartInspectionModal extends ModalComponent
             return;
         }
 
-        $attributes = [
-            ...$parentInspection->only([
-                'client_id',
-                'inspection_date',
-                'inspector_name',
-                'outsmart_external_reference',
-                'outsmart_order_number',
-                'outsmart_photos',
-                'outsmart_work_order_id',
-                'project_address',
-                'project_city',
-                'project_name',
-                'project_postal_code',
-                'user_id',
-            ]),
-            'parent_inspection_id' => $parentInspection->id,
-            'type' => InspectionType::PERIODICAL,
-        ];
+        $attributes = $parentInspection->attachmentInspectionAttributes();
 
         if ($this->inspectionHash) {
             $inspection = Inspection::where('hash', $this->inspectionHash)->firstOrFail();
