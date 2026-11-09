@@ -58,6 +58,27 @@
                     @endif
                 </figure>
             @endforeach
+            @foreach ($inspection->attachmentInspections->where('is_completed', true) as $attachmentInspection)
+                @php
+                    $attachmentPhotos = collect($attachmentInspection->photos ?? [])
+                        ->filter(fn ($photo) => ! empty($photo['image']))
+                        ->values();
+                @endphp
+                @if ($attachmentInspection->comment || $attachmentPhotos->isNotEmpty())
+                    <h2>Opmerkingen verwisselbaar hulpstuk: {{ $attachmentInspection->inspectionObject?->type_label }}</h2>
+                    @if ($attachmentInspection->comment)
+                        <p>{!! nl2br(e($attachmentInspection->comment)) !!}</p>
+                    @endif
+                    @foreach ($attachmentPhotos as $photo)
+                        <figure class="photo">
+                            <img alt="" class="photo__img" src="{{ $photo['image'] }}">
+                            @if (! empty($photo['comment']))
+                                <figcaption class="photo__comment">{!! nl2br(e($photo['comment'])) !!}</figcaption>
+                            @endif
+                        </figure>
+                    @endforeach
+                @endif
+            @endforeach
         </div>
     </body>
 </html>

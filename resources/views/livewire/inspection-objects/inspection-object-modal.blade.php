@@ -1,3 +1,4 @@
+@use('App\Enums\InspectionObject\Attachment\Type as AttachmentType')
 @use('App\Enums\InspectionObject\Type as InspectionObjectType')
 
 <div>
@@ -5,6 +6,27 @@
     <x-modal.body>
         <x-form class="u-stack u-stack-gap-xl">
             <div class="grid grid--gap-m">
+                @if ($type === InspectionObjectType::ATTACHMENT)
+                    <div class="grid__col">
+                        <x-form.select
+                            default="—"
+                            :label="__('models/inspection_object.attachment_type.label')"
+                            wire:model.live="form.attachment_type"
+                            :options="AttachmentType::options()"
+                            :selected="$form->attachment_type"
+                            required
+                        />
+                    </div>
+                    @if ($form->attachment_type === AttachmentType::OTHER->value)
+                        <div class="grid__col">
+                            <x-form.input
+                                :label="__('models/inspection_object.attachment_type_other.label')"
+                                model="form.attachment_type_other"
+                                required
+                            />
+                        </div>
+                    @endif
+                @endif
                 <div class="grid__col l:grid__col--span-6">
                     <x-form.input
                         :label="__('models/inspection_object.manufacturer.label')"

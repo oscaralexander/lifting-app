@@ -58,6 +58,7 @@ new class extends Component
             <x-popout icon="plus" :label="__('inspection_objects.index.btn_create')" primary>
                 <x-popout.item :label="__('inspection_objects.index.btn_create_crane')" wire:click="$dispatch('openModal', { component: 'inspection-objects.inspection-object-modal', arguments: { id: null, type: 'crane' } })" />
                 <x-popout.item :label="__('inspection_objects.index.btn_create_operator_lift')" wire:click="$dispatch('openModal', { component: 'inspection-objects.inspection-object-modal', arguments: { id: null, type: 'operator_lift' } })" />
+                <x-popout.item :label="__('inspection_objects.index.btn_create_attachment')" wire:click="$dispatch('openModal', { component: 'inspection-objects.inspection-object-modal', arguments: { id: null, type: 'attachment' } })" />
             </x-popout>
         </x-slot:actions>
     </x-header>
@@ -88,7 +89,7 @@ new class extends Component
                             <a href="{{ route('inspection-objects.show', $inspectionObject) }}" wire:navigate>{{ $inspectionObject->name ?: 'Geen naam' }}</a>
                         </td>
                         <td>{{ $inspectionObject->serial_number }}</td>
-                        <td>{{ $inspectionObject->type->label() }}</td>
+                        <td>{{ $inspectionObject->type_label }}</td>
                         <td>{{ $inspectionObject->next_inspection_before }}</td>
                         <td class="table__num">{{ $inspectionObject->inspections_count }}</td>
                         <td>

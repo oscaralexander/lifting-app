@@ -41,7 +41,7 @@ class InspectionObjectModal extends ModalComponent
 
     public function submit(): void
     {
-        $inspectionObjectData = $this->form->validate();
+        $inspectionObjectData = $this->form->validatedData();
 
         $inspectionObject = $this->inspectionObject;
         $inspectionObject->fill($inspectionObjectData);

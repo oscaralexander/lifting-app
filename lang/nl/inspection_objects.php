@@ -25,6 +25,7 @@ return [
         'btn_create' => 'Nieuw inspectieobject',
         'btn_create_crane' => 'Kraan',
         'btn_create_operator_lift' => 'Machinistenlift',
+        'btn_create_attachment' => 'Verwisselbaar hulpstuk',
         'col_client' => 'Klant',
         'col_inspections' => 'Inspecties',
         'col_name' => 'Naam',

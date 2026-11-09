@@ -124,7 +124,7 @@ new class extends Component
                             @endif
                         </td>
                         <td><span class="u-text-nowrap">{{ $inspection->outsmart_order_number ?: '—' }}</span></td>
-                        <td>{{ $inspection->inspectionObject->type->label() }}</td>
+                        <td>{{ $inspection->inspectionObject->type_label }}</td>
                         <td class="table__num">
                             <span
                                 @class([

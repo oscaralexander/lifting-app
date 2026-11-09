@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\InspectionObject\Attachment\Type as AttachmentType;
 use App\Enums\InspectionObject\Type;
 use App\Enums\InspectionType;
 use Illuminate\Database\Eloquent\Builder;
@@ -18,6 +19,7 @@ class InspectionObject extends Model
     public const PER_PAGE = 25;
 
     protected $casts = [
+        'attachment_type' => AttachmentType::class,
         'next_inspection_date' => 'date',
         'type' => Type::class,
         'year_manufacture' => 'integer',
@@ -64,6 +66,22 @@ class InspectionObject extends Model
     {
         return new Attribute(
             get: fn () => collect([$this->manufacturer, $this->model])->filter()->implode(' '),
+        );
+    }
+
+    /**
+     * The most specific description of what kind of object this is: for an
+     * attachment its attachment type (or the custom description entered for
+     * "other"), otherwise the object type.
+     */
+    public function typeLabel(): Attribute
+    {
+        return new Attribute(
+            get: fn (): string => match (true) {
+                $this->attachment_type === AttachmentType::OTHER && filled($this->attachment_type_other) => $this->attachment_type_other,
+                $this->attachment_type !== null => $this->attachment_type->label(),
+                default => $this->type?->label() ?? '',
+            },
         );
     }
 

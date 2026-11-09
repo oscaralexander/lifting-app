@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
@@ -126,6 +127,15 @@ class Inspection extends Model
     public function inspectionReportThumbPath(): string
     {
         return $this->documentPath('reports', 'Keuringsrapport', 'jpg');
+    }
+
+    /**
+     * Attachment inspections have no documents of their own: they are part of
+     * the report of the main inspection they are linked to.
+     */
+    public function isAttachment(): bool
+    {
+        return (bool) $this->inspectionObject?->type?->isAttachment();
     }
 
     /**
@@ -284,6 +294,14 @@ class Inspection extends Model
     /**
      * Relationships
      */
+    /**
+     * The inspections of attachments that are included in this inspection's report.
+     */
+    public function attachmentInspections(): HasMany
+    {
+        return $this->hasMany(self::class, 'parent_inspection_id')->orderBy('id');
+    }
+
     public function client(): BelongsTo
     {
         return $this->belongsTo(Client::class);
@@ -297,6 +315,14 @@ class Inspection extends Model
     public function inspectionObject(): BelongsTo
     {
         return $this->belongsTo(InspectionObject::class);
+    }
+
+    /**
+     * The main (crane or operator lift) inspection an attachment inspection belongs to.
+     */
+    public function parentInspection(): BelongsTo
+    {
+        return $this->belongsTo(self::class, 'parent_inspection_id');
     }
 
     public function form(): BelongsTo

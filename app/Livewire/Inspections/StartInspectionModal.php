@@ -3,14 +3,17 @@
 namespace App\Livewire\Inspections;
 
 use App\Constants\Event;
+use App\Enums\InspectionObject\Type as InspectionObjectType;
 use App\Enums\InspectionType;
 use App\Models\Client;
 use App\Models\Form;
 use App\Models\Inspection;
+use App\Models\InspectionObject;
 use App\Models\InspectionObjects\Crane;
 use App\Models\User;
 use App\Services\OutsmartService;
 use Carbon\Exceptions\InvalidFormatException;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -37,6 +40,14 @@ class StartInspectionModal extends ModalComponent
 
     public ?string $workOrderId = null;
 
+    public ?int $parentInspectionId = null;
+
+    /**
+     * The number of most recent main inspections offered to link an attachment
+     * inspection to.
+     */
+    public const PARENT_INSPECTION_OPTIONS_LIMIT = 250;
+
     public function mount(int $formId, int $inspectionObjectId, ?string $inspectionHash = null): void
     {
         $this->formId = $formId;
@@ -49,7 +60,57 @@ class StartInspectionModal extends ModalComponent
             $this->type = $inspection->type?->value;
             $this->clientId = $inspection->client_id;
             $this->workOrderId = $inspection->outsmart_work_order_id;
+            $this->parentInspectionId = $inspection->parent_inspection_id;
         }
+    }
+
+    /**
+     * Attachments are always inspected as part of a main inspection, from which
+     * they inherit their client, work order and project details.
+     */
+    #[Computed]
+    public function isAttachment(): bool
+    {
+        return (bool) InspectionObject::find($this->inspectionObjectId)?->type?->isAttachment();
+    }
+
+    /**
+     * The most recent crane and operator lift inspections an attachment
+     * inspection can be linked to.
+     *
+     * @return array<int, string>
+     */
+    #[Computed]
+    public function parentInspectionOptions(): array
+    {
+        return $this->parentInspectionQuery()
+            ->with('inspectionObject')
+            ->latest('id')
+            ->limit(self::PARENT_INSPECTION_OPTIONS_LIMIT)
+            ->get()
+            ->mapWithKeys(fn (Inspection $inspection) => [
+                $inspection->id => collect([
+                    $inspection->outsmart_order_number,
+                    $inspection->project_name,
+                    $inspection->inspectionObject?->name,
+                    $inspection->inspection_date?->translatedFormat('j M Y'),
+                ])->filter()->implode(' · '),
+            ])
+            ->toArray();
+    }
+
+    /**
+     * Inspections of main objects (cranes and operator lifts), without the
+     * form relations that are eager loaded by default.
+     */
+    private function parentInspectionQuery(): Builder
+    {
+        return Inspection::query()
+            ->without(['form', 'form.fields', 'form.fieldGroups.fields', 'form.fieldGroups.formComments', 'form.formComments', 'user'])
+            ->whereHas('inspectionObject', fn (Builder $query) => $query->whereIn(
+                'type',
+                array_column(InspectionObjectType::mainObjectTypes(), 'value'),
+            ));
     }
 
     /**
@@ -189,6 +250,12 @@ class StartInspectionModal extends ModalComponent
 
     public function submit(): void
     {
+        if ($this->isAttachment) {
+            $this->submitAttachment();
+
+            return;
+        }
+
         $this->validate([
             'type' => ['required', new Enum(InspectionType::class)],
             'clientId' => ['required', 'exists:clients,id'],
@@ -248,6 +315,70 @@ class StartInspectionModal extends ModalComponent
                 'user_id' => $matchedUser?->id ?? auth('web')->id(),
             ]);
         });
+
+        $this->redirectRoute('inspections.form', [
+            'formSlug' => $form->slug,
+            'inspectionObjectId' => $this->inspectionObjectId,
+            'inspectionHash' => $inspection->hash,
+        ], navigate: true);
+    }
+
+    /**
+     * Start (or relink) an attachment inspection: a periodical inspection that
+     * takes its client, work order and project details from the main inspection.
+     */
+    private function submitAttachment(): void
+    {
+        $this->validate([
+            'parentInspectionId' => ['required', 'integer'],
+        ]);
+
+        $parentInspection = $this->parentInspectionQuery()->find($this->parentInspectionId);
+
+        if (! $parentInspection) {
+            $this->addError('parentInspectionId', __('inspections.start.modal.parent_inspection_invalid'));
+
+            return;
+        }
+
+        $attributes = [
+            ...$parentInspection->only([
+                'client_id',
+                'inspection_date',
+                'inspector_name',
+                'outsmart_external_reference',
+                'outsmart_order_number',
+                'outsmart_photos',
+                'outsmart_work_order_id',
+                'project_address',
+                'project_city',
+                'project_name',
+                'project_postal_code',
+                'user_id',
+            ]),
+            'parent_inspection_id' => $parentInspection->id,
+            'type' => InspectionType::PERIODICAL,
+        ];
+
+        if ($this->inspectionHash) {
+            $inspection = Inspection::where('hash', $this->inspectionHash)->firstOrFail();
+            $inspection->update($attributes);
+
+            $this->dispatch(Event::INSPECTION_SAVED, inspectionHash: $inspection->hash);
+            $this->dispatch(Event::TOAST, message: __('inspections.start.toast.parent_relinked'), type: 'success');
+
+            $this->closeModal();
+
+            return;
+        }
+
+        $form = Form::findOrFail($this->formId);
+
+        $inspection = Inspection::create([
+            ...$attributes,
+            'form_id' => $form->id,
+            'inspection_object_id' => $this->inspectionObjectId,
+        ]);
 
         $this->redirectRoute('inspections.form', [
             'formSlug' => $form->slug,

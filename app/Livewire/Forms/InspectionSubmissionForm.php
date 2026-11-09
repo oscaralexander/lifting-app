@@ -302,10 +302,11 @@ class InspectionSubmissionForm extends LivewireForm
         }
 
         $this->inspection->is_approved = $allTogglesPassed || $isApprovedAfterWrittenDeregistration;
-        $this->inspection->sticker_number = $this->inspection->is_approved ? ($this->stickerNumber ?: null) : null;
+        $hasSticker = $this->inspection->is_approved && ! $this->inspection->isAttachment();
+        $this->inspection->sticker_number = $hasSticker ? ($this->stickerNumber ?: null) : null;
         $this->inspection->has_cat_a_deficiencies = $this->has_cat_a_deficiencies;
         $this->inspection->has_cat_b_deficiencies = $this->has_cat_b_deficiencies;
-        $this->inspection->has_no_sticker_provided = $this->has_no_sticker_provided;
+        $this->inspection->has_no_sticker_provided = $this->has_no_sticker_provided && ! $this->inspection->isAttachment();
         $this->inspection->meta_data = $metaData;
         $this->inspection->photos = collect($this->photos)
             ->map(fn (array $photo) => ['image' => $photo['image'], 'comment' => trim((string) ($photo['comment'] ?? '')) ?: null])

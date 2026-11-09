@@ -13,7 +13,7 @@ class InspectionReportHtmlController extends Controller
             return redirect()->route('login');
         }
 
-        $inspection = Inspection::with(['client', 'inspectionObject', 'inspectable'])
+        $inspection = Inspection::with(['attachmentInspections.inspectionObject', 'client', 'inspectionObject', 'inspectable'])
             ->where('hash', $hash)
             ->firstOrFail();
 

@@ -49,7 +49,7 @@ new class extends Component
 <div>
     <x-header
         :title="$this->inspectionObject->name ?: __('inspection_objects.show.unnamed')"
-        :intro="$this->inspectionObject->type->label()"
+        :intro="$this->inspectionObject->type_label"
         :path="[
             __('inspection_objects.index.title') => route('inspection-objects'),
         ]"

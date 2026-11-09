@@ -4,6 +4,12 @@ return [
     'asset_number' => [
         'label' => 'Bedrijfsnummer',
     ],
+    'attachment_type' => [
+        'label' => 'Type hulpstuk',
+    ],
+    'attachment_type_other' => [
+        'label' => 'Omschrijving hulpstuk',
+    ],
     'manufacturer' => [
         'label' => 'Fabrikant',
     ],

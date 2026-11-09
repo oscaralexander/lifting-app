@@ -40,7 +40,7 @@
 @endphp
 @if ($deficiencies->isNotEmpty() || filled($writtenDeregistrationDescription))
     <section class="deficiencies">
-        <h2 class="deficiencies__heading">Tekortkomingen</h2>
+        <h2 class="deficiencies__heading">{{ $deficienciesHeading ?? 'Tekortkomingen' }}</h2>
         @foreach ($deficiencies as $deficiency)
             <div class="deficiency">
                 <h3 class="deficiency__title">{{ $deficiency['field']->number }} &bull; {{ $deficiency['field']->label }}</h3>

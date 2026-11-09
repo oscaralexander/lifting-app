@@ -60,6 +60,8 @@ new class extends Component
 
     public function downloadAppendix(): StreamedResponse
     {
+        abort_if($this->inspection->isAttachment(), 403);
+
         return (new InspectionAppendixPdf($this->inspection))->download();
     }
 
@@ -72,6 +74,8 @@ new class extends Component
 
     public function downloadReport(): StreamedResponse
     {
+        abort_if($this->inspection->isAttachment(), 403);
+
         return (new InspectionReportPdf($this->inspection))->download();
     }
 
@@ -88,6 +92,8 @@ new class extends Component
      */
     public function generateReport(): StreamedResponse
     {
+        abort_if($this->inspection->isAttachment(), 403);
+
         $this->generateAndSendToOutsmart(new InspectionAppendixPdf($this->inspection));
 
         return $this->generateAndSendToOutsmart(new InspectionReportPdf($this->inspection));
@@ -144,7 +150,7 @@ new class extends Component
     public function inspection(): Inspection
     {
         return Inspection::query()
-            ->with('client', 'form', 'inspectable', 'inspectionObject')
+            ->with('attachmentInspections.inspectionObject', 'client', 'form', 'inspectable', 'inspectionObject', 'parentInspection.inspectionObject')
             ->where('hash', $this->inspectionHash)
             ->firstOrNew([
                 'form_id' => $this->form->id,
@@ -401,7 +407,7 @@ new class extends Component
                 <div class="grid__col l:grid__col--span-4">
                     <div class="u-stack u-stack-gap-xl">
                         {{-- Documents --}}
-                        @if ($this->inspection->exists && ($this->reportThumbUrl || $this->appendixThumbUrl || $this->certificateThumbUrl))
+                        @if ($this->inspection->exists && ! $this->inspection->isAttachment() && ($this->reportThumbUrl || $this->appendixThumbUrl || $this->certificateThumbUrl))
                             <div class="u-stack u-stack-gap-m">
                                 <h2>@lang('inspections.form.heading_documents')</h2>
                                 <div class="grid grid--gap-m">
@@ -550,32 +556,76 @@ new class extends Component
                                 <x-inspection-object :inspectionObject="$this->inspectionObject" />
                             @endif
                         </div>
-                        {{-- Inspectable --}}
-                        <div class="u-stack u-stack-gap-m">
-                            <header class="u-flex u-flex-align-center u-flex-justify-between">
-                                @if ($this->inspectionObject->type === InspectionObjectType::CRANE)
-                                    <h2>@lang('inspections.form.heading_crane')</h2>
+                        @if ($this->inspectionObject->type === InspectionObjectType::ATTACHMENT)
+                            {{-- Parent inspection --}}
+                            <div class="u-stack u-stack-gap-m">
+                                <h2>@lang('inspections.form.heading_parent_inspection')</h2>
+                                @if ($parentInspection = $this->inspection->parentInspection)
+                                    <div>
+                                        <a
+                                            href="{{ route('inspections.form', [
+                                                'formSlug' => $parentInspection->form->slug,
+                                                'inspectionObjectId' => $parentInspection->inspection_object_id,
+                                                'inspectionHash' => $parentInspection->hash,
+                                            ]) }}"
+                                            wire:navigate
+                                        >{{ $parentInspection->inspectionObject?->name ?: __('inspection_objects.show.unnamed') }}</a>
+                                        <p class="u-muted">{{ collect([$parentInspection->outsmart_order_number, $parentInspection->project_name])->filter()->implode(' · ') }}</p>
+                                    </div>
+                                    <p class="u-muted">@lang('inspections.form.text_parent_inspection')</p>
                                 @else
-                                    <h2>@lang('inspections.form.heading_operator_lift')</h2>
+                                    <p class="u-muted">—</p>
                                 @endif
-                                <x-btn
-                                    :icon="$this->inspection->inspectable ? 'pencil' : 'plus'"
-                                    small
-                                    wire:click.prevent="$dispatch('openModal', {
-                                        component: 'inspections.inspectable-modal',
-                                        arguments: {
-                                            type: '{{ $this->inspectionObject->type->value }}',
-                                            inspectableId: {{ $this->inspection->inspectable->id ?? 'null' }}
-                                        }
-                                    })"
-                                />
-                            </header>
-                            @if ($this->inspection->inspectable instanceof Crane)
-                                @include('pages.inspections._inspectable-crane', ['crane' => $this->inspection->inspectable])
-                            @elseif ($this->inspection->inspectable instanceof OperatorLift)
-                                @include('pages.inspections._inspectable-operator-lift', ['operatorLift' => $this->inspection->inspectable])
+                            </div>
+                        @else
+                            {{-- Inspectable --}}
+                            <div class="u-stack u-stack-gap-m">
+                                <header class="u-flex u-flex-align-center u-flex-justify-between">
+                                    @if ($this->inspectionObject->type === InspectionObjectType::CRANE)
+                                        <h2>@lang('inspections.form.heading_crane')</h2>
+                                    @else
+                                        <h2>@lang('inspections.form.heading_operator_lift')</h2>
+                                    @endif
+                                    <x-btn
+                                        :icon="$this->inspection->inspectable ? 'pencil' : 'plus'"
+                                        small
+                                        wire:click.prevent="$dispatch('openModal', {
+                                            component: 'inspections.inspectable-modal',
+                                            arguments: {
+                                                type: '{{ $this->inspectionObject->type->value }}',
+                                                inspectableId: {{ $this->inspection->inspectable->id ?? 'null' }}
+                                            }
+                                        })"
+                                    />
+                                </header>
+                                @if ($this->inspection->inspectable instanceof Crane)
+                                    @include('pages.inspections._inspectable-crane', ['crane' => $this->inspection->inspectable])
+                                @elseif ($this->inspection->inspectable instanceof OperatorLift)
+                                    @include('pages.inspections._inspectable-operator-lift', ['operatorLift' => $this->inspection->inspectable])
+                                @endif
+                            </div>
+                            @if ($this->inspection->attachmentInspections->isNotEmpty())
+                                {{-- Attachments --}}
+                                <div class="u-stack u-stack-gap-m">
+                                    <h2>@lang('inspections.form.heading_attachments')</h2>
+                                    <div class="u-stack u-stack-gap-xs">
+                                        @foreach ($this->inspection->attachmentInspections as $attachmentInspection)
+                                            <div wire:key="attachment-inspection-{{ $attachmentInspection->id }}">
+                                                <a
+                                                    href="{{ route('inspections.form', [
+                                                        'formSlug' => $attachmentInspection->form->slug,
+                                                        'inspectionObjectId' => $attachmentInspection->inspection_object_id,
+                                                        'inspectionHash' => $attachmentInspection->hash,
+                                                    ]) }}"
+                                                    wire:navigate
+                                                >{{ collect([$attachmentInspection->inspectionObject?->type_label, $attachmentInspection->inspectionObject?->name])->filter()->implode(' · ') }}</a>
+                                                <span class="u-muted">({{ $attachmentInspection->status->label() }})</span>
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                </div>
                             @endif
-                        </div>
+                        @endif
                     </div>
                 </div>
                 <div class="grid__col l:grid__col--span-8">
@@ -620,7 +670,7 @@ new class extends Component
                     </div>
                 </div>
             </div>
-            @if ($this->inspection->exists)
+            @if ($this->inspection->exists && ! $this->inspection->isAttachment())
                 <livewire:inspections.test-matrix
                     :inspection-hash="$this->inspectionHash"
                     :key="'test-matrix-'.$this->inspection->testMatrix()?->type()->value"
@@ -647,12 +697,14 @@ new class extends Component
                                 Object goedgekeurd na schriftelijke afmelding.
                             </div>
                             <div class="u-stack u-stack-gap-m" x-cloak x-show="allTogglesCompleted">
-                                <div x-cloak x-show="isApproved">
-                                    <x-form.input
-                                        :label="__('models/inspection.sticker_number.label')"
-                                        model="submissionForm.stickerNumber"
-                                    />
-                                </div>
+                                @unless ($this->inspection->isAttachment())
+                                    <div x-cloak x-show="isApproved">
+                                        <x-form.input
+                                            :label="__('models/inspection.sticker_number.label')"
+                                            model="submissionForm.stickerNumber"
+                                        />
+                                    </div>
+                                @endunless
                                 <x-form.textarea
                                     :label="__('models/inspection.comment.label')"
                                     model="submissionForm.inspectionComment"
@@ -706,7 +758,9 @@ new class extends Component
                                 />
                                 <x-form.lightswitch wire:model="submissionForm.requires_reinspection" :text="__('models/inspection.requires_reinspection.label')" />
                                 <x-form.lightswitch wire:model="submissionForm.requires_written_deregistration" :text="__('models/inspection.requires_written_deregistration.label')" />
-                                <x-form.lightswitch wire:model="submissionForm.has_no_sticker_provided" :text="__('models/inspection.has_no_sticker_provided.label')" />
+                                @unless ($this->inspection->isAttachment())
+                                    <x-form.lightswitch wire:model="submissionForm.has_no_sticker_provided" :text="__('models/inspection.has_no_sticker_provided.label')" />
+                                @endunless
                             </div>
                             @if ($this->inspection->exists && $this->inspection->is_completed)
                                 <div class="inspection__writtenDeregistration" x-cloak x-show="allTogglesCompleted && !allTogglesPassed">
@@ -731,7 +785,7 @@ new class extends Component
                                     </div>
                                 </div>
                             @endif
-                            @if ($this->inspection->exists && $this->inspection->is_completed)
+                            @if ($this->inspection->exists && $this->inspection->is_completed && ! $this->inspection->isAttachment())
                                 @include('pages.inspections._generate-documents')
                             @endif
                         </div>
