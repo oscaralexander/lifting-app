@@ -94,13 +94,7 @@ new class extends Component
                                         </td>
                                         <td><span class="u-text-nowrap">{{ $inspection->inspection_date->translatedFormat('d M Y') }}</span></td>
                                         <td class="table__num">
-                                            <span
-                                                @class([
-                                                    'label',
-                                                    'label--danger' => in_array($inspection->status, [InspectionStatus::REJECTED, InspectionStatus::CAT_A_DEFICIENCIES, InspectionStatus::CAT_B_DEFICIENCIES]),
-                                                    'label--success' => $inspection->status === InspectionStatus::APPROVED,
-                                                ])
-                                            >{{ $inspection->status->label() }}</span>
+                                            <x-status-label :status="$inspection->status" />
                                         </td>
                                     </tr>
                                 @endforeach

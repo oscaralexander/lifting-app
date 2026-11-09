@@ -611,7 +611,7 @@ new class extends Component
                                     <h2>@lang('inspections.form.heading_attachments')</h2>
                                     <div class="u-stack u-stack-gap-xs">
                                         @foreach ($this->inspection->attachmentInspections as $attachmentInspection)
-                                            <div wire:key="attachment-inspection-{{ $attachmentInspection->id }}">
+                                            <div class="u-flex u-flex-align-center u-flex-justify-between u-flex-gap-m" wire:key="attachment-inspection-{{ $attachmentInspection->id }}">
                                                 <a
                                                     href="{{ route('inspections.form', [
                                                         'formSlug' => $attachmentInspection->form->slug,
@@ -620,7 +620,7 @@ new class extends Component
                                                     ]) }}"
                                                     wire:navigate
                                                 >{{ collect([$attachmentInspection->inspectionObject?->type_label, $attachmentInspection->inspectionObject?->name])->filter()->implode(' · ') }}</a>
-                                                <span class="u-text-lc">({{ $attachmentInspection->status->label() }})</span>
+                                                <x-status-label :status="$attachmentInspection->status" />
                                             </div>
                                         @endforeach
                                     </div>

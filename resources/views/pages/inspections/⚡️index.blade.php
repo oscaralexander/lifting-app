@@ -134,13 +134,7 @@ new class extends Component
                         <td><span class="u-text-nowrap">{{ $inspection->outsmart_order_number ?: '—' }}</span></td>
                         <td>{{ $inspection->inspectionObject->type_label }}</td>
                         <td class="table__num">
-                            <span
-                                @class([
-                                    'label' ,
-                                    'label--danger' => in_array($inspection->status, [InspectionStatus::REJECTED, InspectionStatus::CAT_A_DEFICIENCIES, InspectionStatus::CAT_B_DEFICIENCIES]),
-                                    'label--success' => $inspection->status === InspectionStatus::APPROVED,
-                                ])
-                            >{{ $inspection->status->label() }}</span>
+                            <x-status-label :status="$inspection->status" />
                         </td>
                         <td>
                             <div class="table__actions">
@@ -191,13 +185,7 @@ new class extends Component
                                         ]) }}"
                                         wire:navigate
                                     >{{ $attachmentInspection->inspectionObject?->type_label }}</a>
-                                    <span
-                                        @class([
-                                            'label',
-                                            'label--danger' => in_array($attachmentInspection->status, [InspectionStatus::REJECTED, InspectionStatus::CAT_A_DEFICIENCIES, InspectionStatus::CAT_B_DEFICIENCIES]),
-                                            'label--success' => $attachmentInspection->status === InspectionStatus::APPROVED,
-                                        ])
-                                    >{{ $attachmentInspection->status->label() }}</span>
+                                    <x-status-label :status="$attachmentInspection->status" />
                                 </div>
                             </td>
                         </tr>
