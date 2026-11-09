@@ -573,7 +573,7 @@ new class extends Component
                                         >{{ $parentInspection->inspectionObject?->name ?: __('inspection_objects.show.unnamed') }}</a>
                                         <p>{{ collect([$parentInspection->outsmart_order_number, $parentInspection->project_name])->filter()->implode(' · ') }}</p>
                                     </div>
-                                    <p class="u-text-lc u-text-lh-l u-text-s"><i>@lang('inspections.form.text_parent_inspection')</i></p>
+                                    <p class="u-text-lc u-text-lh-l u-text-s">@lang('inspections.form.text_parent_inspection')</p>
                                 @else
                                     <p class="u-text-lh-l">—</p>
                                 @endif
