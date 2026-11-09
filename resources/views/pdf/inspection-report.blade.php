@@ -166,7 +166,7 @@
                     @if ($inspectable instanceof Crane)
                         <th colspan="2" scope="col">{{ $inspectable->type->label() }}</th>
                     @else
-                        <th colspan="2" scope="col">Machinstenlift</th>
+                        <th colspan="2" scope="col">Machinistenlift</th>
                     @endif
                 </tr>
             </thead>

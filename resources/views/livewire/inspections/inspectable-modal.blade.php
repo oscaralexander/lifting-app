@@ -3,9 +3,9 @@
 <div>
     <x-modal.header>
         @if ($this->type === InspectionObjectType::CRANE)
-            @lang('inspections.inspectable.modal.title_crane')
+            @lang('inspections.inspectable.modal.crane.title')
         @else
-            @lang('inspections.inspectable.modal.title_operator_lift')
+            @lang('inspections.inspectable.modal.operator_lift.title')
         @endif
     </x-modal.header>
     <x-modal.body>
