@@ -90,6 +90,27 @@
         text-align: right !important;
     }
 
+    &__subRow {
+        td {
+            padding-bottom: .5rem;
+            padding-top: .5rem;
+        }
+    }
+
+    &__subRowContent {
+        align-items: center;
+        display: flex;
+        gap: .5em;
+        padding-left: .25em;
+    }
+
+    &__subRowIcon {
+        color: var(--color-text-lc);
+        flex-shrink: 0;
+        height: 1.25em;
+        width: 1.25em;
+    }
+
     &__sort {
         height: 1.5em;
         width: 1.5em;

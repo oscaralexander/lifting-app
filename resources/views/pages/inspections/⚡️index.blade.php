@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Inspection;
+use Illuminate\Database\Eloquent\Builder;
 use App\Enums\InspectionStatus;
 use App\Enums\InspectionType;
 use App\Enums\InspectionObject\Type as InspectionObjectType;
@@ -40,16 +41,23 @@ new class extends Component
     public function inspections(): LengthAwarePaginator
     {
         return Inspection::query()
-            ->with('inspectionObject', 'form', 'client')
+            ->with('attachmentInspections.inspectionObject', 'client', 'form', 'inspectionObject')
+            ->whereNull('parent_inspection_id')
             ->when($this->search, fn ($query) => $query->where(function ($q) {
                 $q->where('project_name', 'like', '%' . $this->search . '%')
                     ->orWhere('outsmart_order_number', 'like', '%' . $this->search . '%')
                     ->orWhereHas('client', fn ($client) => $client->where('name', 'like', '%' . $this->search . '%'));
             }))
-            ->when($this->types, fn ($query) => $query->whereHas(
-                'inspectionObject',
-                fn ($inspectionObject) => $inspectionObject->whereIn('type', $this->types)
-            ))
+            ->when($this->types, fn ($query) => $query->where(function (Builder $query) {
+                $query->whereHas(
+                    'inspectionObject',
+                    fn (Builder $inspectionObject) => $inspectionObject->whereIn('type', $this->types)
+                );
+
+                if (in_array(InspectionObjectType::ATTACHMENT->value, $this->types)) {
+                    $query->orWhereHas('attachmentInspections');
+                }
+            }))
             ->when($this->statuses, fn ($query) => $query->whereStatusIn($this->statuses))
             ->latest()
             ->paginate(Inspection::PER_PAGE, pageName: 'p')
@@ -170,6 +178,30 @@ new class extends Component
                             </div>
                         </td>
                     </tr>
+                    @foreach ($inspection->attachmentInspections as $attachmentInspection)
+                        <tr class="table__subRow" wire:key="inspection-{{ $inspection->id }}-attachment-{{ $attachmentInspection->id }}">
+                            <td colspan="6">
+                                <div class="table__subRowContent">
+                                    <x-icon class="table__subRowIcon" icon="corner-down-right" />
+                                    <a
+                                        href="{{ route('inspections.form', [
+                                            'inspectionObjectId' => $attachmentInspection->inspection_object_id,
+                                            'formSlug' => $attachmentInspection->form->slug,
+                                            'inspectionHash' => $attachmentInspection->hash,
+                                        ]) }}"
+                                        wire:navigate
+                                    >{{ $attachmentInspection->inspectionObject?->type_label }}</a>
+                                    <span
+                                        @class([
+                                            'label',
+                                            'label--danger' => in_array($attachmentInspection->status, [InspectionStatus::REJECTED, InspectionStatus::CAT_A_DEFICIENCIES, InspectionStatus::CAT_B_DEFICIENCIES]),
+                                            'label--success' => $attachmentInspection->status === InspectionStatus::APPROVED,
+                                        ])
+                                    >{{ $attachmentInspection->status->label() }}</span>
+                                </div>
+                            </td>
+                        </tr>
+                    @endforeach
                 @empty
                     <tr>
                         <td colspan="6" class="table__empty">@lang('inspections.index.no_results', ['query' => $this->search])</td>
