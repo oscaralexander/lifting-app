@@ -92,8 +92,12 @@
 
     &__subRow {
         td {
-            padding-bottom: .5rem;
+            padding-bottom: var(--size-s);
             padding-top: 0;
+        }
+
+        &:not(:has(+ .table__subRow)) td {
+            padding-bottom: var(--size-m);
         }
     }
 

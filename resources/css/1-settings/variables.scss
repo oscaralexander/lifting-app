@@ -185,3 +185,9 @@ $sizes: (
     'xl': 2em,
     'xxl': 3em,
 );
+
+:root {
+    @each $key, $size in $sizes {
+        --size-#{$key}: #{$size};
+    }
+}
