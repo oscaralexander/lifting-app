@@ -13,9 +13,6 @@ return [
     'counter_ballast' => [
         'label' => 'Contraballast',
     ],
-    'exchangeable_parts' => [
-        'label' => 'Vervangbare onderdelen',
-    ],
     'type' => [
         'label' => 'Type',
     ],
@@ -52,9 +49,6 @@ return [
     ],
     'base_width' => [
         'label' => 'Breedte onderstel',
-    ],
-    'outrigger_type' => [
-        'label' => 'Stempels',
     ],
     'undercarriage' => [
         'label' => 'Onderwagen',

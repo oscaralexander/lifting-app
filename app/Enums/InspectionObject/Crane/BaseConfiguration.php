@@ -7,8 +7,13 @@ enum BaseConfiguration: string
     case CROSS_FRAME = 'cross_frame';
     case UNDERCARRIAGE = 'undercarriage';
     case RAIL_TRAVELLING = 'rail_travelling';
-    case RECOVERABLE_ANCHORS = 'recoverable_anchors';
-    case FOUNDATION_ANCHORS = 'foundation_anchors';
+    case ANCHORS = 'anchors';
+    case TYRES = 'tyres';
+    case TRACKS = 'tracks';
+    case OUTRIGGERS = 'outriggers';
+    case TYRES_OUTRIGGERS = 'tyres_outriggers';
+    case TYRES_DOZER_BLADE = 'tyres_dozer_blade';
+    case OUTRIGGERS_DOZER_BLADE = 'outriggers_dozer_blade';
 
     public function label(): string
     {

@@ -7,10 +7,13 @@ enum BoomType: string
     case TELESCOPIC = 'telescopic';
     case LATTICE = 'lattice';
     case AUXILIARY = 'auxiliary';
+    case AUXILIARY_MOVABLE = 'auxiliary_movable';
+    case WINCH_JIB = 'winch_jib';
+    case WINCH = 'winch';
+    case FLY_JIB = 'fly_jib';
     case ARTICULATED = 'articulated';
     case MONOBOOM = 'monoboom';
     case DIPPER_STICK = 'dipper_stick';
-    case FLY_JIB = 'fly_jib';
 
     public function label(): string
     {

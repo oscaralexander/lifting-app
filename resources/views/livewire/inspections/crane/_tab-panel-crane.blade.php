@@ -28,9 +28,5 @@
                 />
             </div>
         </div>
-        <x-form.textarea
-            :label="__('models/crane.exchangeable_parts.label')"
-            model="inspectableForm.exchangeable_parts"
-        />
     </div>
 </x-tabs.tab-panel>

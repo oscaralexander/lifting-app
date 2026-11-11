@@ -1,7 +1,6 @@
 <?php
 
 use App\Enums\InspectionObject\Crane\BaseConfiguration;
-use App\Enums\InspectionObject\Crane\OutriggerType;
 use App\Enums\InspectionObject\Crane\Type;
 use App\Enums\InspectionObject\Crane\Undercarriage;
 use Illuminate\Database\Migrations\Migration;
@@ -23,7 +22,7 @@ return new class extends Migration
             $table->string('exchangeable_parts')->nullable();
             $table->enum('undercarriage', array_column(Undercarriage::cases(), 'value'))->nullable();
             $table->enum('base_configuration', array_column(BaseConfiguration::cases(), 'value'))->nullable();
-            $table->enum('outrigger_type', array_column(OutriggerType::cases(), 'value'))->nullable();
+            $table->enum('outrigger_type', ['outrigger', 'dozer_blade'])->nullable();
 
             // Base
             $table->string('base_manufacturer')->nullable();

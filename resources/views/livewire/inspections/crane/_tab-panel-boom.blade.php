@@ -3,15 +3,6 @@
 
 <x-tabs.tab-panel id="boom">
     <div class="grid grid--gap-m">
-        <div class="grid__col l:grid__col--span-6">
-            <x-form.input
-                :label="__('models/crane.hook_height.label')"
-                model="inspectableForm.hook_height"
-                step="0.01"
-                :suffix="__('ui.units.meters')"
-                type="number"
-            />
-        </div>
         <div class="grid__col">
             <x-form.multi-select
                 :label="__('models/crane.boom_type.label')"
@@ -39,6 +30,15 @@
                     :text="__('models/crane.boom_is_trolley.label')"
                 />
             </div>
+        </div>
+        <div class="grid__col l:grid__col--span-6">
+            <x-form.input
+                :label="__('models/crane.hook_height.label')"
+                model="inspectableForm.hook_height"
+                step="0.01"
+                :suffix="__('ui.units.meters')"
+                type="number"
+            />
         </div>
         <div class="grid__col l:grid__col--span-6">
             <x-form.input

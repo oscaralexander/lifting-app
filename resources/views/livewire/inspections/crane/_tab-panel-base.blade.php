@@ -1,5 +1,4 @@
 @use('App\Enums\InspectionObject\Crane\BaseConfiguration')
-@use('App\Enums\InspectionObject\Crane\OutriggerType')
 @use('App\Enums\InspectionObject\Crane\Undercarriage')
 
 <x-tabs.tab-panel id="base">
@@ -100,11 +99,5 @@
                 />
             </div>
         </div>
-        <x-form.select
-            default="—"
-            :label="__('models/crane.outrigger_type.label')"
-            model="inspectableForm.outrigger_type"
-            :options="OutriggerType::options()"
-        />
     </div>
 </x-tabs.tab-panel>

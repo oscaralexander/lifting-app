@@ -10,7 +10,6 @@
         <x-pdf.row :label="__('models/crane.type.label')" :value="$crane->type->label()" />
         <x-pdf.row :label="__('models/crane.central_ballast.label')" :value="$crane->central_ballast" :suffix="__('ui.units.tons')" />
         <x-pdf.row :label="__('models/crane.counter_ballast.label')" :value="$crane->counter_ballast" :suffix="__('ui.units.tons')" />
-        <x-pdf.row :label="__('models/crane.exchangeable_parts.label')" :value="$crane->exchangeable_parts" />
     </tbody>
 </table>
 <!-- Base -->
@@ -32,7 +31,6 @@
         <x-pdf.row :label="__('models/crane.base_rail_track_gauge.label')" :value="$crane->base_rail_track_gauge" :suffix="__('ui.units.meters')" />
         <x-pdf.row :label="__('models/crane.base_rail_wheelbase.label')" :value="$crane->base_rail_wheelbase" :suffix="__('ui.units.meters')" />
         <x-pdf.row :label="__('models/crane.base_crane_track_length.label')" :value="$crane->base_crane_track_length" :suffix="__('ui.units.meters')" />
-        <x-pdf.row :label="__('models/crane.outrigger_type.label')" :value="$crane->outrigger_type?->label() ?? ''" />
     </tbody>
 </table>
 <!-- Boom -->

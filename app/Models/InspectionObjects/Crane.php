@@ -3,7 +3,6 @@
 namespace App\Models\InspectionObjects;
 
 use App\Enums\InspectionObject\Crane\BaseConfiguration;
-use App\Enums\InspectionObject\Crane\OutriggerType;
 use App\Enums\InspectionObject\Crane\Type;
 use App\Enums\InspectionObject\Crane\Undercarriage;
 use App\Models\Inspection;
@@ -29,7 +28,6 @@ class Crane extends Model
         'central_ballast' => 'decimal:2',
         'counter_ballast' => 'decimal:2',
         'hook_height' => 'decimal:2',
-        'outrigger_type' => OutriggerType::class,
         'type' => Type::class,
         'undercarriage' => Undercarriage::class,
     ];

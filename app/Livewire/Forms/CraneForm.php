@@ -4,7 +4,6 @@ namespace App\Livewire\Forms;
 
 use App\Enums\InspectionObject\Crane\BaseConfiguration;
 use App\Enums\InspectionObject\Crane\BoomType;
-use App\Enums\InspectionObject\Crane\OutriggerType;
 use App\Enums\InspectionObject\Crane\Type;
 use App\Enums\InspectionObject\Crane\Undercarriage;
 use App\Models\InspectionObjects\Crane;
@@ -13,8 +12,6 @@ use Livewire\Form;
 
 class CraneForm extends Form
 {
-    public $exchangeable_parts;
-
     // Crane
 
     public ?Type $type = null;
@@ -22,8 +19,6 @@ class CraneForm extends Form
     public ?Undercarriage $undercarriage = null;
 
     public ?BaseConfiguration $base_configuration = null;
-
-    public ?OutriggerType $outrigger_type = null;
 
     public $hook_height;
 
@@ -74,10 +69,8 @@ class CraneForm extends Form
         $this->hook_height = $crane->hook_height;
         $this->central_ballast = $crane->central_ballast;
         $this->counter_ballast = $crane->counter_ballast;
-        $this->exchangeable_parts = $crane->exchangeable_parts;
         $this->undercarriage = $crane->undercarriage;
         $this->base_configuration = $crane->base_configuration;
-        $this->outrigger_type = $crane->outrigger_type;
 
         // Base
         $this->base_manufacturer = $crane->base_manufacturer;
@@ -107,10 +100,8 @@ class CraneForm extends Form
             'type' => ['required', Rule::enum(Type::class)],
             'central_ballast' => ['nullable', 'decimal:0,2'],
             'counter_ballast' => ['nullable', 'decimal:0,2'],
-            'exchangeable_parts' => ['nullable', 'string'],
             'undercarriage' => ['nullable', Rule::enum(Undercarriage::class)],
             'base_configuration' => ['nullable', Rule::enum(BaseConfiguration::class)],
-            'outrigger_type' => ['nullable', Rule::enum(OutriggerType::class)],
 
             // Boom/jib
             'hook_height' => ['nullable', 'decimal:0,2'],

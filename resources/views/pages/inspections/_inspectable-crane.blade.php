@@ -9,11 +9,8 @@
     @if ($crane->counter_ballast)
         <x-data-item :label="__('models/crane.counter_ballast.label')" :value="$crane->counter_ballast" :suffix="__('ui.units.tons')" />
     @endif
-    @if ($crane->exchangeable_parts)
-        <x-data-item :label="__('models/crane.exchangeable_parts.label')" :value="$crane->exchangeable_parts" />
-    @endif
 </div>
-@if ($crane->undercarriage || $crane->base_manufacturer || $crane->base_model || $crane->base_serial_number || $crane->base_asset_number || $crane->base_configuration || $crane->base_length || $crane->base_width || $crane->base_rail_track_gauge || $crane->base_rail_wheelbase || $crane->base_crane_track_length || $crane->outrigger_type)
+@if ($crane->undercarriage || $crane->base_manufacturer || $crane->base_model || $crane->base_serial_number || $crane->base_asset_number || $crane->base_configuration || $crane->base_length || $crane->base_width || $crane->base_rail_track_gauge || $crane->base_rail_wheelbase || $crane->base_crane_track_length)
     <div class="u-stack u-stack-gap-xs">
         <h3>@lang('inspections.form.crane.heading_base')</h3>
         <div>
@@ -49,9 +46,6 @@
             @endif
             @if ($crane->base_crane_track_length)
                 <x-data-item :label="__('models/crane.base_crane_track_length.label')" :value="$crane->base_crane_track_length" :suffix="__('ui.units.meters')" />
-            @endif
-            @if ($crane->outrigger_type)
-                <x-data-item :label="__('models/crane.outrigger_type.label')" :value="$crane->outrigger_type?->label() ?? '—'" />
             @endif
         </div>
     </div>
