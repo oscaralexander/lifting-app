@@ -5,6 +5,10 @@ namespace App\Enums\InspectionObject\Attachment;
 enum Type: string
 {
     case FORK_CARRIAGE = 'fork_carriage';
+    case ROTATING_FORK_CARRIAGE = 'rotating_fork_carriage';
+    case FIXED_JIB = 'fixed_jib';
+    case TELESCOPIC_JIB = 'telescopic_jib';
+    case WINCH_JIB = 'winch_jib';
     case MATERIAL_BUCKET = 'material_bucket';
     case AERIAL_WORK_PLATFORM_BUCKET = 'aerial_work_platform_bucket';
     case OTHER = 'other';
