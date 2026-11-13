@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Enums\InspectionObject\Crane\Type as CraneType;
 use App\Enums\InspectionObject\Type;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -45,6 +46,17 @@ class Form extends Model
         'formComments',
         'fieldGroups.formComments',
     ];
+
+    /**
+     * The most specific description of what this schema inspects: for a crane
+     * its crane type, otherwise the object type.
+     */
+    public function typeLabel(): Attribute
+    {
+        return new Attribute(
+            get: fn (): ?string => $this->crane_type?->label() ?? $this->type?->label(),
+        );
+    }
 
     public function getRouteKeyName(): string
     {

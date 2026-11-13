@@ -1,4 +1,7 @@
+@use('App\Enums\InspectionObject\Type as InspectionObjectType')
+
 @php
+    $isArbo = $inspection->inspectionObject?->type === InspectionObjectType::ARBO;
     $photos = collect($inspection->photos ?? [])
         ->filter(fn ($photo) => ! empty($photo['image']))
         ->values();
@@ -40,9 +43,11 @@
                 <h1>Bijlage</h1>
                 <h2>{{ $inspection->outsmart_order_number }}</h2>
             </div>
-            <footer class="cover__footer">
-                De inhoud van dit rapport is in overeenstemming met het TCVT-keuringsschema identificatiecode: TCVT W3-01: 2025 (24-V11) voor het periodiek keuren van hijskranen.
-            </footer>
+            @unless ($isArbo)
+                <footer class="cover__footer">
+                    De inhoud van dit rapport is in overeenstemming met het TCVT-keuringsschema identificatiecode: TCVT W3-01: 2025 (24-V11) voor het periodiek keuren van hijskranen.
+                </footer>
+            @endunless
         </div>
         <!-- Comments -->
         <div class="intro intro--end formatted">

@@ -48,6 +48,7 @@ new class extends Component
             <thead>
                 <tr>
                     <th scope="col">@lang('schemas.index.col_name')</th>
+                    <th scope="col">@lang('schemas.index.col_type')</th>
                     <th class="table__num" scope="col">@lang('schemas.index.col_fields')</th>
                     <th scope="col">@lang('schemas.index.col_updated_at')</th>
                     <th scope="col">&nbsp;</th>
@@ -59,6 +60,7 @@ new class extends Component
                         <td>
                             <a class="table__main" href="{{ route('schemas.edit', $form) }}" wire:navigate>{{ $form->name }}</a>
                         </td>
+                        <td>{{ $form->type_label ?? '—' }}</td>
                         <td class="table__num">{{ $form->fields_count }}</td>
                         <td>{{ $form->updated_at->translatedFormat('d F Y') }}</td>
                         <td>

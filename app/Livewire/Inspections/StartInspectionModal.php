@@ -75,6 +75,16 @@ class StartInspectionModal extends ModalComponent
     }
 
     /**
+     * Objects that are never inspected according to TCVT have no choice of
+     * inspection type.
+     */
+    #[Computed]
+    public function isAlwaysPeriodical(): bool
+    {
+        return (bool) InspectionObject::find($this->inspectionObjectId)?->type?->isAlwaysPeriodical();
+    }
+
+    /**
      * The most recent crane and operator lift inspections an attachment
      * inspection can be linked to.
      *
@@ -254,6 +264,10 @@ class StartInspectionModal extends ModalComponent
             $this->submitAttachment();
 
             return;
+        }
+
+        if ($this->isAlwaysPeriodical) {
+            $this->type = InspectionType::PERIODICAL->value;
         }
 
         $this->validate([

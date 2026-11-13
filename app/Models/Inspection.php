@@ -67,7 +67,7 @@ class Inspection extends Model
         static::saving(function ($inspection) {
             $inspection->user_id ??= auth('web')->id();
 
-            if ($inspection->isAttachment()) {
+            if ($inspection->isAlwaysPeriodical()) {
                 $inspection->type = InspectionType::PERIODICAL;
             }
         });
@@ -169,6 +169,15 @@ class Inspection extends Model
             'parent_inspection_id' => $this->id,
             'type' => InspectionType::PERIODICAL,
         ];
+    }
+
+    /**
+     * Attachments and other work equipment (Arbobesluit 7.4a) are never
+     * inspected according to TCVT.
+     */
+    public function isAlwaysPeriodical(): bool
+    {
+        return (bool) $this->inspectionObject?->type?->isAlwaysPeriodical();
     }
 
     /**

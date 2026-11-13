@@ -1,4 +1,5 @@
 @use('App\Enums\FieldType')
+@use('App\Enums\InspectionObject\Type as InspectionObjectType')
 @use('App\Enums\InspectionType')
 @use('App\Lib\InspectionResult')
 @use('App\Models\InspectionObjects\Crane')
@@ -12,13 +13,14 @@
     $meta        = $inspection->meta_data ?? [];
 
     $isAttachment      = $inspection->isAttachment();
+    $isArbo            = $object?->type === InspectionObjectType::ARBO;
     $parentInspection  = $isAttachment ? $inspection->parentInspection : null;
     $projectInspection = $parentInspection ?? $inspection;
 
     $nextPeriodical = null;
     $nextTcvt = null;
 
-    if ($inspectable instanceof OperatorLift || $isAttachment) {
+    if ($inspectable instanceof OperatorLift || $inspection->isAlwaysPeriodical()) {
         $nextPeriodical = \Carbon\Carbon::parse($inspection->inspection_date)->addMonths(12)->translatedFormat('j F Y');
     } elseif ($inspection->type === InspectionType::TCVT) {
         $nextPeriodical = \Carbon\Carbon::parse($inspection->inspection_date)->addMonths(12)->translatedFormat('j F Y');
@@ -96,12 +98,16 @@
                 <h1>{{ $coverTitle }}</h1>
                 <h2>{{ $form->name }}</h2>
             </div>
-            <footer class="cover__footer">
-                De inhoud van dit rapport is in overeenstemming met het TCVT-keuringsschema identificatiecode: TCVT W3-01: 2025 (24-V11) voor het periodiek keuren van hijskranen.
-            </footer>
+            @unless ($isArbo)
+                <footer class="cover__footer">
+                    De inhoud van dit rapport is in overeenstemming met het TCVT-keuringsschema identificatiecode: TCVT W3-01: 2025 (24-V11) voor het periodiek keuren van hijskranen.
+                </footer>
+            @endunless
         </div>
         <!-- Intro -->
-        @include('pdf._intro-tcvt')
+        @unless ($isArbo)
+            @include('pdf._intro-tcvt')
+        @endunless
         <!-- Section -->
         <div class="signature-box">
             <table class="table">
@@ -116,7 +122,7 @@
                     <x-pdf.row label="Inspecteur" :value="$inspection->inspector_name ?? '—'" />
                     <x-pdf.row label="Bevindingen" :value="$result" />
                     <x-pdf.row label="Volgende periodieke keuring voor" :value="$nextPeriodical ?? '—'" />
-                    @unless ($inspectable instanceof OperatorLift || $isAttachment)
+                    @unless ($inspectable instanceof OperatorLift || $inspection->isAlwaysPeriodical())
                         <x-pdf.row label="Volgende TCVT keuring voor" :value="$nextTcvt ?? '—'" />
                     @endunless
                     <x-pdf.row label="Stickernummer" :value="$inspection->sticker_number ?: __('models/inspection.has_no_sticker_provided.label')" />
@@ -165,6 +171,8 @@
                 <tr>
                     @if ($isAttachment)
                         <th colspan="2" scope="col">Verwisselbaar hulpstuk: {{ $object->type_label }}</th>
+                    @elseif ($isArbo)
+                        <th colspan="2" scope="col">{{ $object->type_label }}</th>
                     @elseif ($inspectable instanceof Crane)
                         <th colspan="2" scope="col">{{ $inspectable->type->label() }}</th>
                     @else
@@ -176,7 +184,7 @@
                 <x-pdf.row :label="__('models/inspection_object.manufacturer.label')" :value="$object->manufacturer" />
                 <x-pdf.row :label="__('models/inspection_object.model.label')" :value="$object->model" />
                 <x-pdf.row :label="__('models/inspection_object.serial_number.label')" :value="$object->serial_number" />
-                @if ($isAttachment)
+                @if ($isAttachment || $isArbo)
                     <x-pdf.row :label="__('models/inspection_object.asset_number.label')" :value="$object->asset_number" />
                 @endif
                 <x-pdf.row :label="__('models/inspection_object.year_manufacture.label')" :value="$object->year_manufacture" />

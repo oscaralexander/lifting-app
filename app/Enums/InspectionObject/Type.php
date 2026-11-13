@@ -7,6 +7,7 @@ enum Type: string
     case CRANE = 'crane';
     case OPERATOR_LIFT = 'operator_lift';
     case ATTACHMENT = 'attachment';
+    case ARBO = 'arbo';
 
     public function label(): string
     {
@@ -20,6 +21,24 @@ enum Type: string
     public function isAttachment(): bool
     {
         return $this === self::ATTACHMENT;
+    }
+
+    /**
+     * Only cranes and operator lifts have inspectable details of their own
+     * (and with them a test matrix) and can have attachments linked to them.
+     */
+    public function isMainObject(): bool
+    {
+        return in_array($this, self::mainObjectTypes(), true);
+    }
+
+    /**
+     * Attachments and other work equipment (Arbobesluit 7.4a) are never
+     * inspected according to TCVT.
+     */
+    public function isAlwaysPeriodical(): bool
+    {
+        return in_array($this, [self::ATTACHMENT, self::ARBO], true);
     }
 
     /**

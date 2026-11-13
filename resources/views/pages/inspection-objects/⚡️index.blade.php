@@ -59,6 +59,7 @@ new class extends Component
                 <x-popout.item :label="__('inspection_objects.index.btn_create_crane')" wire:click="$dispatch('openModal', { component: 'inspection-objects.inspection-object-modal', arguments: { id: null, type: 'crane' } })" />
                 <x-popout.item :label="__('inspection_objects.index.btn_create_operator_lift')" wire:click="$dispatch('openModal', { component: 'inspection-objects.inspection-object-modal', arguments: { id: null, type: 'operator_lift' } })" />
                 <x-popout.item :label="__('inspection_objects.index.btn_create_attachment')" wire:click="$dispatch('openModal', { component: 'inspection-objects.inspection-object-modal', arguments: { id: null, type: 'attachment' } })" />
+                <x-popout.item :label="__('inspection_objects.index.btn_create_arbo')" wire:click="$dispatch('openModal', { component: 'inspection-objects.inspection-object-modal', arguments: { id: null, type: 'arbo' } })" />
             </x-popout>
         </x-slot:actions>
     </x-header>

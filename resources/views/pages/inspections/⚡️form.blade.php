@@ -592,7 +592,7 @@ new class extends Component
                                     <p class="u-text-lh-l">—</p>
                                 @endif
                             </div>
-                        @else
+                        @elseif ($this->inspectionObject->type->isMainObject())
                             {{-- Inspectable --}}
                             <div class="u-stack u-stack-gap-m">
                                 <header class="u-flex u-flex-align-center u-flex-justify-between">
@@ -701,7 +701,7 @@ new class extends Component
                     </div>
                 </div>
             </div>
-            @if ($this->inspection->exists && ! $this->inspection->isAttachment())
+            @if ($this->inspection->exists && $this->inspectionObject->type->isMainObject())
                 <livewire:inspections.test-matrix
                     :inspection-hash="$this->inspectionHash"
                     :key="'test-matrix-'.$this->inspection->testMatrix()?->type()->value"

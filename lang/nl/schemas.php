@@ -26,6 +26,7 @@ return [
         'btn_create' => 'Nieuw keuringsschema',
         'col_fields' => 'Velden',
         'col_name' => 'Naam',
+        'col_type' => 'Type',
         'col_updated_at' => 'Laatst gewijzigd',
         'confirm_delete' => 'Weet u zeker dat u dit keuringsschema wilt verwijderen?',
         'title' => 'Keuringsschema\'s',

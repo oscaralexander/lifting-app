@@ -19,16 +19,18 @@
                         />
                     </div>
                 @else
-                    <div class="grid__col">
-                        <x-form.select
-                            default="—"
-                            :label="__('inspections.start.modal.type')"
-                            wire:model="type"
-                            :options="$this->typeOptions"
-                            :selected="$type"
-                            required
-                        />
-                    </div>
+                    @unless ($this->isAlwaysPeriodical)
+                        <div class="grid__col">
+                            <x-form.select
+                                default="—"
+                                :label="__('inspections.start.modal.type')"
+                                wire:model="type"
+                                :options="$this->typeOptions"
+                                :selected="$type"
+                                required
+                            />
+                        </div>
+                    @endunless
                     <div class="grid__col">
                         <x-form.select
                             default="—"
