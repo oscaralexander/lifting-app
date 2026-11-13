@@ -60,8 +60,6 @@ new class extends Component
 
     public function downloadAppendix(): StreamedResponse
     {
-        abort_if($this->inspection->isAttachment(), 403);
-
         return (new InspectionAppendixPdf($this->inspection))->download();
     }
 
@@ -74,8 +72,6 @@ new class extends Component
 
     public function downloadReport(): StreamedResponse
     {
-        abort_if($this->inspection->isAttachment(), 403);
-
         return (new InspectionReportPdf($this->inspection))->download();
     }
 
@@ -92,8 +88,6 @@ new class extends Component
      */
     public function generateReport(): StreamedResponse
     {
-        abort_if($this->inspection->isAttachment(), 403);
-
         $this->generateAndSendToOutsmart(new InspectionAppendixPdf($this->inspection));
 
         return $this->generateAndSendToOutsmart(new InspectionReportPdf($this->inspection));
@@ -351,9 +345,30 @@ new class extends Component
             ->map(fn($f) => 'field_' . $f->pivot->id)
             ->values()
             ->toArray();
+
+        $requiredFieldKeys = $this->form->fields
+            ->filter(fn($f) => $f->type !== FieldType::TOGGLE && $f->pivot->required == 1)
+            ->map(fn($f) => 'field_' . $f->pivot->id)
+            ->values()
+            ->toArray();
     @endphp
     <div x-data="{
         keys: @js($toggleFieldKeys),
+        requiredKeys: @js($requiredFieldKeys),
+        get requiredFieldsFilled() {
+            return this.requiredKeys.every(key => {
+                const val = $wire.submissionForm.fields[key];
+
+                if (Array.isArray(val)) {
+                    return val.length > 0;
+                }
+
+                return val !== null && val !== undefined && val !== '';
+            });
+        },
+        get isCompleted() {
+            return this.allTogglesCompleted && this.requiredFieldsFilled;
+        },
         get allTogglesCompleted() {
             if (this.keys.length === 0) {
                 return true;
@@ -407,7 +422,7 @@ new class extends Component
                 <div class="grid__col l:grid__col--span-4">
                     <div class="u-stack u-stack-gap-xl">
                         {{-- Documents --}}
-                        @if ($this->inspection->exists && ! $this->inspection->isAttachment() && ($this->reportThumbUrl || $this->appendixThumbUrl || $this->certificateThumbUrl))
+                        @if ($this->inspection->exists && ($this->reportThumbUrl || $this->appendixThumbUrl || $this->certificateThumbUrl))
                             <div class="u-stack u-stack-gap-m">
                                 <h2>@lang('inspections.form.heading_documents')</h2>
                                 <div class="grid grid--gap-m">
@@ -573,7 +588,6 @@ new class extends Component
                                         >{{ $parentInspection->inspectionObject?->name ?: __('inspection_objects.show.unnamed') }}</a>
                                         <p>{{ collect([$parentInspection->outsmart_order_number, $parentInspection->project_name])->filter()->implode(' · ') }}</p>
                                     </div>
-                                    <p class="u-text-lc u-text-lh-l u-text-s">@lang('inspections.form.text_parent_inspection')</p>
                                 @else
                                     <p class="u-text-lh-l">—</p>
                                 @endif
@@ -697,31 +711,29 @@ new class extends Component
                 <div class="grid__col l:grid__col--span-8">
                     <div class="u-stack u-stack-gap-xl">
                         <div class="u-stack u-stack-gap-l">
-                            <div class="status status--neutral" x-cloak x-show="!allTogglesCompleted">
+                            <div class="status status--neutral" x-cloak x-show="!isCompleted">
                                 <x-icon icon="hourglass" />
                                 Keuringsschema nog niet voltooid.
                             </div>
-                            <div class="status status--danger" x-cloak x-show="allTogglesCompleted && !isApproved">
+                            <div class="status status--danger" x-cloak x-show="isCompleted && !isApproved">
                                 <x-icon icon="octagon-x" />
                                 Object afgekeurd.
                             </div>
-                            <div class="status status--success" x-cloak x-show="allTogglesCompleted && allTogglesPassed">
+                            <div class="status status--success" x-cloak x-show="isCompleted && allTogglesPassed">
                                 <x-icon icon="check" />
                                 Object goedgekeurd.
                             </div>
-                            <div class="status status--success" x-cloak x-show="allTogglesCompleted && isApprovedAfterWrittenDeregistration">
+                            <div class="status status--success" x-cloak x-show="isCompleted && isApprovedAfterWrittenDeregistration">
                                 <x-icon icon="check" />
                                 Object goedgekeurd na schriftelijke afmelding.
                             </div>
-                            <div class="u-stack u-stack-gap-m" x-cloak x-show="allTogglesCompleted">
-                                @unless ($this->inspection->isAttachment())
-                                    <div x-cloak x-show="isApproved">
-                                        <x-form.input
-                                            :label="__('models/inspection.sticker_number.label')"
-                                            model="submissionForm.stickerNumber"
-                                        />
-                                    </div>
-                                @endunless
+                            <div class="u-stack u-stack-gap-m" x-cloak x-show="isCompleted">
+                                <div x-cloak x-show="isApproved">
+                                    <x-form.input
+                                        :label="__('models/inspection.sticker_number.label')"
+                                        model="submissionForm.stickerNumber"
+                                    />
+                                </div>
                                 <x-form.textarea
                                     :label="__('models/inspection.comment.label')"
                                     model="submissionForm.inspectionComment"
@@ -764,7 +776,7 @@ new class extends Component
                                     </div>
                                 </div>
                             </div>
-                            <div class="u-stack u-stack-gap-m" x-cloak x-show="allTogglesCompleted && !allTogglesPassed">
+                            <div class="u-stack u-stack-gap-m" x-cloak x-show="isCompleted && !allTogglesPassed">
                                 <x-form.lightswitch
                                     :text="__('models/inspection.has_cat_a_deficiencies.label')"
                                     wire:model="submissionForm.has_cat_a_deficiencies"
@@ -775,12 +787,10 @@ new class extends Component
                                 />
                                 <x-form.lightswitch wire:model="submissionForm.requires_reinspection" :text="__('models/inspection.requires_reinspection.label')" />
                                 <x-form.lightswitch wire:model="submissionForm.requires_written_deregistration" :text="__('models/inspection.requires_written_deregistration.label')" />
-                                @unless ($this->inspection->isAttachment())
-                                    <x-form.lightswitch wire:model="submissionForm.has_no_sticker_provided" :text="__('models/inspection.has_no_sticker_provided.label')" />
-                                @endunless
+                                <x-form.lightswitch wire:model="submissionForm.has_no_sticker_provided" :text="__('models/inspection.has_no_sticker_provided.label')" />
                             </div>
                             @if ($this->inspection->exists && $this->inspection->is_completed)
-                                <div class="inspection__writtenDeregistration" x-cloak x-show="allTogglesCompleted && !allTogglesPassed">
+                                <div class="inspection__writtenDeregistration" x-cloak x-show="isCompleted && !allTogglesPassed">
                                     <x-form.lightswitch
                                         :text="__('models/inspection.is_approved_after_written_deregistration.label')"
                                         wire:model="submissionForm.approved_after_written_deregistration"
@@ -802,7 +812,7 @@ new class extends Component
                                     </div>
                                 </div>
                             @endif
-                            @if ($this->inspection->exists && $this->inspection->is_completed && ! $this->inspection->isAttachment())
+                            @if ($this->inspection->exists && $this->inspection->is_completed)
                                 @include('pages.inspections._generate-documents')
                             @endif
                         </div>

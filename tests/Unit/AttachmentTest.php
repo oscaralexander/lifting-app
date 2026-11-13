@@ -78,3 +78,17 @@ it('summarises a rejected inspection with its deficiencies', function () {
         e(__('models/inspection.requires_reinspection.label')),
     ]));
 });
+
+it('names the documents of an attachment inspection after its attachment type', function () {
+    $inspection = new Inspection(['hash' => 'abcde', 'outsmart_order_number' => '1909600', 'sticker_number' => '123']);
+    $inspection->setRelation('inspectionObject', new InspectionObject(['type' => 'attachment', 'attachment_type' => 'fork_carriage']));
+
+    expect($inspection->inspectionReportPath())->toBe('inspections/reports/abcde/Keuringsrapport_1909600_vorkenbord_123.pdf');
+});
+
+it('names the documents of a main inspection without object type', function () {
+    $inspection = new Inspection(['hash' => 'abcde', 'outsmart_order_number' => '1909600']);
+    $inspection->setRelation('inspectionObject', new InspectionObject(['type' => 'crane']));
+
+    expect($inspection->inspectionReportPath())->toBe('inspections/reports/abcde/Keuringsrapport_1909600.pdf');
+});

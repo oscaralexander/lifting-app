@@ -53,7 +53,6 @@ return [
             'passed' => 'Object is goedgekeurd.',
             'failed' => 'Object is afgekeurd.',
         ],
-        'text_parent_inspection' => 'Deze inspectie wordt opgenomen in het keuringsrapport van de hoofdinspectie.',
         'text_generate_documents' => 'Genereer de PDF-documenten voor deze inspectie. Documenten worden automatisch toegevoegd aan de werkbon in OutSmart.',
     ],
     'start' => [

@@ -66,6 +66,10 @@ class Inspection extends Model
 
         static::saving(function ($inspection) {
             $inspection->user_id ??= auth('web')->id();
+
+            if ($inspection->isAttachment()) {
+                $inspection->type = InspectionType::PERIODICAL;
+            }
         });
     }
 
@@ -130,8 +134,8 @@ class Inspection extends Model
     }
 
     /**
-     * Attachment inspections have no documents of their own: they are part of
-     * the report of the main inspection they are linked to.
+     * Attachment inspections are always periodical and get their own report,
+     * which refers to the main inspection they are linked to.
      */
     public function isAttachment(): bool
     {
@@ -215,6 +219,7 @@ class Inspection extends Model
         $filename = implode('_', array_filter([
             $prefix,
             $this->outsmart_order_number,
+            $this->isAttachment() ? Str::slug($object?->type_label ?? '') : null,
             $this->sticker_number,
         ])).'.'.$extension;
 
@@ -324,7 +329,7 @@ class Inspection extends Model
      * Relationships
      */
     /**
-     * The inspections of attachments that are included in this inspection's report.
+     * The inspections of the attachments linked to this (main) inspection.
      */
     public function attachmentInspections(): HasMany
     {

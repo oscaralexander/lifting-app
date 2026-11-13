@@ -11,10 +11,14 @@
     $inspectable = $inspection->inspectable;
     $meta        = $inspection->meta_data ?? [];
 
+    $isAttachment      = $inspection->isAttachment();
+    $parentInspection  = $isAttachment ? $inspection->parentInspection : null;
+    $projectInspection = $parentInspection ?? $inspection;
+
     $nextPeriodical = null;
     $nextTcvt = null;
 
-    if ($inspectable instanceof OperatorLift) {
+    if ($inspectable instanceof OperatorLift || $isAttachment) {
         $nextPeriodical = \Carbon\Carbon::parse($inspection->inspection_date)->addMonths(12)->translatedFormat('j F Y');
     } elseif ($inspection->type === InspectionType::TCVT) {
         $nextPeriodical = \Carbon\Carbon::parse($inspection->inspection_date)->addMonths(12)->translatedFormat('j F Y');
@@ -112,7 +116,7 @@
                     <x-pdf.row label="Inspecteur" :value="$inspection->inspector_name ?? '—'" />
                     <x-pdf.row label="Bevindingen" :value="$result" />
                     <x-pdf.row label="Volgende periodieke keuring voor" :value="$nextPeriodical ?? '—'" />
-                    @unless ($inspectable instanceof OperatorLift)
+                    @unless ($inspectable instanceof OperatorLift || $isAttachment)
                         <x-pdf.row label="Volgende TCVT keuring voor" :value="$nextTcvt ?? '—'" />
                     @endunless
                     <x-pdf.row label="Stickernummer" :value="$inspection->sticker_number ?: __('models/inspection.has_no_sticker_provided.label')" />
@@ -144,15 +148,24 @@
                 </tr>
             </thead>
             <tbody>
-                <x-pdf.row :label="__('models/inspection.project_name.label')" :value="$inspection->outsmart_external_reference ?? $inspection->project_name" />
-                <x-pdf.row :label="__('models/inspection.project_address.label')" :value="$inspection->project_address . ', ' . $inspection->project_postal_code . ' ' . $inspection->project_city" />
+                <x-pdf.row :label="__('models/inspection.project_name.label')" :value="$projectInspection->outsmart_external_reference ?? $projectInspection->project_name" />
+                <x-pdf.row :label="__('models/inspection.project_address.label')" :value="$projectInspection->project_address . ', ' . $projectInspection->project_postal_code . ' ' . $projectInspection->project_city" />
+                @if ($parentInspection)
+                    <x-pdf.row label="Hoofdinspectie" :value="collect([
+                        $parentInspection->outsmart_order_number,
+                        collect([$parentInspection->inspectionObject?->type_label, $parentInspection->inspectionObject?->name])->filter()->implode(' '),
+                        $parentInspection->inspectionObject?->serial_number,
+                    ])->filter()->implode(' · ')" />
+                @endif
             </tbody>
         </table>
         <!-- Inspectable -->
         <table class="table">
             <thead>
                 <tr>
-                    @if ($inspectable instanceof Crane)
+                    @if ($isAttachment)
+                        <th colspan="2" scope="col">Verwisselbaar hulpstuk: {{ $object->type_label }}</th>
+                    @elseif ($inspectable instanceof Crane)
                         <th colspan="2" scope="col">{{ $inspectable->type->label() }}</th>
                     @else
                         <th colspan="2" scope="col">Machinistenlift</th>
@@ -163,6 +176,9 @@
                 <x-pdf.row :label="__('models/inspection_object.manufacturer.label')" :value="$object->manufacturer" />
                 <x-pdf.row :label="__('models/inspection_object.model.label')" :value="$object->model" />
                 <x-pdf.row :label="__('models/inspection_object.serial_number.label')" :value="$object->serial_number" />
+                @if ($isAttachment)
+                    <x-pdf.row :label="__('models/inspection_object.asset_number.label')" :value="$object->asset_number" />
+                @endif
                 <x-pdf.row :label="__('models/inspection_object.year_manufacture.label')" :value="$object->year_manufacture" />
                 @if ($inspectable instanceof OperatorLift)
                     <x-pdf.row :label="__('models/operator_lift.base_mount.label')" :value="$inspectable->base_mount->label()" />
@@ -180,9 +196,5 @@
         @endif
         <!-- Deficiencies -->
         @include('pdf._deficiencies')
-        <!-- Attachments -->
-        @foreach ($inspection->attachmentInspections->where('is_completed', true) as $attachmentInspection)
-            @include('pdf._attachment', ['inspection' => $attachmentInspection])
-        @endforeach
     </body>
 </html>
