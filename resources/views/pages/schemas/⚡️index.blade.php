@@ -15,7 +15,9 @@ new class extends Component
     #[Computed]
     public function forms(): LengthAwarePaginator
     {
-        return Form::withCount('fields')->paginate(10);
+        return Form::withCount('fields')
+            ->paginate(Form::PER_PAGE, pageName: 'p')
+            ->setPath(route('schemas'));
     }
 
     public function delete(int $id): void
@@ -91,5 +93,6 @@ new class extends Component
                 @endforeach
             </tbody>
         </table>
+        {{ $this->forms->links('livewire::custom') }}
     </div>
 </div>

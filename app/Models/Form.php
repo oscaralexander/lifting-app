@@ -13,6 +13,8 @@ use Illuminate\Support\Str;
 
 class Form extends Model
 {
+    public const PER_PAGE = 25;
+
     protected static function boot(): void
     {
         parent::boot();
