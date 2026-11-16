@@ -16,6 +16,7 @@ new class extends Component
     public function forms(): LengthAwarePaginator
     {
         return Form::withCount('fields')
+            ->orderBy('name')
             ->paginate(Form::PER_PAGE, pageName: 'p')
             ->setPath(route('schemas'));
     }
