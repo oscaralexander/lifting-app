@@ -10,6 +10,7 @@
     ])
     data-field-group-id="{{ $fieldGroup->id }}"
     data-sortable-item
+    x-bind:class="{ 'formBuilder__fieldGroup--collapsed': !isExpanded }"
     wire:key="fieldGroup-{{ $fieldGroup->id }}"
     x-data="{
         init() {
@@ -26,10 +27,12 @@
     <header class="formBuilder__fieldGroupHeader">
         <x-icon class="formBuilder__icon" icon="group" />
         <div class="formBuilder__fieldGroupFlex">
-            @unless (empty($fieldGroup->number))
-                <b>{{ $fieldGroup->number }}</b> &middot;
-            @endunless
-            {{ $fieldGroup->name }}
+            <div class="formBuilder__fieldTruncate">
+                @unless (empty($fieldGroup->number))
+                    <b>{{ $fieldGroup->number }}</b> &middot;
+                @endunless
+                {{ $fieldGroup->name }}
+            </div>
         </div>
         <div class="formBuilder__fieldGroupActions">
             <button class="formBuilder__fieldAction" x-on:click="toggleExpanded()">
