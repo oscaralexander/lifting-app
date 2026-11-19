@@ -3,6 +3,7 @@
 return [
     'add' => 'Toevoegen',
     'and' => 'en',
+    'archive' => 'Archiveren',
     'back' => 'Terug',
     'browse' => 'Bladeren…',
     'cancel' => 'Annuleren',
@@ -17,6 +18,7 @@ return [
     'now' => 'Nu',
     'or' => 'of',
     'required' => 'Verplicht',
+    'restore' => 'Terugzetten',
     'save' => 'Opslaan',
     'send' => 'Versturen',
     'toggle_password_visibility' => 'Wachtwoord weergeven or verbergen',

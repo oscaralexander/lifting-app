@@ -12,6 +12,7 @@ Route::prefix('clients')
 Route::prefix('inspections')
     ->group(function () {
         Route::livewire('/', 'pages::inspections')->name('inspections');
+        Route::livewire('/archived', 'pages::inspections')->name('inspections.archived');
         Route::livewire('/{formSlug}/{inspectionObjectId}/{inspectionHash?}', 'pages::inspections.form')->name('inspections.form');
     });
 

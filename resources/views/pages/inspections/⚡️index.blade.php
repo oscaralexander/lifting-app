@@ -7,12 +7,16 @@ use App\Enums\InspectionType;
 use App\Enums\InspectionObject\Type as InspectionObjectType;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Livewire\Attributes\Computed;
+use Livewire\Attributes\Locked;
 use Livewire\Component;
 use Livewire\WithPagination;
 
 new class extends Component
 {
     use WithPagination;
+
+    #[Locked]
+    public bool $isArchive = false;
 
     public string $search = '';
 
@@ -21,6 +25,11 @@ new class extends Component
 
     /** @var array<int, string> */
     public array $statuses = [];
+
+    public function mount(): void
+    {
+        $this->isArchive = request()->routeIs('inspections.archived');
+    }
 
     public function updatedSearch(): void
     {
@@ -43,6 +52,11 @@ new class extends Component
         return Inspection::query()
             ->with('attachmentInspections.inspectionObject', 'client', 'form', 'inspectionObject')
             ->whereNull('parent_inspection_id')
+            ->when(
+                $this->isArchive,
+                fn (Builder $query) => $query->whereNotNull('archived_at'),
+                fn (Builder $query) => $query->whereNotArchived(),
+            )
             ->when($this->search, fn ($query) => $query->where(function ($q) {
                 $q->where('project_name', 'like', '%' . $this->search . '%')
                     ->orWhere('outsmart_order_number', 'like', '%' . $this->search . '%')
@@ -61,7 +75,58 @@ new class extends Component
             ->when($this->statuses, fn ($query) => $query->whereStatusIn($this->statuses))
             ->latest()
             ->paginate(Inspection::PER_PAGE, pageName: 'p')
-            ->setPath(route('inspections'));
+            ->setPath(route($this->isArchive ? 'inspections.archived' : 'inspections'));
+    }
+
+    #[Computed]
+    public function hasArchivedInspections(): bool
+    {
+        return Inspection::query()
+            ->whereNull('parent_inspection_id')
+            ->whereNotNull('archived_at')
+            ->exists();
+    }
+
+    public function delete(int $id): void
+    {
+        $inspection = Inspection::query()->with('attachmentInspections')->findOrFail($id);
+
+        if (! $inspection->isDeletable()) {
+            $this->dispatch('toast', message: __('inspections.index.toast.not_deletable'), type: 'error');
+
+            return;
+        }
+
+        $inspection->deleteWithAttachmentInspections();
+        $this->dispatch('toast', message: __('inspections.index.toast.deleted'), type: 'success');
+    }
+
+    public function archive(int $id): void
+    {
+        $inspection = Inspection::query()->findOrFail($id);
+
+        if (! $inspection->isArchivable()) {
+            $this->dispatch('toast', message: __('inspections.index.toast.not_archivable'), type: 'error');
+
+            return;
+        }
+
+        $inspection->archive();
+        $this->dispatch('toast', message: __('inspections.index.toast.archived'), type: 'success');
+    }
+
+    public function restore(int $id): void
+    {
+        $inspection = Inspection::query()->findOrFail($id);
+
+        if (! $inspection->isRestorable()) {
+            $this->dispatch('toast', message: __('inspections.index.toast.not_restorable'), type: 'error');
+
+            return;
+        }
+
+        $inspection->restoreFromArchive();
+        $this->dispatch('toast', message: __('inspections.index.toast.restored'), type: 'success');
     }
 
     public function render()
@@ -84,6 +149,14 @@ new class extends Component
         </x-slot:actions>
         --}}
     </x-header>
+    @if ($isArchive || $this->hasArchivedInspections)
+        <x-tabs id="inspections">
+            <x-tabs.tab-list>
+                <x-tabs.tab :active="! $isArchive" :href="route('inspections')" id="active">@lang('inspections.index.tab_active')</x-tabs.tab>
+                <x-tabs.tab :active="$isArchive" :href="route('inspections.archived')" id="archived">@lang('inspections.index.tab_archived')</x-tabs.tab>
+            </x-tabs.tab-list>
+        </x-tabs>
+    @endif
     <div class="u-stack u-stack-gap-l">
         <div class="u-flex u-flex-gap-m">
             <x-form.input-search wire:model.live.debounce.200ms="search" :placeholder="__('inspections.index.search_placeholder')" />
@@ -161,13 +234,29 @@ new class extends Component
                                             target="_blank"
                                         />
                                     @endif
-                                    <x-popout.item
-                                        danger
-                                        icon="trash"
-                                        :label="__('ui.delete')"
-                                        wire:click.prevent="delete({{ $inspection->hash }})"
-                                        wire:confirm="{{ __('inspection_objects.index.delete_confirm') }}"
-                                    />
+                                    @if ($inspection->isRestorable())
+                                        <x-popout.item
+                                            icon="archive-restore"
+                                            :label="__('ui.restore')"
+                                            wire:click.prevent="restore({{ $inspection->id }})"
+                                        />
+                                    @elseif ($inspection->isDeletable())
+                                        <x-popout.item
+                                            danger
+                                            icon="trash"
+                                            :label="__('ui.delete')"
+                                            wire:click.prevent="delete({{ $inspection->id }})"
+                                            wire:confirm="{{ __('inspections.index.delete_confirm') }}"
+                                        />
+                                    @elseif ($inspection->isArchivable())
+                                        <x-popout.item
+                                            danger
+                                            icon="archive"
+                                            :label="__('ui.archive')"
+                                            wire:click.prevent="archive({{ $inspection->id }})"
+                                            wire:confirm="{{ __('inspections.index.archive_confirm') }}"
+                                        />
+                                    @endif
                                 </x-popout>
                             </div>
                         </td>

@@ -25,6 +25,7 @@ class Inspection extends Model
     protected $guarded = ['id'];
 
     protected $casts = [
+        'archived_at' => 'datetime',
         'comment_data' => 'json:unicode',
         'form_data' => 'json:unicode',
         'has_cat_a_deficiencies' => 'boolean',
@@ -181,6 +182,67 @@ class Inspection extends Model
     }
 
     /**
+     * Only inspections that are still pending can be deleted. A main inspection
+     * whose attachment inspections are not all pending anymore cannot be
+     * deleted either, as they would be deleted along with it.
+     */
+    public function isDeletable(): bool
+    {
+        return $this->status === InspectionStatus::PENDING
+            && $this->attachmentInspections->every(
+                fn (self $attachmentInspection): bool => $attachmentInspection->status === InspectionStatus::PENDING
+            );
+    }
+
+    /**
+     * Completed inspections cannot be deleted, but can be archived instead.
+     */
+    public function isArchivable(): bool
+    {
+        return $this->status !== InspectionStatus::PENDING && is_null($this->archived_at);
+    }
+
+    /**
+     * Delete this inspection along with its attachment inspections.
+     */
+    public function deleteWithAttachmentInspections(): void
+    {
+        $this->attachmentInspections->each->delete();
+        $this->delete();
+    }
+
+    /**
+     * Archive this inspection along with its attachment inspections.
+     */
+    public function archive(): void
+    {
+        $this->archived_at = now();
+        $this->save();
+
+        $this->attachmentInspections()
+            ->whereNull('archived_at')
+            ->update(['archived_at' => $this->archived_at]);
+    }
+
+    public function isRestorable(): bool
+    {
+        return ! is_null($this->archived_at);
+    }
+
+    /**
+     * Restore this inspection from the archive along with its attachment inspections.
+     */
+    public function restoreFromArchive(): void
+    {
+        $this->archived_at = null;
+        $this->save();
+
+        $this->attachmentInspections()
+            ->whereNotNull('archived_at')
+            ->update(['archived_at' => null]);
+    }
+
+    /**
      * A certificate is only issued for TCVT inspections of a crane that were
      * assigned an approval sticker.
      */
@@ -332,6 +394,11 @@ class Inspection extends Model
                 });
             }
         });
+    }
+
+    public function scopeWhereNotArchived(Builder $query): Builder
+    {
+        return $query->whereNull('archived_at');
     }
 
     /**
